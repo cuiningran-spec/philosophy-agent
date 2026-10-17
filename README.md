@@ -10,7 +10,6 @@
 - `develop`：开发分支，所有文档编写、代码开发、功能迭代都在此分支进行，开发完成后通过PR合并至main。
 
 ## 项目目录结构
-## 项目目录结构
 ```text
 ├── docs/                    # 项目文档
 │   ├── requirements/        # 需求文档
@@ -28,7 +27,7 @@
 │   └── integration/         # 集成测试
 ├── .github/workflows/       # CI自动化配置
 └── README.md                # 项目说明文档
-
+```
 
 ## 任务与项目管理
 - 使用 GitHub Issues 进行任务与缺陷(Bug)跟踪

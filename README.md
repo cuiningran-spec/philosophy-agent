@@ -10,22 +10,25 @@
 - `develop`：开发分支，所有文档编写、代码开发、功能迭代都在此分支进行，开发完成后通过PR合并至main。
 
 ## 项目目录结构
-├── docs/ # 项目文档
-│ ├── requirements/ # 需求文档
-│ │ └── problem_definition.md # 5W1H 问题定义文档
-│ ├── algorithm/ # 算法设计文档
-│ ├── software/ # 软件设计文档
-│ ├── mgmt/ # 项目管理文档
-│ └── retrospection/ # 项目复盘文档
-├── code/ # 源代码
-│ ├── backend/ # 后端代码
-│ ├── frontend/ # 前端代码
-│ └── core_engine/ # AI 核心引擎
-├── tests/ # 测试代码
-│ ├── unit/ # 单元测试
-│ └── integration/ # 集成测试
-├── .github/workflows/ # CI 自动化配置
-└── README.md # 项目说明文档
+## 项目目录结构
+```text
+├── docs/                    # 项目文档
+│   ├── requirements/        # 需求文档
+│   │   └── problem_definition.md  # 5W1H问题定义文档
+│   ├── algorithm/           # 算法设计文档
+│   ├── software/            # 软件设计文档
+│   ├── mgmt/                # 项目管理文档
+│   └── retrospection/       # 项目复盘文档
+├── code/                    # 源代码
+│   ├── backend/             # 后端代码
+│   ├── frontend/            # 前端代码
+│   └── core_engine/         # AI核心引擎
+├── tests/                   # 测试代码
+│   ├── unit/                # 单元测试
+│   └── integration/         # 集成测试
+├── .github/workflows/       # CI自动化配置
+└── README.md                # 项目说明文档
+
 
 ## 任务与项目管理
 - 使用 GitHub Issues 进行任务与缺陷(Bug)跟踪

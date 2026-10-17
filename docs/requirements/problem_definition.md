@@ -1,5 +1,5 @@
 # problem_definition.md
-> 项目名称：哲学代理人 philosophy-agent
+> 项目名称：ThinkLab 
 > 产品定位：帮助用户从多个哲学视角理解现实问题，并通过自主选择探索方向，形成个人思考的哲学 AI Agent。
 > MVP核心功能：
 > 1. 用户输入一个现实问题。

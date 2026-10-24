@@ -1,0 +1,22 @@
+# 仅提供 PostgreSQL（MVP 持久化层）。智能体服务与 Web 服务在本地运行。
+services:
+  postgres:
+    image: postgres:16
+    container_name: thinklab-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: thinklab
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d thinklab']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

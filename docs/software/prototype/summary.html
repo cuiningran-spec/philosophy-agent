@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>思考记录 · ThinkLab</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+    :root {
+      --paper: #f4efe4;
+      --paper-light: #fbf7ef;
+      --ink: #22211d;
+      --muted: #716c60;
+      --line: #d8cdb9;
+      --green: #304235;
+      --green-soft: #e8ece0;
+      --rust: #9b4f35;
+      --gold: #b08a4b;
+      --serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+      --sans: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      color: var(--ink);
+      font-family: var(--sans);
+      background-color: var(--paper);
+      background-image:
+        radial-gradient(rgba(58, 49, 36, 0.045) 0.65px, transparent 0.65px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 45%);
+      background-size: 6px 6px, 100% 100%;
+    }
+    .font-display {
+      font-family: var(--serif);
+    }
+    .no-scrollbar {
+      scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .record-rise {
+      animation: recordRise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes recordRise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .seal {
+      transform: rotate(-5deg);
+    }
+    .copy-feedback {
+      animation: copyPulse 0.4s ease both;
+    }
+    @keyframes copyPulse {
+      0% {
+        transform: scale(0.97);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    ::selection {
+      color: #fffaf0;
+      background: #566b52;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .record-rise,
+      .copy-feedback {
+        animation: none;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+<header class="sticky top-0 z-40 border-b border-[#d8cdb9] bg-[#f4efe4]/90 backdrop-blur-md">
+<div class="mx-auto flex h-[78px] max-w-[1440px] items-center justify-between px-6 lg:px-12">
+<a aria-label="ThinkLab 首页" class="group flex items-center gap-3.5" href="home.html">
+<span class="relative grid h-11 w-11 place-items-center border border-[#2f2e28] bg-[#fbf7ef]">
+<span class="font-display text-[22px] leading-none text-[#2f2e28]">思</span>
+<span class="absolute -bottom-[3px] -right-[3px] h-2.5 w-2.5 bg-[#9b4f35]"></span>
+</span>
+<span class="flex flex-col">
+<span class="font-display text-[22px] font-semibold tracking-[0.01em] text-[#24231e]">ThinkLab</span>
+<span class="mt-0.5 text-[9px] font-medium tracking-[0.26em] text-[#797264]">哲学思考实验室</span>
+</span>
+</a>
+<nav aria-label="主导航" class="hidden items-center gap-9 md:flex">
+<a class="py-2 text-[13px] text-[#777064] transition-colors hover:text-[#25241f]" href="home.html">开始探索</a>
+<a class="py-2 text-[13px] text-[#777064] transition-colors hover:text-[#25241f]" href="home.html#method">思考方法</a>
+<a class="relative py-2 text-[13px] font-medium text-[#25241f]" href="summary.html">
+          我的思考
+          <span class="absolute inset-x-0 -bottom-px mx-auto h-px w-5 bg-[#9b4f35]"></span>
+</a>
+</nav>
+<div class="hidden items-center gap-2 text-[10px] tracking-[0.14em] text-[#8b8375] sm:flex">
+<span class="h-1.5 w-1.5 rounded-full bg-[#52634e]"></span>
+        RECORDED / 04
+      </div>
+</div>
+</header>
+<main>
+<section class="relative overflow-hidden border-b border-[#d8cdb9]">
+<div class="pointer-events-none absolute -right-16 top-8 hidden h-[290px] w-[290px] rounded-full border border-[#d2c7b4] lg:block"></div>
+<div class="pointer-events-none absolute right-5 top-4 hidden font-display text-[200px] leading-none text-[#2f2e28]/[0.03] xl:block">04</div>
+<div class="mx-auto max-w-[1320px] px-6 lg:px-12">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#d8cdb9] py-5">
+<div class="flex items-center gap-3 text-[10px] tracking-[0.12em] text-[#8c8476]">
+<a class="transition-colors hover:text-[#9b4f35]" href="home.html">THINKLAB</a>
+<span class="text-[#b8ad9b]">/</span>
+<span class="text-[#4b4a42]">我的思考</span>
+<span class="text-[#b8ad9b]">/</span>
+<span class="text-[#4b4a42]" id="headerViewName">斯多葛主义</span>
+</div>
+<div class="flex items-center gap-2 text-[9px] tracking-[0.1em] text-[#8b8375]">
+<span class="grid h-5 w-5 place-items-center rounded-full bg-[#304235] text-[#f8f3e8]">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+            一次完整的探索
+            <span class="text-[#b9ae9d]">/</span>
+<span>04 / 04</span>
+</div>
+</div>
+<div class="relative grid grid-cols-1 gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-16 lg:py-14">
+<div class="record-rise min-w-0">
+<div class="flex flex-wrap items-center gap-3">
+<p class="flex items-center gap-3 text-[10px] font-semibold tracking-[0.22em] text-[#8a4b35]">
+<span class="h-px w-7 bg-[#9b4f35]"></span>
+                THINKING RECORD
+              </p>
+<span class="inline-flex items-center gap-1.5 border px-2 py-1 text-[8px]" id="sourceBadge"></span>
+</div>
+<h1 class="mt-5 max-w-[920px] font-display text-[34px] leading-[1.48] tracking-[-0.025em] text-[#25241f] sm:text-[42px] lg:text-[47px]">
+              关于「<span class="text-[#9b4f35]" id="titleQuestion">我总在担心自己做得不够好</span>」<br class="hidden sm:block"/>的思考记录
+            </h1>
+<p class="mt-6 max-w-[680px] font-display text-[15px] leading-[1.95] text-[#6c6558]">
+              这份记录不是结论，而是一张继续思考的地图。它保留了你走过的路径，也标出了仍未被回答的张力。
+            </p>
+<div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] text-[#8e8779]">
+<span id="recordMeta">生成于 2026年10月24日 · 斯多葛主义 · 3 轮追问</span>
+<span class="h-3 w-px bg-[#cfc4b1]"></span>
+<span class="inline-flex items-center gap-1.5">
+<iconify-icon class="text-[13px] text-[#52634e]" icon="lucide:bookmark-check"></iconify-icon>
+                已保存
+              </span>
+</div>
+</div>
+<div class="record-rise hidden flex-col items-center justify-center lg:flex">
+<div class="seal relative flex h-[168px] w-[168px] items-center justify-center rounded-full border-2 border-[#9b4f35] p-2">
+<div class="flex h-full w-full flex-col items-center justify-center rounded-full border border-[#9b4f35] text-center">
+<span class="font-display text-[24px] leading-[1.35] tracking-[0.08em] text-[#9b4f35]">思考<br/>记录</span>
+<span class="mt-2 text-[7px] tracking-[0.22em] text-[#9b4f35]">THINKLAB</span>
+</div>
+</div>
+<p class="mt-4 text-[8px] tracking-[0.16em] text-[#8e8577]">NO. <span id="recordNo">TL-20261024-001</span></p>
+<a class="group mt-5 inline-flex items-center gap-2 border border-[#52634e] px-4 py-2.5 text-[10px] font-medium text-[#52634e] transition-colors hover:bg-[#52634e] hover:text-[#fbf7ef]" href="dialogue.html" id="heroContinue">
+              继续这段对话
+              <iconify-icon class="text-[13px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+<p class="mt-2 text-[8px] text-[#a19889]">记录已保存 · 探索未结束</p>
+</div>
+</div>
+<div class="mb-7 hidden items-center justify-between gap-4 border border-[#d9c6a7] bg-[#f6eddd] px-4 py-3" id="demoBanner">
+<div class="flex items-start gap-2.5">
+<iconify-icon class="mt-0.5 shrink-0 text-[14px] text-[#8a6a3d]" icon="lucide:info"></iconify-icon>
+<p class="text-[10px] leading-[1.8] text-[#75644d]">你现在查看的是一份示例记录。你生成自己的总结后，这里会显示你真实的探索与对话摘录。</p>
+</div>
+<a class="shrink-0 text-[9px] font-medium text-[#8a4b35] underline decoration-[#cdb29c] underline-offset-4 hover:text-[#6f3724]" href="home.html#composer">开始自己的探索 →</a>
+</div>
+<div class="mb-7 hidden items-center justify-between gap-4 border border-[#d8bcac] bg-[#f7eae2] px-4 py-3" id="staleBanner">
+<div class="flex items-start gap-2.5">
+<iconify-icon class="mt-0.5 shrink-0 text-[14px] text-[#9b4f35]" icon="lucide:refresh-cw"></iconify-icon>
+<p class="text-[10px] leading-[1.8] text-[#7c5547]">这份记录生成后，你又继续了对话。旧记录仍然保留；回到对话页后，可以再次生成一份更新版。</p>
+</div>
+<a class="shrink-0 text-[9px] font-medium text-[#8a4b35] underline decoration-[#d1ad9b] underline-offset-4 hover:text-[#6f3724]" href="dialogue.html?continue=1" id="staleContinue">回到对话 →</a>
+</div>
+</div>
+</section>
+<div class="mx-auto max-w-[1320px] px-6 py-12 lg:px-12 lg:py-16">
+<div class="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
+<article class="min-w-0">
+<section class="scroll-mt-24" id="question">
+<div class="grid gap-5 sm:grid-cols-[80px_minmax(0,1fr)]">
+<div class="flex items-start gap-3 sm:flex-col sm:gap-2">
+<span class="font-display text-[30px] italic leading-none text-[#b08a4b]">I</span>
+<span class="mt-1 text-[8px] font-semibold tracking-[0.18em] text-[#9a9182]">THE QUESTION</span>
+</div>
+<div>
+<h2 class="font-display text-[27px] leading-[1.45] text-[#282720]">你带来的问题</h2>
+<div class="mt-5 border border-[#d4c8b5] border-l-2 border-l-[#9b4f35] bg-[#f8f3e8] px-6 py-6">
+<div class="flex gap-3">
+<span class="font-display text-[30px] leading-none text-[#b08a4b]">“</span>
+<p class="font-display text-[18px] leading-[1.85] text-[#403c33] sm:text-[20px]" id="originalQuestion"></p>
+</div>
+<div class="mt-5 flex flex-wrap items-center gap-2 border-t border-[#ded3c1] pt-4">
+<span class="text-[8px] tracking-[0.12em] text-[#9a9182]">本次选择的视角</span>
+<span class="inline-flex items-center gap-1.5 border px-2 py-1 text-[8px] font-medium" id="viewPill"></span>
+</div>
+</div>
+<div class="mt-5 flex items-start gap-3 border-l border-[#b08a4b] pl-4">
+<iconify-icon class="mt-0.5 shrink-0 text-[14px] text-[#b08a4b]" icon="lucide:search"></iconify-icon>
+<p class="text-[10px] leading-[1.85] text-[#7b7366]">
+                    这条视角的核心追问：<span class="font-display text-[11px] text-[#555047]" id="coreAskText">哪些事真正在我的掌控之内？</span>
+</p>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-14 scroll-mt-24 border-t border-[#cfc4b1] pt-8" id="path">
+<div class="grid gap-5 sm:grid-cols-[80px_minmax(0,1fr)]">
+<div class="flex items-start gap-3 sm:flex-col sm:gap-2">
+<span class="font-display text-[30px] italic leading-none text-[#b08a4b]">II</span>
+<span class="mt-1 text-[8px] font-semibold tracking-[0.18em] text-[#9a9182]">THE PATH</span>
+</div>
+<div>
+<h2 class="font-display text-[27px] leading-[1.45] text-[#282720]">这次探索的路径</h2>
+<p class="mt-2 max-w-[620px] text-[10px] leading-[1.9] text-[#8a8275]">你带着一个真实问题进来，选择了一副眼镜，并留下了自己的追问。记录只是把这条路径暂时收拢。</p>
+<div class="mt-7 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4">
+<div class="border-t border-[#cfc4b1] pt-4">
+<div class="flex items-center justify-between">
+<span class="font-display text-[12px] italic text-[#b08a4b]">01</span>
+<iconify-icon class="text-[11px] text-[#52634e]" icon="lucide:check"></iconify-icon>
+</div>
+<p class="mt-2 text-[11px] font-medium text-[#4e4b42]">提出问题</p>
+<p class="mt-1 text-[9px] leading-[1.75] text-[#91897b]">原始表述被如实保留</p>
+</div>
+<div class="border-t border-[#cfc4b1] pt-4">
+<div class="flex items-center justify-between">
+<span class="font-display text-[12px] italic text-[#b08a4b]">02</span>
+<iconify-icon class="text-[11px] text-[#52634e]" icon="lucide:check"></iconify-icon>
+</div>
+<p class="mt-2 text-[11px] font-medium text-[#4e4b42]">选择目光</p>
+<p class="mt-1 text-[9px] leading-[1.75] text-[#91897b]" id="pathViewText">斯多葛主义</p>
+</div>
+<div class="border-t border-[#b08a4b] pt-4">
+<div class="flex items-center justify-between">
+<span class="font-display text-[12px] italic text-[#b08a4b]">03</span>
+<span class="h-1.5 w-1.5 rounded-full bg-[#b08a4b]"></span>
+</div>
+<p class="mt-2 text-[11px] font-medium text-[#4e4b42]">展开对话</p>
+<p class="mt-1 text-[9px] leading-[1.75] text-[#91897b]" id="pathTurnsText">你留下了 3 轮追问</p>
+</div>
+<div class="border-t border-[#52634e] pt-4">
+<div class="flex items-center justify-between">
+<span class="font-display text-[12px] italic text-[#52634e]">04</span>
+<iconify-icon class="text-[11px] text-[#52634e]" icon="lucide:bookmark-check"></iconify-icon>
+</div>
+<p class="mt-2 text-[11px] font-medium text-[#4e4b42]">形成记录</p>
+<p class="mt-1 text-[9px] leading-[1.75] text-[#91897b]" id="pathSummaryText">记录已形成，仍可继续</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-14 scroll-mt-24 border-t border-[#cfc4b1] pt-8" id="insights">
+<div class="grid gap-5 sm:grid-cols-[80px_minmax(0,1fr)]">
+<div class="flex items-start gap-3 sm:flex-col sm:gap-2">
+<span class="font-display text-[30px] italic leading-none text-[#b08a4b]">III</span>
+<span class="mt-1 text-[8px] font-semibold tracking-[0.18em] text-[#9a9182]">INSIGHTS</span>
+</div>
+<div>
+<div class="flex flex-wrap items-end justify-between gap-3">
+<h2 class="font-display text-[27px] leading-[1.45] text-[#282720]">对话里浮现的洞见</h2>
+<span class="text-[9px] tracking-[0.1em] text-[#9a9182]"><span id="insightCount">03</span> POINTS</span>
+</div>
+<p class="mt-2 max-w-[620px] text-[10px] leading-[1.9] text-[#8a8275]">这些不是被强行总结出来的答案，而是这段对话里逐渐显出轮廓的理解。你可以同意，也可以继续反驳。</p>
+<div class="mt-6" id="insightList"></div>
+</div>
+</div>
+</section>
+<section class="mt-14 scroll-mt-24 border-t border-[#cfc4b1] pt-8" id="tensions">
+<div class="grid gap-5 sm:grid-cols-[80px_minmax(0,1fr)]">
+<div class="flex items-start gap-3 sm:flex-col sm:gap-2">
+<span class="font-display text-[30px] italic leading-none text-[#9b4f35]">IV</span>
+<span class="mt-1 text-[8px] font-semibold tracking-[0.18em] text-[#9a9182]">TENSIONS</span>
+</div>
+<div>
+<div class="flex flex-wrap items-end justify-between gap-3">
+<h2 class="font-display text-[27px] leading-[1.45] text-[#282720]">尚未解开的张力</h2>
+<span class="text-[9px] tracking-[0.1em] text-[#9a9182]"><span id="tensionCount">02</span> TENSIONS</span>
+</div>
+<p class="mt-2 max-w-[620px] text-[10px] leading-[1.9] text-[#8a8275]">真正重要的问题很少被一次性解决。下面这些矛盾，值得被保留，而不是被迅速抹平。</p>
+<div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2" id="tensionList"></div>
+</div>
+</div>
+</section>
+<section class="mt-14 scroll-mt-24 border-t border-[#cfc4b1] pt-8" id="practice">
+<div class="grid gap-5 sm:grid-cols-[80px_minmax(0,1fr)]">
+<div class="flex items-start gap-3 sm:flex-col sm:gap-2">
+<span class="font-display text-[30px] italic leading-none text-[#52634e]">V</span>
+<span class="mt-1 text-[8px] font-semibold tracking-[0.18em] text-[#9a9182]">PRACTICE</span>
+</div>
+<div>
+<div class="flex flex-wrap items-end justify-between gap-3">
+<h2 class="font-display text-[27px] leading-[1.45] text-[#282720]">可以带走的实践</h2>
+<span class="text-[9px] tracking-[0.1em] text-[#9a9182]"><span id="practiceCount">03</span> ACTIONS</span>
+</div>
+<p class="mt-2 max-w-[620px] text-[10px] leading-[1.9] text-[#8a8275]">把它们当作继续思考的起点，而不是必须完成的任务。选一个最轻的，先开始。</p>
+<div class="mt-5 border-t border-[#d8cdb9]" id="practiceList"></div>
+</div>
+</div>
+</section>
+<section class="mt-14 scroll-mt-24 border-t border-[#cfc4b1] pt-8" id="excerpts">
+<div class="grid gap-5 sm:grid-cols-[80px_minmax(0,1fr)]">
+<div class="flex items-start gap-3 sm:flex-col sm:gap-2">
+<span class="font-display text-[30px] italic leading-none text-[#b08a4b]">VI</span>
+<span class="mt-1 text-[8px] font-semibold tracking-[0.18em] text-[#9a9182]">EXCERPTS</span>
+</div>
+<div>
+<h2 class="font-display text-[27px] leading-[1.45] text-[#282720]">对话里的原话</h2>
+<p class="mt-2 max-w-[620px] text-[10px] leading-[1.9] text-[#8a8275]">保留几段原话，是为了让这份记录仍然带着当时的语气，而不只是变成一组听起来正确的结论。</p>
+<div class="mt-6 border-t border-[#d8cdb9]" id="excerptList"></div>
+</div>
+</div>
+</section>
+<div class="mt-14 flex flex-col justify-between gap-5 border-t border-[#cfc4b1] pt-7 sm:flex-row sm:items-center">
+<div class="flex items-start gap-3">
+<iconify-icon class="mt-0.5 shrink-0 text-[18px] text-[#b08a4b]" icon="lucide:compass"></iconify-icon>
+<p class="max-w-[540px] font-display text-[12px] leading-[1.85] text-[#7b7366]">这张记录不是终点。你随时可以带着新的困惑回到原处，或换一副眼镜重新看同一个问题。</p>
+</div>
+<a class="inline-flex w-fit shrink-0 items-center gap-2 bg-[#304235] px-4 py-3 text-[10px] font-medium text-[#fbf7ef] transition-colors hover:bg-[#26362b]" href="dialogue.html" id="bottomContinue">
+              继续这段对话
+              <iconify-icon class="text-[14px]" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+</div>
+</article>
+<aside class="self-start lg:sticky lg:top-24">
+<div class="relative overflow-hidden bg-[#2f4034] p-5 text-[#f8f2e5]">
+<div class="pointer-events-none absolute -right-5 -top-7 font-display text-[110px] leading-none text-[#f8f2e5]/[0.035]">“</div>
+<p class="relative text-[8px] font-semibold tracking-[0.18em] text-[#bcc7b6]">CONTINUE THE THOUGHT</p>
+<h2 class="relative mt-3 font-display text-[22px] leading-[1.5] text-[#fbf6e9]">记录已经留下，<br/>问题还在继续。</h2>
+<p class="relative mt-2.5 text-[10px] leading-[1.9] text-[#b7c1b1]">生成总结不会结束对话。你可以回到原来的位置，继续追问，或重新整理一份新的记录。</p>
+<a class="group relative mt-5 flex items-center justify-between bg-[#d4b98c] px-3.5 py-3 text-[#283529] transition-colors hover:bg-[#e0c697]" href="dialogue.html" id="sideContinue">
+<span class="text-[11px] font-medium">继续这段对话</span>
+<iconify-icon class="text-[15px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+<a class="relative mt-3 flex items-center justify-between border border-[#667866] px-3.5 py-2.5 text-[9px] text-[#dce3d7] transition-colors hover:border-[#b08a4b] hover:text-[#f1dfbc]" href="perspectives.html" id="sideChangeLens">
+              换一个视角看同一个问题
+              <iconify-icon class="text-[13px]" icon="lucide:replace"></iconify-icon>
+</a>
+<p class="relative mt-3 flex items-center gap-1.5 text-[8px] text-[#9eaa98]">
+<iconify-icon class="text-[10px]" icon="lucide:lock-keyhole"></iconify-icon>
+              对话与记录保存在浏览器本地
+            </p>
+</div>
+<div class="mt-4 border border-[#d3c7b4] bg-[#faf6ee] p-4">
+<div class="flex items-center justify-between border-b border-[#ddd3c2] pb-3">
+<p class="text-[8px] font-semibold tracking-[0.16em] text-[#8c8476]">ON THIS RECORD</p>
+<iconify-icon class="text-[13px] text-[#a29989]" icon="lucide:list"></iconify-icon>
+</div>
+<nav aria-label="记录目录" class="mt-2 flex flex-col">
+<a class="flex items-center justify-between border-b border-[#ebe3d5] py-2.5 text-[10px] text-[#6c6558] transition-colors hover:text-[#9b4f35]" href="#question">
+<span><span class="mr-2 font-display italic text-[#b08a4b]">I</span>原始问题</span>
+<iconify-icon class="text-[11px]" icon="lucide:arrow-down"></iconify-icon>
+</a>
+<a class="flex items-center justify-between border-b border-[#ebe3d5] py-2.5 text-[10px] text-[#6c6558] transition-colors hover:text-[#9b4f35]" href="#path">
+<span><span class="mr-2 font-display italic text-[#b08a4b]">II</span>探索路径</span>
+<iconify-icon class="text-[11px]" icon="lucide:arrow-down"></iconify-icon>
+</a>
+<a class="flex items-center justify-between border-b border-[#ebe3d5] py-2.5 text-[10px] text-[#6c6558] transition-colors hover:text-[#9b4f35]" href="#insights">
+<span><span class="mr-2 font-display italic text-[#b08a4b]">III</span>浮现的洞见</span>
+<iconify-icon class="text-[11px]" icon="lucide:arrow-down"></iconify-icon>
+</a>
+<a class="flex items-center justify-between border-b border-[#ebe3d5] py-2.5 text-[10px] text-[#6c6558] transition-colors hover:text-[#9b4f35]" href="#tensions">
+<span><span class="mr-2 font-display italic text-[#9b4f35]">IV</span>未解张力</span>
+<iconify-icon class="text-[11px]" icon="lucide:arrow-down"></iconify-icon>
+</a>
+<a class="flex items-center justify-between border-b border-[#ebe3d5] py-2.5 text-[10px] text-[#6c6558] transition-colors hover:text-[#9b4f35]" href="#practice">
+<span><span class="mr-2 font-display italic text-[#52634e]">V</span>下一步实践</span>
+<iconify-icon class="text-[11px]" icon="lucide:arrow-down"></iconify-icon>
+</a>
+<a class="flex items-center justify-between py-2.5 text-[10px] text-[#6c6558] transition-colors hover:text-[#9b4f35]" href="#excerpts">
+<span><span class="mr-2 font-display italic text-[#b08a4b]">VI</span>对话摘录</span>
+<iconify-icon class="text-[11px]" icon="lucide:arrow-down"></iconify-icon>
+</a>
+</nav>
+</div>
+<div class="mt-4 border border-[#d3c7b4] bg-[#faf6ee] p-4">
+<p class="text-[8px] font-semibold tracking-[0.16em] text-[#8c8476]">RECORD DETAILS</p>
+<dl class="mt-3 space-y-3">
+<div class="flex items-start justify-between gap-4 border-b border-[#ebe3d5] pb-2.5">
+<dt class="shrink-0 text-[9px] text-[#9a9182]">当前视角</dt>
+<dd class="text-right text-[9px] font-medium text-[#5f594e]" id="sideViewName">斯多葛主义</dd>
+</div>
+<div class="flex items-start justify-between gap-4 border-b border-[#ebe3d5] pb-2.5">
+<dt class="shrink-0 text-[9px] text-[#9a9182]">生成时间</dt>
+<dd class="text-right text-[9px] leading-[1.6] text-[#5f594e]" id="sideDate">2026年10月24日</dd>
+</div>
+<div class="flex items-start justify-between gap-4 border-b border-[#ebe3d5] pb-2.5">
+<dt class="shrink-0 text-[9px] text-[#9a9182]">追问轮次</dt>
+<dd class="text-right text-[9px] text-[#5f594e]" id="sideTurns">3 轮</dd>
+</div>
+<div class="flex items-start justify-between gap-4">
+<dt class="shrink-0 text-[9px] text-[#9a9182]">记录编号</dt>
+<dd class="text-right text-[8px] tracking-[0.04em] text-[#5f594e]" id="sideNo">TL-20261024-001</dd>
+</div>
+</dl>
+</div>
+<button class="mt-4 flex w-full items-center justify-center gap-2 border border-[#bdb19d] bg-transparent px-4 py-3 text-[10px] text-[#6f675a] transition-colors hover:border-[#52634e] hover:text-[#52634e]" id="copyBtn" type="button">
+<iconify-icon class="text-[13px]" icon="lucide:copy"></iconify-icon>
+<span id="copyBtnText">复制这份思考记录</span>
+</button>
+<a class="mt-3 flex items-center justify-center gap-2 text-[9px] text-[#968e80] transition-colors hover:text-[#9b4f35]" href="home.html#composer">
+            重新提出一个问题
+            <iconify-icon class="text-[11px]" icon="lucide:arrow-right"></iconify-icon>
+</a>
+</aside>
+</div>
+</div>
+</main>
+<footer class="bg-[#eee7d9]">
+<div class="mx-auto max-w-[1440px] px-6 py-9 lg:px-12">
+<div class="flex flex-col justify-between gap-5 border-b border-[#d3c8b5] pb-7 md:flex-row md:items-center">
+<div class="flex items-center gap-4">
+<span class="grid h-10 w-10 place-items-center border border-[#3a3931] font-display text-[18px]">思</span>
+<div>
+<p class="font-display text-[17px] text-[#2d2c26]">ThinkLab</p>
+<p class="mt-0.5 text-[9px] tracking-[0.2em] text-[#8a8375]">哲学思考实验室</p>
+</div>
+</div>
+<p class="font-display text-[13px] italic text-[#7b7467]">记录不是结论，是一次思考的路标。</p>
+<div class="flex flex-wrap gap-6 text-[11px] text-[#776f62]">
+<a class="transition-colors hover:text-[#9b4f35]" href="home.html">开始探索</a>
+<a class="transition-colors hover:text-[#9b4f35]" href="home.html#method">思考方法</a>
+<a class="transition-colors hover:text-[#9b4f35]" href="summary.html">我的思考</a>
+</div>
+</div>
+<div class="flex flex-col justify-between gap-3 pt-5 text-[9px] tracking-[0.06em] text-[#978f81] sm:flex-row">
+<p>© 2026 ThinkLab. A quiet place for difficult questions.</p>
+<p>本记录来自原型中的预设对话逻辑，仅用于产品体验演示。</p>
+</div>
+</div>
+</footer>
+<script>
+    const STORAGE_KEY = "thinklab_state_v1";
+    const DEFAULT_QUESTION = "我总在担心自己做得不够好，如何面对这种持续的焦虑？";
+
+    const VIEW_META = {
+      stoic: {
+        name: "斯多葛主义",
+        accent: "#43563f",
+        soft: "#e8ece0",
+        line: "#bfc9b8"
+      },
+      existential: {
+        name: "存在主义",
+        accent: "#9b4f35",
+        soft: "#f4e9e1",
+        line: "#d8bcac"
+      },
+      taoist: {
+        name: "道家 · 庄子",
+        accent: "#4c6065",
+        soft: "#eaf0ef",
+        line: "#afc1c2"
+      }
+    };
+
+    function loadSavedState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function createDemoRecord() {
+      const now = new Date();
+      const earlier = function (minutes) {
+        return new Date(now.getTime() - minutes * 60 * 1000).toISOString();
+      };
+      return {
+        version: 1,
+        question: DEFAULT_QUESTION,
+        view: "stoic",
+        viewName: "斯多葛主义",
+        en: "STOICISM",
+        coreAsk: "哪些事真正在我的掌控之内？",
+        tagline: "关注可控之事，安放不可控之事",
+        turns: 3,
+        startedAt: earlier(24),
+        generatedAt: now.toISOString(),
+        lastUser: "如果结果不理想，我是不是就证明了自己不够好？",
+        insights: [
+          "区分「事实」与「判断」：让你疲惫的往往不是事情本身，而是“我不够好”这个不断追加的解释。",
+          "把行动收回可控范围：你无法一次决定所有结果，但可以选择今天愿意负责的一小步。",
+          "允许结果保有不确定性：认真地做，同时不把自我价值押在单一结果上。"
+        ],
+        tensions: [
+          "接纳与改变之间：哪些处境应当被承受，哪些又值得被改变？斯多葛主义并不主张对一切逆来顺受。",
+          "情绪并不是判断：即使已经知道道理，身体仍需要时间慢慢跟上。清醒与感受可以同时存在。"
+        ],
+        practices: [
+          "写下今天最困扰你的一件事，分成「我能影响」与「我不能决定」两栏。",
+          "为可控的那一栏选择一个 20 分钟内能完成的动作。",
+          "睡前用一句话记录：今天我把注意力交给了什么？"
+        ],
+        excerpts: [
+          {
+            role: "agent",
+            time: earlier(22),
+            text: "让我们不安的往往不是事情本身，而是我们对事情的看法。我们可以先不急着解决焦虑，只做一次区分：在这件事里，哪一部分由你决定，哪一部分并不由你决定？"
+          },
+          {
+            role: "user",
+            time: earlier(18),
+            text: "我最担心的是，别人会发现我其实没有那么好。每次交完东西，我都会反复想自己哪里做得不够。"
+          },
+          {
+            role: "agent",
+            time: earlier(15),
+            text: "这里有一部分是事实，还有一部分是你对事实的解释。可以试着问：如果去掉“这说明我不够好”这句话，剩下的那件事，具体是什么？"
+          },
+          {
+            role: "user",
+            time: earlier(8),
+            text: "如果结果不理想，我是不是就证明了自己不够好？"
+          },
+          {
+            role: "agent",
+            time: earlier(6),
+            text: "这个“证明”值得停下来看看。结果可以说明一件事完成得如何，但它不必成为对整个人价值的判决。"
+          }
+        ]
+      };
+    }
+
+    function normalizeRecord(raw, demo) {
+      const fallback = createDemoRecord();
+      const viewKey = raw && VIEW_META[raw.view] ? raw.view : "stoic";
+      const meta = VIEW_META[viewKey];
+      const turns = Number(raw && raw.turns);
+      return {
+        version: 1,
+        question: raw && raw.question ? String(raw.question) : fallback.question,
+        view: viewKey,
+        viewName: raw && raw.viewName ? String(raw.viewName) : meta.name,
+        en: raw && raw.en ? String(raw.en) : fallback.en,
+        coreAsk: raw && raw.coreAsk ? String(raw.coreAsk) : fallback.coreAsk,
+        tagline: raw && raw.tagline ? String(raw.tagline) : fallback.tagline,
+        turns: Number.isFinite(turns) ? turns : 0,
+        startedAt: raw && raw.startedAt ? raw.startedAt : fallback.startedAt,
+        generatedAt: raw && raw.generatedAt ? raw.generatedAt : new Date().toISOString(),
+        lastUser: raw && raw.lastUser ? String(raw.lastUser) : "",
+        insights: raw && Array.isArray(raw.insights) && raw.insights.length ? raw.insights.slice() : fallback.insights.slice(),
+        tensions: raw && Array.isArray(raw.tensions) && raw.tensions.length ? raw.tensions.slice() : fallback.tensions.slice(),
+        practices: raw && Array.isArray(raw.practices) && raw.practices.length ? raw.practices.slice() : fallback.practices.slice(),
+        excerpts: raw && Array.isArray(raw.excerpts) && raw.excerpts.length ? raw.excerpts.slice() : fallback.excerpts.slice(),
+        isDemo: demo
+      };
+    }
+
+    const savedState = loadSavedState();
+    const hasLiveSummary = Boolean(savedState && savedState.summary);
+    const record = hasLiveSummary
+      ? normalizeRecord(savedState.summary, false)
+      : normalizeRecord(createDemoRecord(), true);
+    const isDemo = !hasLiveSummary;
+
+    const titleQuestion = document.getElementById("titleQuestion");
+    const sourceBadge = document.getElementById("sourceBadge");
+    const recordMeta = document.getElementById("recordMeta");
+    const headerViewName = document.getElementById("headerViewName");
+    const originalQuestion = document.getElementById("originalQuestion");
+    const viewPill = document.getElementById("viewPill");
+    const coreAskText = document.getElementById("coreAskText");
+    const pathViewText = document.getElementById("pathViewText");
+    const pathTurnsText = document.getElementById("pathTurnsText");
+    const pathSummaryText = document.getElementById("pathSummaryText");
+    const insightList = document.getElementById("insightList");
+    const tensionList = document.getElementById("tensionList");
+    const practiceList = document.getElementById("practiceList");
+    const excerptList = document.getElementById("excerptList");
+    const insightCount = document.getElementById("insightCount");
+    const tensionCount = document.getElementById("tensionCount");
+    const practiceCount = document.getElementById("practiceCount");
+    const recordNo = document.getElementById("recordNo");
+    const sideNo = document.getElementById("sideNo");
+    const sideViewName = document.getElementById("sideViewName");
+    const sideDate = document.getElementById("sideDate");
+    const sideTurns = document.getElementById("sideTurns");
+    const demoBanner = document.getElementById("demoBanner");
+    const staleBanner = document.getElementById("staleBanner");
+    const heroContinue = document.getElementById("heroContinue");
+    const sideContinue = document.getElementById("sideContinue");
+    const bottomContinue = document.getElementById("bottomContinue");
+    const sideChangeLens = document.getElementById("sideChangeLens");
+    const staleContinue = document.getElementById("staleContinue");
+    const copyBtn = document.getElementById("copyBtn");
+    const copyBtnText = document.getElementById("copyBtnText");
+
+    function formatDate(iso, includeTime) {
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) {
+        return "时间未知";
+      }
+      const dateText = new Intl.DateTimeFormat("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }).format(date);
+      if (!includeTime) {
+        return dateText;
+      }
+      const timeText = new Intl.DateTimeFormat("zh-CN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).format(date);
+      return dateText + " " + timeText;
+    }
+
+    function formatClock(iso) {
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) {
+        return "";
+      }
+      return new Intl.DateTimeFormat("zh-CN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).format(date);
+    }
+
+    function makeRecordNo(iso, question) {
+      const date = new Date(iso);
+      const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
+      const year = String(safeDate.getFullYear());
+      const month = String(safeDate.getMonth() + 1).padStart(2, "0");
+      const day = String(safeDate.getDate()).padStart(2, "0");
+      let hash = 0;
+      for (let i = 0; i < question.length; i += 1) {
+        hash = (hash * 31 + question.charCodeAt(i)) % 997;
+      }
+      return "TL-" + year + month + day + "-" + String(hash).padStart(3, "0");
+    }
+
+    function splitText(text) {
+      const value = String(text || "");
+      const colonIndex = value.indexOf("：");
+      if (colonIndex > 0) {
+        return {
+          title: value.slice(0, colonIndex),
+          body: value.slice(colonIndex + 1).trim()
+        };
+      }
+      return {
+        title: "",
+        body: value
+      };
+    }
+
+    function showBanner(element) {
+      element.classList.remove("hidden");
+      element.classList.add("flex");
+    }
+
+    function hideBanner(element) {
+      element.classList.add("hidden");
+      element.classList.remove("flex");
+    }
+
+    function renderHero() {
+      const meta = VIEW_META[record.view];
+      const recordNumber = makeRecordNo(record.generatedAt, record.question);
+      const dateText = formatDate(record.generatedAt, true);
+
+      document.title = "思考记录 · " + record.question.slice(0, 24) + " · ThinkLab";
+      titleQuestion.textContent = record.question;
+      originalQuestion.textContent = record.question;
+      coreAskText.textContent = record.coreAsk;
+      headerViewName.textContent = record.viewName;
+      pathViewText.textContent = record.viewName;
+      pathTurnsText.textContent = record.turns > 0 ? "你留下了 " + record.turns + " 轮追问" : "你还没有展开追问";
+      pathSummaryText.textContent = "记录已形成，仍可继续";
+      sideViewName.textContent = record.viewName;
+      sideDate.textContent = formatDate(record.generatedAt, false);
+      sideTurns.textContent = record.turns + " 轮";
+      sideNo.textContent = recordNumber;
+      recordNo.textContent = recordNumber;
+
+      recordMeta.textContent = "生成于 " + dateText + " · " + record.viewName + " · " + record.turns + " 轮追问";
+      viewPill.textContent = record.viewName;
+      viewPill.style.color = meta.accent;
+      viewPill.style.backgroundColor = meta.soft;
+      viewPill.style.borderColor = meta.line;
+
+      if (isDemo) {
+        sourceBadge.className = "inline-flex items-center gap-1.5 border border-[#d9c6a7] bg-[#f6eddd] px-2 py-1 text-[8px] text-[#8a6a3d]";
+        sourceBadge.innerHTML = '<iconify-icon icon="lucide:flask-conical" class="text-[10px]"></iconify-icon><span>示例记录</span>';
+        showBanner(demoBanner);
+      } else {
+        sourceBadge.className = "inline-flex items-center gap-1.5 border border-[#c8d2c1] bg-[#eef1e8] px-2 py-1 text-[8px] text-[#52634e]";
+        sourceBadge.innerHTML = '<iconify-icon icon="lucide:check" class="text-[10px]"></iconify-icon><span>来自你的对话</span>';
+        hideBanner(demoBanner);
+      }
+
+      if (!isDemo && savedState && savedState.summaryStale) {
+        showBanner(staleBanner);
+      } else {
+        hideBanner(staleBanner);
+      }
+
+      const continueHref = isDemo
+        ? "dialogue.html?q=" + encodeURIComponent(record.question) + "&view=" + encodeURIComponent(record.view)
+        : "dialogue.html?continue=1";
+      heroContinue.href = continueHref;
+      sideContinue.href = continueHref;
+      bottomContinue.href = continueHref;
+      staleContinue.href = continueHref;
+      sideChangeLens.href = "perspectives.html?q=" + encodeURIComponent(record.question);
+    }
+
+    function renderInsights() {
+      insightList.innerHTML = "";
+      insightCount.textContent = String(record.insights.length).padStart(2, "0");
+      record.insights.forEach(function (insight, index) {
+        const split = splitText(insight);
+        const item = document.createElement("div");
+        item.className = "grid grid-cols-[42px_minmax(0,1fr)] gap-4 border-t border-[#d8cdb9] py-6";
+
+        const number = document.createElement("span");
+        number.className = "font-display text-[13px] italic leading-none text-[#b08a4b]";
+        number.textContent = String(index + 1).padStart(2, "0");
+
+        const body = document.createElement("div");
+        if (split.title) {
+          const heading = document.createElement("h3");
+          heading.className = "font-display text-[19px] leading-[1.55] text-[#343129] sm:text-[21px]";
+          heading.textContent = split.title;
+          body.appendChild(heading);
+        }
+        const paragraph = document.createElement("p");
+        paragraph.className = (split.title ? "mt-2 " : "") + "font-display text-[13.5px] leading-[1.95] text-[#71695c]";
+        paragraph.textContent = split.body;
+        body.appendChild(paragraph);
+
+        item.appendChild(number);
+        item.appendChild(body);
+        insightList.appendChild(item);
+      });
+    }
+
+    function renderTensions() {
+      tensionList.innerHTML = "";
+      tensionCount.textContent = String(record.tensions.length).padStart(2, "0");
+      record.tensions.forEach(function (tension, index) {
+        const split = splitText(tension);
+        const card = document.createElement("div");
+        card.className = "relative border border-[#d8c8b8] bg-[#f6ede6] p-5";
+        const top = document.createElement("div");
+        top.className = "flex items-center justify-between border-b border-[#e2d1c5] pb-3";
+        const label = document.createElement("span");
+        label.className = "text-[8px] font-semibold tracking-[0.14em] text-[#9b4f35]";
+        label.textContent = "TENSION " + String(index + 1).padStart(2, "0");
+        const icon = document.createElement("iconify-icon");
+        icon.setAttribute("icon", "lucide:git-fork");
+        icon.className = "text-[14px] text-[#b37b66]";
+        top.appendChild(label);
+        top.appendChild(icon);
+        const heading = document.createElement("h3");
+        heading.className = "mt-4 font-display text-[16px] leading-[1.6] text-[#573c31]";
+        heading.textContent = split.title || "一处尚未解开的矛盾";
+        const body = document.createElement("p");
+        body.className = "mt-2 text-[11px] leading-[1.9] text-[#7c5f53]";
+        body.textContent = split.body;
+        card.appendChild(top);
+        card.appendChild(heading);
+        card.appendChild(body);
+        tensionList.appendChild(card);
+      });
+    }
+
+    function renderPractices() {
+      practiceList.innerHTML = "";
+      practiceCount.textContent = String(record.practices.length).padStart(2, "0");
+      record.practices.forEach(function (practice, index) {
+        const label = document.createElement("label");
+        label.className = "flex cursor-pointer items-start gap-3 border-b border-[#d8cdb9] py-4";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "peer mt-1 h-4 w-4 shrink-0 accent-[#52634e]";
+        const number = document.createElement("span");
+        number.className = "mt-0.5 shrink-0 font-display text-[10px] italic text-[#b08a4b]";
+        number.textContent = String(index + 1).padStart(2, "0");
+        const text = document.createElement("span");
+        text.className = "font-display text-[13.5px] leading-[1.9] text-[#5e594f] transition-colors peer-checked:text-[#a19889] peer-checked:line-through";
+        text.textContent = practice;
+        label.appendChild(checkbox);
+        label.appendChild(number);
+        label.appendChild(text);
+        practiceList.appendChild(label);
+      });
+
+      const note = document.createElement("p");
+      note.className = "mt-3 flex items-center gap-2 text-[9px] text-[#9a9182]";
+      note.innerHTML = '<iconify-icon icon="lucide:mouse-pointer-2" class="text-[11px]"></iconify-icon><span>不必全部完成。选一个最轻的，先开始。</span>';
+      practiceList.appendChild(note);
+    }
+
+    function renderExcerpts() {
+      excerptList.innerHTML = "";
+      const excerpts = record.excerpts.slice(-5);
+      if (!excerpts.length) {
+        const empty = document.createElement("p");
+        empty.className = "border-t border-[#d8cdb9] py-6 text-[11px] text-[#91897b]";
+        empty.textContent = "这次探索还没有留下可摘录的原话。";
+        excerptList.appendChild(empty);
+        return;
+      }
+
+      excerpts.forEach(function (excerpt) {
+        const item = document.createElement("div");
+        item.className = "border-t border-[#d8cdb9] py-5";
+
+        const metaRow = document.createElement("div");
+        metaRow.className = "flex items-center gap-2 text-[8px]";
+        const badge = document.createElement("span");
+        const isUser = excerpt.role === "user";
+        badge.className = isUser
+          ? "border border-[#d2b7a8] bg-[#f5e8e0] px-2 py-0.5 text-[#8a4b35]"
+          : "border border-[#c8d2c1] bg-[#edf1e8] px-2 py-0.5 text-[#52634e]";
+        badge.textContent = isUser ? "你" : "哲学 Agent";
+        const time = document.createElement("span");
+        time.className = "text-[#a19889]";
+        time.textContent = excerpt.time ? formatClock(excerpt.time) : "";
+        metaRow.appendChild(badge);
+        metaRow.appendChild(time);
+
+        const quote = document.createElement("p");
+        quote.className = "mt-3 border-l border-[#d3c6b2] pl-4 font-display text-[13px] leading-[1.95] text-[#5e594f]";
+        quote.textContent = "“" + excerpt.text + "”";
+
+        item.appendChild(metaRow);
+        item.appendChild(quote);
+        excerptList.appendChild(item);
+      });
+    }
+
+    function getPlainText() {
+      const lines = [];
+      lines.push("ThinkLab · 思考记录");
+      lines.push("记录编号：" + makeRecordNo(record.generatedAt, record.question));
+      lines.push("问题：" + record.question);
+      lines.push("视角：" + record.viewName + " · " + record.coreAsk);
+      lines.push("生成时间：" + formatDate(record.generatedAt, true));
+      lines.push("");
+      lines.push("洞见");
+      record.insights.forEach(function (insight, index) {
+        lines.push((index + 1) + ". " + insight);
+      });
+      lines.push("");
+      lines.push("尚未解开的张力");
+      record.tensions.forEach(function (tension, index) {
+        lines.push((index + 1) + ". " + tension);
+      });
+      lines.push("");
+      lines.push("可以带走的实践");
+      record.practices.forEach(function (practice, index) {
+        lines.push((index + 1) + ". " + practice);
+      });
+      lines.push("");
+      lines.push("对话摘录");
+      record.excerpts.slice(-5).forEach(function (excerpt) {
+        lines.push((excerpt.role === "user" ? "你：" : "哲学 Agent：") + excerpt.text);
+      });
+      lines.push("");
+      lines.push("记录不是结论，而是一张继续思考的地图。");
+      return lines.join("\n");
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.top = "-1000px";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (error) {
+        copied = false;
+      }
+      document.body.removeChild(textarea);
+      return copied;
+    }
+
+    function showCopyFeedback(success) {
+      copyBtnText.textContent = success ? "已复制到剪贴板" : "复制失败，请手动选择";
+      copyBtn.classList.remove("copy-feedback");
+      void copyBtn.offsetWidth;
+      copyBtn.classList.add("copy-feedback");
+      window.setTimeout(function () {
+        copyBtnText.textContent = "复制这份思考记录";
+      }, 2200);
+    }
+
+    copyBtn.addEventListener("click", async function () {
+      const text = getPlainText();
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          showCopyFeedback(true);
+        } else {
+          showCopyFeedback(fallbackCopy(text));
+        }
+      } catch (error) {
+        showCopyFeedback(fallbackCopy(text));
+      }
+    });
+
+    renderHero();
+    renderInsights();
+    renderTensions();
+    renderPractices();
+    renderExcerpts();
+  </script>
+</body>
+</html>

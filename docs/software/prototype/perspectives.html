@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>选择目光 · ThinkLab</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+    :root {
+      --paper: #f4efe4;
+      --paper-light: #fbf7ef;
+      --ink: #22211d;
+      --muted: #716c60;
+      --line: #d8cdb9;
+      --green: #304235;
+      --green-soft: #e8ece0;
+      --rust: #9b4f35;
+      --gold: #b08a4b;
+      --serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+      --sans: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      color: var(--ink);
+      font-family: var(--sans);
+      background-color: var(--paper);
+      background-image:
+        radial-gradient(rgba(58, 49, 36, 0.045) 0.65px, transparent 0.65px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 42%);
+      background-size: 6px 6px, 100% 100%;
+    }
+    .font-display {
+      font-family: var(--serif);
+    }
+    .no-scrollbar {
+      scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .fade-up {
+      animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .fade-up-delay {
+      animation: fadeUp 0.8s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .lens-card {
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .lens-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 10px 12px 0 rgba(48, 66, 53, 0.07);
+    }
+    ::selection {
+      color: #fffaf0;
+      background: #566b52;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up,
+      .fade-up-delay {
+        animation: none;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+      .lens-card:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+<header class="sticky top-0 z-40 border-b border-[#d8cdb9] bg-[#f4efe4]/90 backdrop-blur-md">
+<div class="mx-auto flex h-[78px] max-w-[1440px] items-center justify-between px-6 lg:px-12">
+<a aria-label="ThinkLab 首页" class="group flex items-center gap-3.5" href="home.html">
+<span class="relative grid h-11 w-11 place-items-center border border-[#2f2e28] bg-[#fbf7ef]">
+<span class="font-display text-[22px] leading-none text-[#2f2e28]">思</span>
+<span class="absolute -bottom-[3px] -right-[3px] h-2.5 w-2.5 bg-[#9b4f35]"></span>
+</span>
+<span class="flex flex-col">
+<span class="font-display text-[22px] font-semibold tracking-[0.01em] text-[#24231e]">ThinkLab</span>
+<span class="mt-0.5 text-[9px] font-medium tracking-[0.26em] text-[#797264]">哲学思考实验室</span>
+</span>
+</a>
+<nav aria-label="主导航" class="hidden items-center gap-9 md:flex">
+<a class="relative py-2 text-[13px] font-medium text-[#25241f]" href="home.html">
+          开始探索
+          <span class="absolute inset-x-0 -bottom-px mx-auto h-px w-5 bg-[#9b4f35]"></span>
+</a>
+<a class="py-2 text-[13px] text-[#777064] transition-colors hover:text-[#25241f]" href="home.html#method">思考方法</a>
+<a class="py-2 text-[13px] text-[#777064] transition-colors hover:text-[#25241f]" href="summary.html">我的思考</a>
+</nav>
+<div class="hidden items-center gap-2 text-[10px] tracking-[0.14em] text-[#8b8375] sm:flex">
+<span class="h-1.5 w-1.5 rounded-full bg-[#b08a4b]"></span>
+        STEP 02 / 04
+      </div>
+</div>
+</header>
+<main>
+<section class="border-b border-[#d8cdb9]">
+<div class="mx-auto max-w-[1360px] px-6 pb-10 pt-8 lg:px-12 lg:pb-12">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#d8cdb9] pb-5">
+<div class="flex items-center gap-3 text-[10px] tracking-[0.12em] text-[#8c8476]">
+<a class="transition-colors hover:text-[#9b4f35]" href="home.html">THINKLAB</a>
+<span class="text-[#b8ad9b]">/</span>
+<span class="text-[#4b4a42]">选择目光</span>
+</div>
+<a class="inline-flex items-center gap-2 text-[11px] text-[#756e61] transition-colors hover:text-[#9b4f35]" href="home.html#composer">
+<iconify-icon class="text-[14px]" icon="lucide:pen-line"></iconify-icon>
+            修改我的问题
+          </a>
+</div>
+<div class="mt-7 grid grid-cols-2 gap-0 border border-[#cec3b0] bg-[#f8f3e9] sm:grid-cols-4">
+<div class="flex items-center gap-3 border-b border-r border-[#d8cdb9] px-4 py-3 sm:border-b-0">
+<span class="grid h-6 w-6 place-items-center rounded-full border border-[#b7ad9b] font-display text-[10px] text-[#7c7568]">01</span>
+<span class="text-[11px] text-[#7c7568]">提出问题</span>
+<iconify-icon class="ml-auto text-[13px] text-[#52634e]" icon="lucide:check"></iconify-icon>
+</div>
+<div class="flex items-center gap-3 border-b border-[#d8cdb9] px-4 py-3 sm:border-b-0 sm:border-r">
+<span class="grid h-6 w-6 place-items-center rounded-full bg-[#304235] font-display text-[10px] text-[#fbf7ef]">02</span>
+<span class="text-[11px] font-semibold text-[#304235]">选择目光</span>
+<span class="ml-auto h-1.5 w-1.5 rounded-full bg-[#9b4f35]"></span>
+</div>
+<div class="flex items-center gap-3 border-r border-[#d8cdb9] px-4 py-3">
+<span class="grid h-6 w-6 place-items-center rounded-full border border-[#d3c8b6] font-display text-[10px] text-[#a09686]">03</span>
+<span class="text-[11px] text-[#9a9284]">展开对话</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3">
+<span class="grid h-6 w-6 place-items-center rounded-full border border-[#d3c8b6] font-display text-[10px] text-[#a09686]">04</span>
+<span class="text-[11px] text-[#9a9284]">形成记录</span>
+</div>
+</div>
+<div class="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+<div class="fade-up lg:pt-4">
+<p class="mb-5 flex items-center gap-3 text-[10px] font-semibold tracking-[0.22em] text-[#8a4b35]">
+<span class="h-px w-7 bg-[#9b4f35]"></span>
+              THREE WAYS OF SEEING
+            </p>
+<h1 class="font-display text-[43px] leading-[1.3] tracking-[-0.03em] text-[#24231e] sm:text-[56px]">
+              同一个问题，<br/>
+              三种不同的<span class="text-[#9b4f35]">光。</span>
+</h1>
+<p class="mt-6 max-w-[520px] font-display text-[15px] leading-[1.95] text-[#6e675b]">
+              下面不是三个“正确答案”，而是三种理解处境的入口。它们会把你带向不同的追问，也让你看见自己更愿意站在哪里。
+            </p>
+<div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] tracking-[0.08em] text-[#8b8375]">
+<span class="inline-flex items-center gap-2">
+<iconify-icon class="text-[13px]" icon="lucide:mouse-pointer-2"></iconify-icon>
+                选择一个视角
+              </span>
+<span class="inline-flex items-center gap-2">
+<iconify-icon class="text-[13px]" icon="lucide:messages-square"></iconify-icon>
+                进入专属对话
+              </span>
+<span class="inline-flex items-center gap-2">
+<iconify-icon class="text-[13px]" icon="lucide:replace"></iconify-icon>
+                随时可以换路
+              </span>
+</div>
+</div>
+<div class="fade-up-delay relative">
+<div class="absolute -left-3 top-5 h-[calc(100%-40px)] w-px bg-[#b08a4b]/50"></div>
+<div class="border border-[#304235] bg-[#304235] p-7 text-[#f5efe2] shadow-[10px_12px_0_0_rgba(155,79,53,0.1)] sm:p-9">
+<div class="flex items-center justify-between border-b border-[#5c6c5c] pb-4">
+<span class="inline-flex items-center gap-2 text-[9px] font-semibold tracking-[0.2em] text-[#c7d1c1]">
+<span class="h-1.5 w-1.5 rounded-full bg-[#b08a4b]"></span>
+                  YOUR QUESTION
+                </span>
+<span class="font-display text-[12px] italic text-[#a4b09e]">01</span>
+</div>
+<div class="mt-6 flex gap-4">
+<span class="mt-1 font-display text-[34px] leading-none text-[#b08a4b]">“</span>
+<p class="font-display text-[22px] leading-[1.7] tracking-[0.005em] text-[#fbf7ef] sm:text-[25px]" id="questionText"></p>
+</div>
+<div class="mt-8 flex items-center justify-between border-t border-[#5c6c5c] pt-4">
+<span class="text-[10px] tracking-[0.12em] text-[#a8b4a3]">问题已被保留</span>
+<span class="inline-flex items-center gap-2 text-[10px] text-[#d9c7a8]">
+<iconify-icon class="text-[13px]" icon="lucide:check"></iconify-icon>
+                  READY
+                </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="border-b border-[#d8cdb9] bg-[#f8f3e9]">
+<div class="mx-auto max-w-[1360px] px-6 py-6 lg:px-12">
+<div class="flex flex-col gap-4 border-l-2 border-[#b08a4b] pl-5 sm:flex-row sm:items-start sm:gap-7">
+<div class="flex shrink-0 items-center gap-2 text-[9px] font-semibold tracking-[0.18em] text-[#8a4b35]">
+<iconify-icon class="text-[15px]" icon="lucide:sparkles"></iconify-icon>
+            AGENT'S READING
+          </div>
+<p class="max-w-[970px] font-display text-[14px] leading-[1.9] text-[#5f594e]" id="readingText"></p>
+</div>
+</div>
+</section>
+<section class="border-b border-[#d8cdb9]">
+<div class="mx-auto max-w-[1360px] px-6 py-14 lg:px-12 lg:py-20">
+<div class="mb-8 flex flex-wrap items-end justify-between gap-5">
+<div>
+<p class="mb-3 text-[10px] font-semibold tracking-[0.2em] text-[#8a8375]">CHOOSE A LENS</p>
+<h2 class="font-display text-[31px] leading-[1.4] text-[#282720] sm:text-[38px]">为你浮现的三种目光</h2>
+</div>
+<p class="max-w-[380px] text-[11px] leading-[1.9] text-[#8a8375]">不必选择“最正确”的那一个。选择你此刻最愿意借用、也最可能带来新看见的那一个。</p>
+</div>
+<div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+<article class="lens-card relative flex flex-col overflow-hidden border border-[#bfc9b8] bg-[#eff1e8] p-6 sm:p-7">
+<div class="pointer-events-none absolute -right-1 top-1 font-display text-[98px] leading-none text-[#43563f]/[0.07]">01</div>
+<div class="relative flex items-start justify-between">
+<span class="grid h-12 w-12 place-items-center rounded-full border border-[#a9b8a3] bg-[#e3e9db] text-[#43563f]">
+<iconify-icon class="text-[22px]" icon="lucide:columns-3"></iconify-icon>
+</span>
+<div class="text-right">
+<p class="text-[9px] font-semibold tracking-[0.19em] text-[#52634e]">STOICISM</p>
+<p class="mt-1 font-display text-[12px] italic text-[#7d8c78]">LENS I</p>
+</div>
+</div>
+<div class="relative mt-8 border-b border-[#c8d1c1] pb-7">
+<p class="text-[10px] tracking-[0.13em] text-[#73806e]">它首先会问</p>
+<h3 class="mt-3 font-display text-[27px] leading-[1.5] tracking-[-0.01em] text-[#2a392c] sm:text-[30px]">
+                哪些事，<br/>真正在我的掌控之内？
+              </h3>
+<p class="mt-4 text-[12px] leading-[1.95] text-[#667061]">
+                它会把注意力从不可控的结果收回来，放回判断、选择与当下能完成的行动。
+              </p>
+</div>
+<div class="relative mt-5 flex-1">
+<figure class="border-l border-[#9eae99] pl-4">
+<blockquote class="font-display text-[13px] leading-[1.8] text-[#5b6858]">“让我们不安的，不是事情本身，而是我们对事情的看法。”</blockquote>
+<figcaption class="mt-2 text-[9px] tracking-[0.12em] text-[#899583]">爱比克泰德</figcaption>
+</figure>
+<div class="mt-6 grid grid-cols-2 gap-3 border-t border-[#cbd4c5] pt-5">
+<div>
+<p class="text-[9px] tracking-[0.1em] text-[#8a9584]">适合当你</p>
+<p class="mt-1.5 text-[11px] leading-[1.75] text-[#5d685a]">被结果、评价或不可改变的事实反复消耗</p>
+</div>
+<div>
+<p class="text-[9px] tracking-[0.1em] text-[#8a9584]">思想线索</p>
+<p class="mt-1.5 text-[11px] leading-[1.75] text-[#5d685a]">马可·奥勒留<br/>爱比克泰德</p>
+</div>
+</div>
+</div>
+<a class="group relative mt-7 flex items-center justify-between border border-[#52634e] bg-[#52634e] px-4 py-3.5 text-[#f7f3e8] transition-colors hover:bg-[#43563f]" data-view="stoic" href="#">
+<span class="text-[12px] font-medium tracking-[0.03em]">借这个视角继续</span>
+<iconify-icon class="text-[17px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+</article>
+<article class="lens-card relative flex flex-col overflow-hidden border border-[#d8bcac] bg-[#f4e9e1] p-6 sm:p-7">
+<div class="pointer-events-none absolute -right-1 top-1 font-display text-[98px] leading-none text-[#9b4f35]/[0.07]">02</div>
+<div class="relative flex items-start justify-between">
+<span class="grid h-12 w-12 place-items-center rounded-full border border-[#d1b4a4] bg-[#eedacf] text-[#9b4f35]">
+<iconify-icon class="text-[22px]" icon="lucide:compass"></iconify-icon>
+</span>
+<div class="text-right">
+<p class="text-[9px] font-semibold tracking-[0.19em] text-[#9b4f35]">EXISTENTIALISM</p>
+<p class="mt-1 font-display text-[12px] italic text-[#a67c6c]">LENS II</p>
+</div>
+</div>
+<div class="relative mt-8 border-b border-[#dfc7bb] pb-7">
+<p class="text-[10px] tracking-[0.13em] text-[#9a7464]">它首先会问</p>
+<h3 class="mt-3 font-display text-[27px] leading-[1.5] tracking-[-0.01em] text-[#492d25] sm:text-[30px]">
+                如果没有任何<br/>预设答案，你想如何选择？
+              </h3>
+<p class="mt-4 text-[12px] leading-[1.95] text-[#7b5e52]">
+                它不急着消除你的不安，而会追问：这份不安，是否说明某个价值正在要求你承担选择。
+              </p>
+</div>
+<div class="relative mt-5 flex-1">
+<figure class="border-l border-[#cfa99a] pl-4">
+<blockquote class="font-display text-[13px] leading-[1.8] text-[#6f4c3e]">“人被判定为自由。选择并不轻松，因为我们必须为自己赋予意义。”</blockquote>
+<figcaption class="mt-2 text-[9px] tracking-[0.12em] text-[#a48272]">让-保罗·萨特</figcaption>
+</figure>
+<div class="mt-6 grid grid-cols-2 gap-3 border-t border-[#e0c9bd] pt-5">
+<div>
+<p class="text-[9px] tracking-[0.1em] text-[#a58475]">适合当你</p>
+<p class="mt-1.5 text-[11px] leading-[1.75] text-[#795b4e]">在两条路之间犹疑，或觉得生活不像自己的</p>
+</div>
+<div>
+<p class="text-[9px] tracking-[0.1em] text-[#a58475]">思想线索</p>
+<p class="mt-1.5 text-[11px] leading-[1.75] text-[#795b4e]">萨特<br/>加缪 · 海德格尔</p>
+</div>
+</div>
+</div>
+<a class="group relative mt-7 flex items-center justify-between border border-[#9b4f35] bg-[#9b4f35] px-4 py-3.5 text-[#fff8f1] transition-colors hover:bg-[#86422c]" data-view="existential" href="#">
+<span class="text-[12px] font-medium tracking-[0.03em]">借这个视角继续</span>
+<iconify-icon class="text-[17px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+</article>
+<article class="lens-card relative flex flex-col overflow-hidden border border-[#afc1c2] bg-[#eaf0ef] p-6 sm:p-7">
+<div class="pointer-events-none absolute -right-1 top-1 font-display text-[98px] leading-none text-[#4c6065]/[0.07]">03</div>
+<div class="relative flex items-start justify-between">
+<span class="grid h-12 w-12 place-items-center rounded-full border border-[#abc0c0] bg-[#dce8e7] text-[#4c6065]">
+<iconify-icon class="text-[22px]" icon="lucide:waves"></iconify-icon>
+</span>
+<div class="text-right">
+<p class="text-[9px] font-semibold tracking-[0.19em] text-[#4c6065]">DAOISM</p>
+<p class="mt-1 font-display text-[12px] italic text-[#7d9193]">LENS III</p>
+</div>
+</div>
+<div class="relative mt-8 border-b border-[#c7d6d6] pb-7">
+<p class="text-[10px] tracking-[0.13em] text-[#6d8587]">它首先会问</p>
+<h3 class="mt-3 font-display text-[27px] leading-[1.5] tracking-[-0.01em] text-[#2f4448] sm:text-[30px]">
+                如果不再对抗，<br/>事情会如何自然展开？
+              </h3>
+<p class="mt-4 text-[12px] leading-[1.95] text-[#607477]">
+                它会松开你对固定答案的执取，让你先辨认事情的纹理、条件与真正值得用力的地方。
+              </p>
+</div>
+<div class="relative mt-5 flex-1">
+<figure class="border-l border-[#a4b9ba] pl-4">
+<blockquote class="font-display text-[13px] leading-[1.8] text-[#52696c]">“相濡以沫，不如相忘于江湖。”有时松开执取，才看见更大的水势。</blockquote>
+<figcaption class="mt-2 text-[9px] tracking-[0.12em] text-[#839799]">庄子 · 大宗师</figcaption>
+</figure>
+<div class="mt-6 grid grid-cols-2 gap-3 border-t border-[#c7d6d6] pt-5">
+<div>
+<p class="text-[9px] tracking-[0.1em] text-[#819698]">适合当你</p>
+<p class="mt-1.5 text-[11px] leading-[1.75] text-[#5d7174]">已经用力很久，却越努力越紧绷</p>
+</div>
+<div>
+<p class="text-[9px] tracking-[0.1em] text-[#819698]">思想线索</p>
+<p class="mt-1.5 text-[11px] leading-[1.75] text-[#5d7174]">老子<br/>庄子</p>
+</div>
+</div>
+</div>
+<a class="group relative mt-7 flex items-center justify-between border border-[#4c6065] bg-[#4c6065] px-4 py-3.5 text-[#f4f8f7] transition-colors hover:bg-[#3f5256]" data-view="taoist" href="#">
+<span class="text-[12px] font-medium tracking-[0.03em]">借这个视角继续</span>
+<iconify-icon class="text-[17px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+</article>
+</div>
+</div>
+</section>
+<section class="border-b border-[#d8cdb9] bg-[#f8f3e9]">
+<div class="mx-auto max-w-[1360px] px-6 py-16 lg:px-12 lg:py-20">
+<div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+<div>
+<p class="mb-3 text-[10px] font-semibold tracking-[0.2em] text-[#8a8375]">WHERE THEY DIVERGE</p>
+<h2 class="font-display text-[30px] leading-[1.4] text-[#282720] sm:text-[36px]">三种目光，在哪里分岔？</h2>
+</div>
+<p class="max-w-[400px] text-[11px] leading-[1.85] text-[#8a8375]">分岔不是为了裁决高下，而是为了让你看清：自己更愿意从哪一个方向开始承担。</p>
+</div>
+<div class="overflow-x-auto border border-[#cfc4b1] bg-[#fbf7ef] no-scrollbar">
+<div class="min-w-[840px]">
+<div class="grid grid-cols-[180px_repeat(3,minmax(0,1fr))] border-b border-[#cfc4b1] bg-[#eee6d7]">
+<div class="px-5 py-4 text-[9px] font-semibold tracking-[0.14em] text-[#8b8273]">对照维度</div>
+<div class="border-l border-[#d8cdb9] px-5 py-4">
+<p class="text-[12px] font-semibold text-[#43563f]">斯多葛主义</p>
+<p class="mt-0.5 text-[8px] tracking-[0.14em] text-[#8a9584]">STOICISM</p>
+</div>
+<div class="border-l border-[#d8cdb9] px-5 py-4">
+<p class="text-[12px] font-semibold text-[#9b4f35]">存在主义</p>
+<p class="mt-0.5 text-[8px] tracking-[0.14em] text-[#a58475]">EXISTENTIALISM</p>
+</div>
+<div class="border-l border-[#d8cdb9] px-5 py-4">
+<p class="text-[12px] font-semibold text-[#4c6065]">道家 · 庄子</p>
+<p class="mt-0.5 text-[8px] tracking-[0.14em] text-[#819698]">DAOISM</p>
+</div>
+</div>
+<div class="grid grid-cols-[180px_repeat(3,minmax(0,1fr))] border-b border-[#ddd3c2]">
+<div class="px-5 py-5 text-[11px] font-medium text-[#4f4d44]">问题从哪里来</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">往往来自我们对事实追加的判断</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">来自必须由自己承担的自由与不确定性</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">来自人为的执念，以及与事物本性的对抗</div>
+</div>
+<div class="grid grid-cols-[180px_repeat(3,minmax(0,1fr))] border-b border-[#ddd3c2]">
+<div class="px-5 py-5 text-[11px] font-medium text-[#4f4d44]">自由在哪里</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">在判断、选择与当下能完成的行动里</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">在承认没有标准答案后，仍为自己的选择负责</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">在顺势而为、不过度用力的分寸里</div>
+</div>
+<div class="grid grid-cols-[180px_repeat(3,minmax(0,1fr))] border-b border-[#ddd3c2]">
+<div class="px-5 py-5 text-[11px] font-medium text-[#4f4d44]">第一步会问你</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 font-display text-[13px] leading-[1.75] text-[#43563f]">“哪一部分真正由你决定？”</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 font-display text-[13px] leading-[1.75] text-[#9b4f35]">“如果无人评价，你会怎么选？”</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 font-display text-[13px] leading-[1.75] text-[#4c6065]">“你正在与什么较劲？”</div>
+</div>
+<div class="grid grid-cols-[180px_repeat(3,minmax(0,1fr))]">
+<div class="px-5 py-5 text-[11px] font-medium text-[#4f4d44]">它不承诺</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">消除痛苦，只训练更清醒的回应</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">提供正确答案，只让你更诚实地选择</div>
+<div class="border-l border-[#e0d6c5] px-5 py-5 text-[11px] leading-[1.85] text-[#6b6559]">让你退出世界，只让你少一点强行</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#304235] text-[#f4eee0]">
+<div class="mx-auto flex max-w-[1360px] flex-col justify-between gap-8 px-6 py-10 lg:flex-row lg:items-center lg:px-12">
+<div class="flex items-start gap-5">
+<iconify-icon class="mt-1 text-[22px] text-[#b08a4b]" icon="lucide:quote"></iconify-icon>
+<div>
+<p class="font-display text-[20px] leading-[1.7] text-[#f8f2e6]">选择不是承诺一生，只是决定下一步朝哪里看。</p>
+<p class="mt-2 text-[10px] tracking-[0.14em] text-[#aab7a6]">YOU CAN ALWAYS CHANGE THE LENS</p>
+</div>
+</div>
+<a class="inline-flex w-fit items-center gap-2 border border-[#718070] px-4 py-2.5 text-[11px] text-[#e6ddcb] transition-colors hover:border-[#b08a4b] hover:text-[#f6e9d1]" href="home.html#composer">
+          换个问题再想想
+          <iconify-icon class="text-[14px]" icon="lucide:arrow-left"></iconify-icon>
+</a>
+</div>
+</section>
+</main>
+<footer class="bg-[#eee7d9]">
+<div class="mx-auto max-w-[1440px] px-6 py-9 lg:px-12">
+<div class="flex flex-col justify-between gap-5 border-b border-[#d3c8b5] pb-7 md:flex-row md:items-center">
+<div class="flex items-center gap-4">
+<span class="grid h-10 w-10 place-items-center border border-[#3a3931] font-display text-[18px]">思</span>
+<div>
+<p class="font-display text-[17px] text-[#2d2c26]">ThinkLab</p>
+<p class="mt-0.5 text-[9px] tracking-[0.2em] text-[#8a8375]">哲学思考实验室</p>
+</div>
+</div>
+<p class="font-display text-[13px] italic text-[#7b7467]">三种目光，一个由你决定的方向。</p>
+<div class="flex flex-wrap gap-6 text-[11px] text-[#776f62]">
+<a class="transition-colors hover:text-[#9b4f35]" href="home.html">开始探索</a>
+<a class="transition-colors hover:text-[#9b4f35]" href="home.html#method">思考方法</a>
+<a class="transition-colors hover:text-[#9b4f35]" href="summary.html">我的思考</a>
+</div>
+</div>
+<div class="flex flex-col justify-between gap-3 pt-5 text-[9px] tracking-[0.06em] text-[#978f81] sm:flex-row">
+<p>© 2026 ThinkLab. A quiet place for difficult questions.</p>
+<p>视角选择仅影响对话路径，不构成任何专业建议。</p>
+</div>
+</div>
+</footer>
+<script>
+    const DEFAULT_QUESTION = "我总在担心自己做得不够好，如何面对这种持续的焦虑？";
+    const params = new URLSearchParams(window.location.search);
+    const question = (params.get("q") || DEFAULT_QUESTION).trim();
+
+    document.getElementById("questionText").textContent = question;
+
+    function readQuestion(text) {
+      if (/焦虑|担心|害怕|不安|内耗|紧张/.test(text)) {
+        return "你描述的不是简单的“想太多”，而是一种对不确定性的持续预演。真正值得靠近的，也许不是立刻赶走焦虑，而是看清：你在用哪一种标准衡量自己，以及这个标准是否真的属于你。";
+      }
+      if (/选择|该不该|要不要|决定|犹豫|改变|辞职|转行/.test(text)) {
+        return "这看上去是在两个选项之间取舍，但更深的冲突可能是两种价值正在争夺优先权：安全与自由、他人期待与自我诚实。三种视角会分别追问，你愿意为哪一种价值承担代价。";
+      }
+      if (/工作|职业|上班|稳定|人生|意义/.test(text)) {
+        return "你谈到的并不是一份工作的好坏，而是“这是不是我的生活”这样的归属问题。它要求的不只是分析利弊，还需要辨认：什么事情让你感到自己真正在场。";
+      }
+      if (/关系|爱|喜欢|分手|婚姻|伴侣|朋友|父母/.test(text)) {
+        return "这段处境里同时有他人的自由与你的期待。哲学无法替你判断关系该不该继续，但可以帮助你区分：哪些是爱，哪些是害怕失去，哪些只是习惯。";
+      }
+      return "这不是一个等待标准答案的问题，而是一种正在发生的生活处境。我们先不急着把它归类，而是借三种不同的目光，看看其中有哪些部分被忽略了。";
+    }
+
+    document.getElementById("readingText").textContent = readQuestion(question);
+
+    document.querySelectorAll("[data-view]").forEach(function (link) {
+      const view = link.getAttribute("data-view");
+      link.href = "dialogue.html?q=" + encodeURIComponent(question) + "&view=" + encodeURIComponent(view);
+    });
+  </script>
+</body>
+</html>

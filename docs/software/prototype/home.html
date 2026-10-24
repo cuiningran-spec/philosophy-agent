@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ThinkLab · 把现实的困惑交给哲学</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+    :root {
+      --paper: #f4efe4;
+      --paper-light: #fbf7ef;
+      --ink: #22211d;
+      --muted: #716c60;
+      --line: #d8cdb9;
+      --green: #304235;
+      --green-soft: #e8ece0;
+      --rust: #9b4f35;
+      --gold: #b08a4b;
+      --serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+      --sans: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      color: var(--ink);
+      font-family: var(--sans);
+      background-color: var(--paper);
+      background-image:
+        radial-gradient(rgba(58, 49, 36, 0.045) 0.65px, transparent 0.65px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 42%);
+      background-size: 6px 6px, 100% 100%;
+    }
+    .font-display {
+      font-family: var(--serif);
+    }
+    .font-ui {
+      font-family: var(--sans);
+    }
+    .no-scrollbar {
+      scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .brush-underline {
+      position: relative;
+      z-index: 0;
+      display: inline-block;
+    }
+    .brush-underline::after {
+      content: "";
+      position: absolute;
+      left: 1%;
+      right: -1%;
+      bottom: 0.06em;
+      height: 0.18em;
+      background: rgba(155, 79, 53, 0.22);
+      z-index: -1;
+      transform: rotate(-0.6deg);
+    }
+    .hero-rise {
+      animation: heroRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .hero-rise-delay {
+      animation: heroRise 0.9s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes heroRise {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    textarea {
+      resize: none;
+    }
+    ::selection {
+      color: #fffaf0;
+      background: #566b52;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-rise,
+      .hero-rise-delay {
+        animation: none;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+<header class="sticky top-0 z-40 border-b border-[#d8cdb9] bg-[#f4efe4]/90 backdrop-blur-md">
+<div class="mx-auto flex h-[78px] max-w-[1440px] items-center justify-between px-6 lg:px-12">
+<a aria-label="ThinkLab 首页" class="group flex items-center gap-3.5" href="home.html">
+<span class="relative grid h-11 w-11 place-items-center border border-[#2f2e28] bg-[#fbf7ef]">
+<span class="font-display text-[22px] leading-none text-[#2f2e28]">思</span>
+<span class="absolute -bottom-[3px] -right-[3px] h-2.5 w-2.5 bg-[#9b4f35]"></span>
+</span>
+<span class="flex flex-col">
+<span class="font-display text-[22px] font-semibold tracking-[0.01em] text-[#24231e]">ThinkLab</span>
+<span class="mt-0.5 text-[9px] font-medium tracking-[0.26em] text-[#797264]">哲学思考实验室</span>
+</span>
+</a>
+<nav aria-label="主导航" class="hidden items-center gap-9 md:flex">
+<a class="relative py-2 text-[13px] font-medium text-[#25241f]" href="home.html">
+          开始探索
+          <span class="absolute inset-x-0 -bottom-px mx-auto h-px w-5 bg-[#9b4f35]"></span>
+</a>
+<a class="py-2 text-[13px] text-[#777064] transition-colors hover:text-[#25241f]" href="#method">思考方法</a>
+<a class="py-2 text-[13px] text-[#777064] transition-colors hover:text-[#25241f]" href="summary.html">我的思考</a>
+</nav>
+<a class="inline-flex items-center gap-2 border border-[#b9ae99] px-4 py-2 text-[12px] font-medium tracking-[0.05em] text-[#3c3a32] transition-colors hover:border-[#304235] hover:bg-[#304235] hover:text-[#fbf7ef]" href="#composer">
+        写下问题
+        <iconify-icon class="text-[15px]" icon="lucide:arrow-down-right"></iconify-icon>
+</a>
+</div>
+</header>
+<main>
+<section class="relative overflow-hidden border-b border-[#d8cdb9]">
+<div class="pointer-events-none absolute left-[52%] top-20 hidden h-[410px] w-px bg-[#d8cdb9] lg:block"></div>
+<div class="pointer-events-none absolute -right-24 top-10 hidden h-[300px] w-[300px] rounded-full border border-[#d3c8b5] lg:block"></div>
+<div class="pointer-events-none absolute right-7 top-24 hidden font-display text-[220px] leading-none text-[#2f2e28]/[0.035] xl:block">01</div>
+<div class="mx-auto grid max-w-[1440px] grid-cols-1 gap-14 px-6 pb-20 pt-16 lg:grid-cols-12 lg:gap-10 lg:px-12 lg:pb-24 lg:pt-20">
+<div class="relative z-10 lg:col-span-7 lg:pr-10">
+<div class="hero-rise mb-8 flex items-center gap-3">
+<span class="h-px w-9 bg-[#9b4f35]"></span>
+<span class="text-[10px] font-semibold tracking-[0.24em] text-[#8a4b35]">PHILOSOPHICAL AI AGENT</span>
+<span class="hidden h-1 w-1 rounded-full bg-[#b08a4b] sm:block"></span>
+<span class="hidden text-[10px] tracking-[0.12em] text-[#8a8375] sm:block">为现实问题提供三种目光</span>
+</div>
+<h1 class="hero-rise font-display text-[54px] font-medium leading-[1.13] tracking-[-0.035em] text-[#22211d] sm:text-[66px] xl:text-[78px]">
+            把现实的困惑，<br/>
+            交给哲学<br/>
+<span class="brush-underline text-[#9b4f35]">重新照亮。</span>
+</h1>
+<div class="hero-rise-delay mt-9 grid max-w-[610px] grid-cols-1 gap-8 sm:grid-cols-[1fr_auto]">
+<p class="font-display text-[17px] leading-[1.95] text-[#5f5a4f]">
+              ThinkLab 不急着给你答案。它会从三种彼此不同的哲学传统出发，陪你重新看见问题，选择一条真正想走下去的路径。
+            </p>
+<div class="hidden border-l border-[#cfc4b0] pl-5 sm:block">
+<p class="text-[10px] tracking-[0.17em] text-[#8a8375]">THINK SLOWLY</p>
+<p class="mt-1 font-display text-[13px] italic text-[#6b6559]">See deeply.</p>
+</div>
+</div>
+<div class="mt-11 flex flex-wrap items-center gap-x-7 gap-y-3 text-[11px] tracking-[0.08em] text-[#7a7468]">
+<span class="inline-flex items-center gap-2">
+<iconify-icon class="text-[15px] text-[#52634e]" icon="lucide:glasses"></iconify-icon>
+              三种视角
+            </span>
+<span class="h-3 w-px bg-[#cec3b0]"></span>
+<span class="inline-flex items-center gap-2">
+<iconify-icon class="text-[15px] text-[#52634e]" icon="lucide:messages-square"></iconify-icon>
+              多轮追问
+            </span>
+<span class="h-3 w-px bg-[#cec3b0]"></span>
+<span class="inline-flex items-center gap-2">
+<iconify-icon class="text-[15px] text-[#52634e]" icon="lucide:bookmark-plus"></iconify-icon>
+              思考记录
+            </span>
+</div>
+<figure class="mt-12 max-w-[470px] border-l-2 border-[#b08a4b] pl-5">
+<blockquote class="font-display text-[14px] leading-[1.85] text-[#756e60]">
+              “未经审视的人生不值得过。”
+            </blockquote>
+<figcaption class="mt-2 text-[10px] tracking-[0.16em] text-[#9a9283]">苏格拉底 · 申辩篇</figcaption>
+</figure>
+</div>
+<div class="relative z-10 lg:col-span-5 lg:pt-1">
+<div class="relative scroll-mt-28 border border-[#2f2e28] bg-[#fbf7ef] p-1.5 shadow-[12px_14px_0_0_rgba(48,66,53,0.09)]" id="composer">
+<div class="absolute -right-2 -top-2 h-5 w-5 border-r border-t border-[#9b4f35]"></div>
+<div class="border border-[#ded4c2] px-6 pb-6 pt-5 sm:px-8 sm:pb-7 sm:pt-6">
+<div class="mb-5 flex items-center justify-between">
+<span class="inline-flex items-center gap-2 text-[10px] font-semibold tracking-[0.19em] text-[#52634e]">
+<span class="h-1.5 w-1.5 rounded-full bg-[#9b4f35]"></span>
+                  CURRENT INQUIRY
+                </span>
+<span class="font-display text-[12px] italic text-[#9a9283]">01 / 提问</span>
+</div>
+<form action="perspectives.html" id="questionForm" method="get" novalidate="">
+<label class="block font-display text-[23px] leading-[1.5] text-[#282720] sm:text-[25px]" for="questionInput">
+                  此刻，有什么事<br/>正在你心里反复出现？
+                </label>
+<p class="mt-2 text-[11px] leading-6 text-[#8a8375]">一个具体的现实处境，比一个抽象的大问题更适合开始。</p>
+<div class="mt-5 border border-[#cfc4b0] bg-[#f7f2e8] transition-colors focus-within:border-[#52634e]">
+<textarea class="block w-full bg-transparent px-4 pt-4 font-display text-[16px] leading-[1.9] text-[#292820] outline-none placeholder:text-[#a69d8d]" id="questionInput" maxlength="300" name="q" placeholder="例如：我总在担心自己做得不够好，如何面对这种持续的焦虑？" required="" rows="5"></textarea>
+<div class="flex items-center justify-between border-t border-[#ded4c2] px-4 py-2.5">
+<span class="text-[10px] text-[#9a9283]">不必完整，也不必正确。</span>
+<span class="text-[10px] tabular-nums text-[#969083]" id="charCount">0 / 300</span>
+</div>
+</div>
+<p class="mt-2 hidden text-[11px] text-[#9b4f35]" id="formHint">请先写下一个你真正关心的问题。</p>
+<div class="mt-4">
+<p class="mb-2 text-[10px] tracking-[0.12em] text-[#8f887a]">或者，从一个相似的处境开始</p>
+<div class="flex flex-wrap gap-2">
+<button class="border border-[#d6cbb8] bg-transparent px-3 py-1.5 text-left text-[11px] leading-5 text-[#6a6458] transition-colors hover:border-[#9b4f35] hover:text-[#7e3f2d]" data-sample="我总在担心自己做得不够好，如何面对这种持续的焦虑？" type="button">
+                      总担心自己不够好
+                    </button>
+<button class="border border-[#d6cbb8] bg-transparent px-3 py-1.5 text-left text-[11px] leading-5 text-[#6a6458] transition-colors hover:border-[#9b4f35] hover:text-[#7e3f2d]" data-sample="我有一份稳定的工作，却总觉得这不是我想要的人生。我该不该改变？" type="button">
+                      稳定却不是想要的人生
+                    </button>
+</div>
+</div>
+<button class="group mt-6 flex w-full items-center justify-between bg-[#304235] px-5 py-4 text-left text-[#fbf7ef] transition-colors hover:bg-[#26362b]" type="submit">
+<span class="flex items-center gap-3">
+<span class="text-[13px] font-medium tracking-[0.04em]">让三种目光出现</span>
+<span class="hidden text-[10px] tracking-[0.1em] text-[#c6d0c1] sm:inline">3 PERSPECTIVES</span>
+</span>
+<iconify-icon class="text-[19px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</button>
+</form>
+<div class="mt-4 flex items-start gap-2 text-[10px] leading-[1.7] text-[#918a7c]">
+<iconify-icon class="mt-0.5 shrink-0 text-[13px]" icon="lucide:lock-keyhole"></iconify-icon>
+<span>Agent 不会替你做决定。你保留选择、怀疑与改变主意的自由。</span>
+</div>
+</div>
+</div>
+<div class="mt-5 flex items-center justify-between border-t border-[#d2c7b4] pt-3 text-[10px] tracking-[0.08em] text-[#8e8779]">
+<span>DESIGNED FOR DEEP THINKING</span>
+<span class="font-display italic">est. 2026</span>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#304235] text-[#f5efe2]">
+<div class="mx-auto grid max-w-[1440px] grid-cols-1 gap-8 px-6 py-10 md:grid-cols-[1fr_auto] md:items-center lg:px-12 lg:py-12">
+<div class="flex items-start gap-5">
+<span class="mt-1 font-display text-[52px] leading-none text-[#b08a4b]">“</span>
+<p class="max-w-[880px] font-display text-[20px] leading-[1.8] tracking-[0.01em] text-[#f4eddf] sm:text-[23px]">
+            哲学并不替你决定怎样生活，它只是让你看清：自己正站在哪里，以及还可以往哪里看。
+          </p>
+</div>
+<div class="flex items-center gap-5 border-t border-[#5a6a5b] pt-5 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+<span class="grid h-12 w-12 place-items-center rounded-full border border-[#7f8f7c] font-display text-[13px] text-[#d8c8a8]">思</span>
+<div>
+<p class="text-[10px] tracking-[0.18em] text-[#aab8a5]">THINKLAB PRINCIPLE</p>
+<p class="mt-1 font-display text-[13px] italic text-[#e7dfcd]">A method, not an answer.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="scroll-mt-20 border-b border-[#d8cdb9]" id="method">
+<div class="mx-auto max-w-[1320px] px-6 py-20 lg:px-12 lg:py-28">
+<div class="grid grid-cols-1 gap-12 lg:grid-cols-[0.8fr_1.55fr] lg:gap-20">
+<div>
+<p class="mb-5 flex items-center gap-3 text-[10px] font-semibold tracking-[0.22em] text-[#8a4b35]">
+<span class="h-px w-7 bg-[#9b4f35]"></span>
+              HOW IT WORKS
+            </p>
+<h2 class="font-display text-[38px] leading-[1.35] tracking-[-0.02em] text-[#25241f] sm:text-[46px]">
+              一次完整的思考，<br/>如何发生？
+            </h2>
+<p class="mt-6 max-w-[390px] font-display text-[15px] leading-[1.95] text-[#70695c]">
+              思考不是抵达某个漂亮结论，而是在不同的解释之间走动，直到你更清楚自己为何这样选择。
+            </p>
+<div class="mt-8 flex items-start gap-3 border-l border-[#b08a4b] pl-4">
+<iconify-icon class="mt-1 shrink-0 text-[16px] text-[#b08a4b]" icon="lucide:quote"></iconify-icon>
+<p class="text-[11px] leading-[1.9] text-[#8e8779]">
+                每一段对话都可以随时沉淀为思考记录；<br/>记录之后，你仍然可以回到原处继续追问。
+              </p>
+</div>
+</div>
+<div class="border-t border-[#cabdA7]">
+<div class="group grid grid-cols-[54px_1fr_auto] gap-5 border-b border-[#d6cbb8] py-7 sm:grid-cols-[80px_1fr_auto]">
+<span class="font-display text-[28px] leading-none text-[#b08a4b] sm:text-[34px]">01</span>
+<div>
+<h3 class="font-display text-[21px] text-[#2d2c26]">说出一个真实的问题</h3>
+<p class="mt-2 max-w-[520px] text-[13px] leading-[1.9] text-[#777064]">不是宏大的哲学命题，而是你此刻真正卡住的地方：一段关系、一次选择、一种反复出现的情绪。</p>
+</div>
+<iconify-icon class="mt-1 text-[22px] text-[#a39886] transition-colors group-hover:text-[#52634e]" icon="lucide:pen-line"></iconify-icon>
+</div>
+<div class="group grid grid-cols-[54px_1fr_auto] gap-5 border-b border-[#d6cbb8] py-7 sm:grid-cols-[80px_1fr_auto]">
+<span class="font-display text-[28px] leading-none text-[#b08a4b] sm:text-[34px]">02</span>
+<div>
+<h3 class="font-display text-[21px] text-[#2d2c26]">看见三种哲学目光</h3>
+<p class="mt-2 max-w-[520px] text-[13px] leading-[1.9] text-[#777064]">斯多葛主义、存在主义、道家，各自从不同方向照亮同一个处境。它们不是标准答案，而是三副可以试戴的眼镜。</p>
+</div>
+<iconify-icon class="mt-1 text-[22px] text-[#a39886] transition-colors group-hover:text-[#52634e]" icon="lucide:glasses"></iconify-icon>
+</div>
+<div class="group grid grid-cols-[54px_1fr_auto] gap-5 border-b border-[#d6cbb8] py-7 sm:grid-cols-[80px_1fr_auto]">
+<span class="font-display text-[28px] leading-none text-[#b08a4b] sm:text-[34px]">03</span>
+<div>
+<h3 class="font-display text-[21px] text-[#2d2c26]">选择一条路径，深入对话</h3>
+<p class="mt-2 max-w-[520px] text-[13px] leading-[1.9] text-[#777064]">你决定从哪里进入。Agent 会守住这个视角，也会追问那些被快速结论遮住的部分，陪你多轮往下走。</p>
+</div>
+<iconify-icon class="mt-1 text-[22px] text-[#a39886] transition-colors group-hover:text-[#52634e]" icon="lucide:messages-square"></iconify-icon>
+</div>
+<div class="group grid grid-cols-[54px_1fr_auto] gap-5 border-b border-[#d6cbb8] py-7 sm:grid-cols-[80px_1fr_auto]">
+<span class="font-display text-[28px] leading-none text-[#9b4f35] sm:text-[34px]">04</span>
+<div>
+<h3 class="font-display text-[21px] text-[#2d2c26]">留下记录，然后继续</h3>
+<p class="mt-2 max-w-[520px] text-[13px] leading-[1.9] text-[#777064]">随时生成一份结构化的思考记录：洞见、张力与下一步实践。但它不是终点，你可以带着新的问题回到对话。</p>
+</div>
+<iconify-icon class="mt-1 text-[22px] text-[#9b4f35]" icon="lucide:bookmark-plus"></iconify-icon>
+</div>
+<a class="mt-7 inline-flex items-center gap-2 text-[12px] font-medium text-[#52634e] underline decoration-[#b7c0b0] decoration-1 underline-offset-4 transition-colors hover:text-[#9b4f35]" href="#composer">
+              从一个问题开始
+              <iconify-icon class="text-[14px]" icon="lucide:arrow-up"></iconify-icon>
+</a>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-[#eae3d5]">
+<div class="mx-auto grid max-w-[1320px] grid-cols-1 gap-12 px-6 py-20 lg:grid-cols-[0.9fr_1.3fr] lg:gap-20 lg:px-12 lg:py-24">
+<div class="lg:pr-10">
+<p class="mb-5 text-[10px] font-semibold tracking-[0.22em] text-[#7f7564]">THREE LENSES</p>
+<h2 class="font-display text-[36px] leading-[1.42] tracking-[-0.02em] text-[#26251f] sm:text-[44px]">
+            三副眼镜，<br/>不是三个<br/>标准答案。
+          </h2>
+<p class="mt-7 max-w-[360px] font-display text-[14px] leading-[1.95] text-[#6e675a]">
+            真正有价值的不是“哪个视角最对”，而是你能否借它们看见自己原先忽略的部分。
+          </p>
+<div class="mt-9 inline-flex items-center gap-3 border border-[#c6b9a3] px-4 py-3">
+<iconify-icon class="text-[18px] text-[#9b4f35]" icon="lucide:compass"></iconify-icon>
+<span class="text-[11px] leading-5 text-[#736c5f]">选择权始终在你手里</span>
+</div>
+</div>
+<div class="border-t border-[#c6b9a3]">
+<div class="group grid grid-cols-[48px_1fr_auto] items-center gap-5 border-b border-[#d1c4b0] py-7">
+<span class="font-display text-[15px] italic text-[#9a9181]">I</span>
+<div>
+<div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+<h3 class="font-display text-[25px] text-[#2e2d27]">斯多葛主义</h3>
+<span class="text-[9px] tracking-[0.16em] text-[#8c8476]">STOICISM</span>
+</div>
+<p class="mt-2 font-display text-[14px] text-[#70695c]">先分清：什么由我决定，什么不由我决定。</p>
+</div>
+<span class="grid h-10 w-10 place-items-center rounded-full border border-[#aeb9a9] bg-[#e5eade] text-[#52634e] transition-transform group-hover:rotate-6">
+<iconify-icon class="text-[18px]" icon="lucide:columns-3"></iconify-icon>
+</span>
+</div>
+<div class="group grid grid-cols-[48px_1fr_auto] items-center gap-5 border-b border-[#d1c4b0] py-7">
+<span class="font-display text-[15px] italic text-[#9a9181]">II</span>
+<div>
+<div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+<h3 class="font-display text-[25px] text-[#2e2d27]">存在主义</h3>
+<span class="text-[9px] tracking-[0.16em] text-[#8c8476]">EXISTENTIALISM</span>
+</div>
+<p class="mt-2 font-display text-[14px] text-[#70695c]">在没有预设答案的地方，承担自己的选择。</p>
+</div>
+<span class="grid h-10 w-10 place-items-center rounded-full border border-[#d2b6a7] bg-[#f0dfd5] text-[#9b4f35] transition-transform group-hover:rotate-6">
+<iconify-icon class="text-[18px]" icon="lucide:compass"></iconify-icon>
+</span>
+</div>
+<div class="group grid grid-cols-[48px_1fr_auto] items-center gap-5 border-b border-[#c6b9a3] py-7">
+<span class="font-display text-[15px] italic text-[#9a9181]">III</span>
+<div>
+<div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+<h3 class="font-display text-[25px] text-[#2e2d27]">道家 · 庄子</h3>
+<span class="text-[9px] tracking-[0.16em] text-[#8c8476]">DAOISM</span>
+</div>
+<p class="mt-2 font-display text-[14px] text-[#70695c]">松开对抗，辨认事情本来的纹理与水势。</p>
+</div>
+<span class="grid h-10 w-10 place-items-center rounded-full border border-[#afc1c2] bg-[#e0eaea] text-[#4c6065] transition-transform group-hover:rotate-6">
+<iconify-icon class="text-[18px]" icon="lucide:waves"></iconify-icon>
+</span>
+</div>
+</div>
+</div>
+</section>
+<section class="border-b border-[#d8cdb9]">
+<div class="mx-auto max-w-[1320px] px-6 py-20 lg:px-12 lg:py-24">
+<div class="grid grid-cols-1 gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+<div>
+<p class="mb-5 text-[10px] font-semibold tracking-[0.22em] text-[#8a4b35]">A SLOWER PLACE TO THINK</p>
+<h2 class="font-display text-[42px] leading-[1.36] tracking-[-0.03em] text-[#25241f] sm:text-[56px]">
+              有些问题，<br/>不适合被<span class="text-[#9b4f35]">迅速解决。</span>
+</h2>
+</div>
+<div class="lg:pb-2">
+<p class="max-w-[390px] font-display text-[15px] leading-[1.95] text-[#6e675c]">
+              ThinkLab 会在这里，等你把话说完。你可以带着一个不够清楚的问题来，也可以带着另一个问题离开。
+            </p>
+<div class="mt-6 flex flex-wrap items-center gap-4">
+<a class="inline-flex items-center gap-3 bg-[#304235] px-5 py-3.5 text-[12px] font-medium text-[#fbf7ef] transition-colors hover:bg-[#26362b]" href="#composer">
+                写下此刻的问题
+                <iconify-icon class="text-[16px]" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+<a class="inline-flex items-center gap-2 border-b border-[#b7ab97] pb-1 text-[12px] text-[#696255] transition-colors hover:border-[#9b4f35] hover:text-[#9b4f35]" href="summary.html">
+                先看一份示例记录
+                <iconify-icon class="text-[14px]" icon="lucide:arrow-right"></iconify-icon>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-[#eee7d9]">
+<div class="mx-auto max-w-[1440px] px-6 py-10 lg:px-12">
+<div class="flex flex-col justify-between gap-8 border-b border-[#d3c8b5] pb-8 md:flex-row md:items-center">
+<div class="flex items-center gap-4">
+<span class="grid h-10 w-10 place-items-center border border-[#3a3931] font-display text-[18px]">思</span>
+<div>
+<p class="font-display text-[17px] text-[#2d2c26]">ThinkLab</p>
+<p class="mt-0.5 text-[9px] tracking-[0.2em] text-[#8a8375]">哲学思考实验室</p>
+</div>
+</div>
+<p class="font-display text-[14px] italic text-[#7b7467]">慢一点，但更深一点。</p>
+<div class="flex flex-wrap gap-6 text-[11px] text-[#776f62]">
+<a class="transition-colors hover:text-[#9b4f35]" href="home.html">开始探索</a>
+<a class="transition-colors hover:text-[#9b4f35]" href="#method">思考方法</a>
+<a class="transition-colors hover:text-[#9b4f35]" href="summary.html">我的思考</a>
+</div>
+</div>
+<div class="flex flex-col justify-between gap-3 pt-5 text-[9px] tracking-[0.06em] text-[#978f81] sm:flex-row">
+<p>© 2026 ThinkLab. A quiet place for difficult questions.</p>
+<p>本原型仅用于产品体验演示，对话内容由预设逻辑生成。</p>
+</div>
+</div>
+</footer>
+<script>
+    const questionInput = document.getElementById("questionInput");
+    const charCount = document.getElementById("charCount");
+    const questionForm = document.getElementById("questionForm");
+    const formHint = document.getElementById("formHint");
+
+    function updateCharCount() {
+      charCount.textContent = questionInput.value.length + " / 300";
+    }
+
+    questionInput.addEventListener("input", function () {
+      updateCharCount();
+      if (questionInput.value.trim()) {
+        questionForm.classList.remove("was-invalid");
+        formHint.classList.add("hidden");
+        questionInput.setAttribute("aria-invalid", "false");
+      }
+    });
+
+    document.querySelectorAll("[data-sample]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        questionInput.value = button.getAttribute("data-sample") || "";
+        updateCharCount();
+        questionInput.focus();
+        questionInput.setSelectionRange(questionInput.value.length, questionInput.value.length);
+        formHint.classList.add("hidden");
+        questionInput.setAttribute("aria-invalid", "false");
+      });
+    });
+
+    questionForm.addEventListener("submit", function (event) {
+      const value = questionInput.value.trim();
+      if (!value) {
+        event.preventDefault();
+        formHint.classList.remove("hidden");
+        questionInput.setAttribute("aria-invalid", "true");
+        questionInput.focus();
+        return;
+      }
+      questionInput.value = value;
+    });
+  </script>
+</body>
+</html>

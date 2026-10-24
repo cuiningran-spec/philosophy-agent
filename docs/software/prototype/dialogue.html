@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>哲学对话 · ThinkLab</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+    :root {
+      --paper: #f4efe4;
+      --paper-light: #fbf7ef;
+      --ink: #22211d;
+      --muted: #716c60;
+      --line: #d8cdb9;
+      --green: #304235;
+      --green-soft: #e8ece0;
+      --rust: #9b4f35;
+      --gold: #b08a4b;
+      --serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+      --sans: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    html,
+    body {
+      height: 100%;
+    }
+    body {
+      color: var(--ink);
+      font-family: var(--sans);
+      background-color: var(--paper);
+      background-image: radial-gradient(rgba(58, 49, 36, 0.04) 0.65px, transparent 0.65px);
+      background-size: 6px 6px;
+    }
+    .font-display {
+      font-family: var(--serif);
+    }
+    .no-scrollbar {
+      scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .message-enter {
+      animation: messageIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .typing-dot {
+      animation: typingBounce 1.1s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.14s;
+    }
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.28s;
+    }
+    @keyframes typingBounce {
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.45;
+      }
+      30% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+    textarea {
+      resize: none;
+    }
+    ::selection {
+      color: #fffaf0;
+      background: #566b52;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .message-enter,
+      .typing-dot {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body class="flex h-screen flex-col overflow-hidden antialiased">
+<header class="shrink-0 border-b border-[#d8cdb9] bg-[#f5f0e6]/95 backdrop-blur-md">
+<div class="flex h-[72px] items-center gap-5 px-5 xl:px-7">
+<a aria-label="ThinkLab 首页" class="flex shrink-0 items-center gap-3" href="home.html">
+<span class="relative grid h-9 w-9 place-items-center border border-[#2f2e28] bg-[#fbf7ef]">
+<span class="font-display text-[18px] leading-none">思</span>
+<span class="absolute -bottom-[2px] -right-[2px] h-2 w-2 bg-[#9b4f35]"></span>
+</span>
+<span class="hidden flex-col sm:flex">
+<span class="font-display text-[18px] font-semibold leading-none">ThinkLab</span>
+<span class="mt-1 text-[8px] tracking-[0.22em] text-[#7e776a]">哲学思考实验室</span>
+</span>
+</a>
+<div class="hidden min-w-0 items-center gap-2.5 border-l border-[#d4c9b6] pl-5 xl:flex">
+<span class="shrink-0 text-[9px] tracking-[0.14em] text-[#928a7c]">本次问题</span>
+<span class="max-w-[340px] truncate text-[11px] text-[#615b50]" id="headerQuestion"></span>
+</div>
+<div class="ml-auto flex items-center gap-3">
+<span class="hidden items-center gap-2 border border-[#c8d2c1] bg-[#eef1e8] px-3 py-2 text-[10px] font-medium text-[#52634e] md:inline-flex" id="headerViewChip">
+<span class="h-1.5 w-1.5 rounded-full bg-[#52634e]" id="headerViewDot"></span>
+<span id="headerViewText">正在以 斯多葛主义 探索</span>
+</span>
+<a class="js-summary group inline-flex items-center gap-2 bg-[#9b4f35] px-4 py-2.5 text-[11px] font-medium text-[#fff9f2] transition-colors hover:bg-[#873f2a]" href="summary.html" title="根据当前对话生成结构化思考记录">
+<iconify-icon class="text-[15px]" icon="lucide:scroll-text"></iconify-icon>
+<span>生成思考总结</span>
+<iconify-icon class="text-[13px] opacity-70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+</div>
+</div>
+</header>
+<main class="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[252px_minmax(0,1fr)] xl:grid-cols-[272px_minmax(0,1fr)_308px]">
+<aside class="hidden min-h-0 flex-col overflow-y-auto border-r border-[#d8cdb9] bg-[#f0eadf] p-6 no-scrollbar lg:flex">
+<div class="flex items-center justify-between border-b border-[#d5cab7] pb-4">
+<span class="text-[9px] font-semibold tracking-[0.18em] text-[#8c8476]">EXPLORATION / 02</span>
+<span class="inline-flex items-center gap-1.5 text-[8px] tracking-[0.1em] text-[#52634e]">
+<span class="h-1.5 w-1.5 rounded-full bg-[#52634e]"></span>
+          LIVE
+        </span>
+</div>
+<div class="mt-6">
+<h2 class="font-display text-[23px] text-[#2a2923]">本次探索</h2>
+<p class="mt-1 text-[10px] tracking-[0.1em] text-[#928a7c]">ONE QUESTION, ONE PATH</p>
+</div>
+<div class="mt-5 border-l-2 border-[#b08a4b] pl-3.5">
+<p class="text-[8px] tracking-[0.14em] text-[#9a9182]">YOUR QUESTION</p>
+<p class="mt-2 font-display text-[13px] leading-[1.85] text-[#514c41]" id="sideQuestion"></p>
+</div>
+<div class="mt-8 border-t border-[#d5cab7] pt-5">
+<div class="mb-4 flex items-center justify-between">
+<p class="text-[8px] font-semibold tracking-[0.17em] text-[#91897b]">THE PATH</p>
+<p class="text-[8px] text-[#a29989]">03 / 04</p>
+</div>
+<div class="relative ml-1.5 border-l border-[#cfc4b0] pl-5">
+<div class="relative pb-5">
+<span class="absolute -left-[26px] top-0.5 grid h-3 w-3 place-items-center rounded-full bg-[#52634e]">
+<iconify-icon class="text-[7px] text-[#f8f4ea]" icon="lucide:check"></iconify-icon>
+</span>
+<p class="text-[11px] font-medium text-[#59554b]">提出问题</p>
+<p class="mt-1 text-[9px] text-[#999082]">已保留你的原始表述</p>
+</div>
+<div class="relative pb-5">
+<span class="absolute -left-[26px] top-0.5 grid h-3 w-3 place-items-center rounded-full bg-[#52634e]">
+<iconify-icon class="text-[7px] text-[#f8f4ea]" icon="lucide:check"></iconify-icon>
+</span>
+<p class="text-[11px] font-medium text-[#59554b]">选择目光</p>
+<p class="mt-1 text-[9px] text-[#999082]" id="journeyViewName">斯多葛主义</p>
+</div>
+<div class="relative pb-5">
+<span class="absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border-2 border-[#f0eadf] bg-[#b08a4b] ring-4 ring-[#b08a4b]/15" id="journeyStep3Dot"></span>
+<p class="text-[11px] font-medium text-[#34332d]" id="journeyStep3Label">展开对话</p>
+<p class="mt-1 text-[9px] leading-[1.6] text-[#8a8274]" id="journeyStep3State">正在这条视角里深入</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border border-[#c2b6a2] bg-[#f0eadf]" id="journeyStep4Dot"></span>
+<p class="text-[11px] font-medium text-[#8a8274]" id="journeyStep4Label">形成记录</p>
+<p class="mt-1 text-[9px] leading-[1.6] text-[#a09686]" id="journeyStep4State">随时可以生成总结</p>
+</div>
+</div>
+</div>
+<div class="mt-7 border border-l-[3px] border-[#bfc9b8] bg-[#f8f3e9] p-4" id="sideViewCard" style="border-left-color: #43563f;">
+<div class="flex items-center gap-3">
+<span class="grid h-9 w-9 shrink-0 place-items-center rounded-full border" id="sideViewIconWrap" style="border-color: #bfc9b8; background-color: #e8ece0; color: #43563f;">
+<iconify-icon class="text-[17px]" icon="lucide:columns-3" id="sideViewIcon"></iconify-icon>
+</span>
+<div class="min-w-0">
+<p class="font-display text-[15px] leading-tight text-[#2d2c26]" id="sideViewName">斯多葛主义</p>
+<p class="mt-1 text-[8px] tracking-[0.14em] text-[#8b8375]" id="sideViewEn">STOICISM</p>
+</div>
+</div>
+<p class="mt-4 text-[8px] tracking-[0.12em] text-[#948b7d]">当前视角的核心追问</p>
+<p class="mt-1.5 font-display text-[12px] leading-[1.75] text-[#555047]" id="sideViewAsk">哪些事真正在我的掌控之内？</p>
+</div>
+<a class="mt-4 inline-flex items-center justify-between border border-[#cbbfab] px-3.5 py-2.5 text-[10px] text-[#71695c] transition-colors hover:border-[#9b4f35] hover:text-[#9b4f35]" href="perspectives.html" id="changeViewLink">
+        换一个视角
+        <iconify-icon class="text-[13px]" icon="lucide:replace"></iconify-icon>
+</a>
+<div class="mt-auto pt-7">
+<a class="inline-flex items-center gap-2 text-[9px] tracking-[0.06em] text-[#938b7d] transition-colors hover:text-[#9b4f35]" href="home.html">
+<iconify-icon class="text-[12px]" icon="lucide:arrow-left"></iconify-icon>
+          离开这次探索
+        </a>
+</div>
+</aside>
+<section class="flex min-h-0 flex-col bg-[#fbf8f1]">
+<div class="shrink-0 border-b border-[#e1d7c6] bg-[#fbf8f1] px-6 py-4 lg:px-8">
+<div class="mx-auto w-full max-w-[840px]">
+<div class="flex items-center justify-between gap-4">
+<span class="inline-flex items-center gap-2 text-[8px] font-semibold tracking-[0.2em] text-[#8b8375]">
+<span class="h-1 w-1 rounded-full bg-[#9b4f35]"></span>
+              LIVE DIALOGUE
+            </span>
+<div class="flex items-center gap-3">
+<span class="hidden items-center gap-1.5 border px-2 py-1 text-[8px]" id="recordBadge"></span>
+<a class="js-summary inline-flex items-center gap-1.5 text-[9px] text-[#8a4b35] underline decoration-[#d8b8a8] underline-offset-4 transition-colors hover:text-[#6f3724]" href="summary.html">
+                随时留下记录
+                <iconify-icon class="text-[11px]" icon="lucide:arrow-right"></iconify-icon>
+</a>
+</div>
+</div>
+<div class="mt-2.5 flex flex-wrap items-end justify-between gap-3">
+<div>
+<h1 class="font-display text-[25px] leading-[1.35] tracking-[-0.015em] text-[#272620] sm:text-[29px]">
+                与 <span class="text-[#43563f]" id="viewNameTitle">斯多葛主义</span> 的对话
+              </h1>
+<div class="mt-2 flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 border px-2 py-1 text-[9px] font-medium" id="viewBadge">
+<span class="h-1.5 w-1.5 rounded-full bg-[#43563f]" id="viewBadgeDot"></span>
+<span id="viewBadgeText">当前视角 · 斯多葛主义</span>
+</span>
+<span class="text-[9px] text-[#958d7f]" id="turnCount">尚未开始追问</span>
+<span class="hidden items-center gap-1 text-[9px] text-[#a09787] sm:inline-flex">
+<iconify-icon class="text-[15px]" icon="lucide:dot"></iconify-icon>
+                  总结后仍可继续
+                </span>
+</div>
+</div>
+<div class="hidden text-right lg:block">
+<p class="font-display text-[11px] italic text-[#8c8476]" id="viewTagline">关注可控之事，安放不可控之事</p>
+<p class="mt-1 text-[8px] tracking-[0.1em] text-[#a29989]">VIEW LOCKED · THOUGHT OPEN</p>
+</div>
+</div>
+</div>
+</div>
+<div class="min-h-0 flex-1 overflow-y-auto overflow-x-hidden no-scrollbar" id="messageScroll">
+<div aria-live="polite" class="mx-auto w-full max-w-[840px] px-5 py-7 sm:px-6 lg:px-8 lg:py-8" id="messageList"></div>
+</div>
+<div class="shrink-0 border-t border-[#d8cdb9] bg-[#f4eee3] px-5 py-3.5 sm:px-6 lg:px-8">
+<div class="mx-auto w-full max-w-[840px]">
+<div class="mb-2 flex items-center justify-between gap-3">
+<p class="text-[8px] font-semibold tracking-[0.16em] text-[#8e8678]">FOLLOW UP / 继续追问</p>
+<p class="text-[8px] text-[#9c9384]" id="composerStatus">Enter 发送 · Shift + Enter 换行</p>
+</div>
+<div class="mb-2 flex gap-2 overflow-x-auto pb-0.5 no-scrollbar" id="promptChips"></div>
+<form class="border border-[#c9beaa] bg-[#fcf8f0] p-1.5 transition-colors focus-within:border-[#6f816b]" id="chatForm">
+<label class="sr-only" for="messageInput">输入你的追问</label>
+<textarea class="block max-h-[132px] min-h-[54px] w-full overflow-y-auto bg-transparent px-3 pt-2.5 font-display text-[14px] leading-[1.85] text-[#343129] outline-none placeholder:text-[#a39a8b]" id="messageInput" rows="2"></textarea>
+<div class="flex items-center justify-between gap-3 border-t border-[#e3dacb] px-2 pb-0.5 pt-2">
+<span class="flex items-center gap-1.5 text-[8px] text-[#a09787]">
+<iconify-icon class="text-[11px]" icon="lucide:shield-check"></iconify-icon>
+                可随时生成总结，也可继续对话
+              </span>
+<button class="inline-flex shrink-0 items-center gap-2 bg-[#304235] px-3.5 py-2 text-[10px] font-medium text-[#fbf7ef] transition-colors hover:bg-[#26362b] disabled:cursor-not-allowed disabled:opacity-60" id="sendBtn" type="submit">
+                发送
+                <iconify-icon class="text-[13px]" icon="lucide:arrow-up"></iconify-icon>
+</button>
+</div>
+</form>
+<p class="mt-1.5 text-center text-[8px] leading-5 text-[#a69d8e]">ThinkLab 提供思考路径，不替你做决定。</p>
+</div>
+</div>
+</section>
+<aside class="hidden min-h-0 flex-col overflow-y-auto border-l border-[#d8cdb9] bg-[#f3ede2] p-5 no-scrollbar xl:flex">
+<div class="relative overflow-hidden bg-[#2f4034] p-5 text-[#f8f2e5]">
+<div class="pointer-events-none absolute -right-5 -top-7 font-display text-[110px] leading-none text-[#f8f2e5]/[0.035]">“</div>
+<div class="relative flex items-center justify-between border-b border-[#5a6a5a] pb-3.5">
+<span class="text-[8px] font-semibold tracking-[0.19em] text-[#bcc7b6]">SYNTHESIS</span>
+<iconify-icon class="text-[16px] text-[#c8ab79]" icon="lucide:scroll-text"></iconify-icon>
+</div>
+<h2 class="relative mt-4 font-display text-[22px] leading-[1.5] text-[#fbf6e9]">把此刻的思考，<br/>留下来。</h2>
+<p class="relative mt-2.5 text-[10px] leading-[1.9] text-[#b7c1b1]">基于当前对话，整理成一份包含洞见、张力与下一步实践的思考记录。</p>
+<a class="js-summary group relative mt-5 flex items-center justify-between bg-[#d4b98c] px-3.5 py-3 text-[#283529] transition-colors hover:bg-[#e0c697]" href="summary.html">
+<span class="text-[11px] font-medium">生成思考总结</span>
+<iconify-icon class="text-[15px] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+<a class="mt-3 hidden items-center gap-1.5 text-[9px] text-[#d9c6a4] underline decoration-[#7b8a78] underline-offset-4 hover:text-[#f1dfbc]" href="summary.html" id="rightRecordLink"></a>
+<p class="relative mt-3 flex items-center gap-1.5 text-[8px] text-[#9eaa98]">
+<iconify-icon class="text-[10px]" icon="lucide:refresh-cw"></iconify-icon>
+          生成后仍可继续对话
+        </p>
+</div>
+<div class="mt-6 border-t border-[#d2c6b2] pt-4">
+<div class="flex items-center justify-between">
+<p class="text-[8px] font-semibold tracking-[0.17em] text-[#8c8476]">THREAD NOTES</p>
+<span class="inline-flex items-center gap-1 text-[8px] text-[#9a9283]">
+<span class="h-1 w-1 rounded-full bg-[#b08a4b]"></span>
+            实时
+          </span>
+</div>
+<div class="mt-4 space-y-4">
+<div>
+<p class="text-[8px] tracking-[0.1em] text-[#a19889]">你正在处理</p>
+<p class="mt-1 font-display text-[11px] leading-[1.75] text-[#5e594f]" id="questionClue"></p>
+</div>
+<div>
+<p class="text-[8px] tracking-[0.1em] text-[#a19889]">当前视角关注</p>
+<p class="mt-1 font-display text-[11px] leading-[1.75] text-[#5e594f]" id="coreAskClue"></p>
+</div>
+<div>
+<p class="text-[8px] tracking-[0.1em] text-[#a19889]">你最近提到</p>
+<p class="mt-1 border-l border-[#c8bba5] pl-2.5 text-[10px] leading-[1.8] text-[#746c5f]" id="latestClue">还没有开始追问。从上面的建议里选一个方向，或写下此刻想到的第一句话。</p>
+</div>
+</div>
+</div>
+<div class="mt-6 border-t border-[#d2c6b2] pt-4">
+<p class="text-[8px] font-semibold tracking-[0.17em] text-[#8c8476]">A RECORD WILL HOLD</p>
+<div class="mt-3 space-y-2.5">
+<div class="flex items-center gap-2.5 text-[9px] text-[#7b7366]">
+<span class="grid h-6 w-6 place-items-center border border-[#d3c6b3] bg-[#f8f3e9] font-display text-[9px] text-[#9b4f35]">03</span>
+            三个逐渐清晰的洞见
+          </div>
+<div class="flex items-center gap-2.5 text-[9px] text-[#7b7366]">
+<span class="grid h-6 w-6 place-items-center border border-[#d3c6b3] bg-[#f8f3e9] font-display text-[9px] text-[#9b4f35]">02</span>
+            两处尚未解开的张力
+          </div>
+<div class="flex items-center gap-2.5 text-[9px] text-[#7b7366]">
+<span class="grid h-6 w-6 place-items-center border border-[#d3c6b3] bg-[#f8f3e9] font-display text-[9px] text-[#9b4f35]">03</span>
+            三个可以带走的实践
+          </div>
+</div>
+</div>
+<div class="mt-auto flex items-center gap-1.5 border-t border-[#d2c6b2] pt-4 text-[8px] leading-5 text-[#9c9384]">
+<iconify-icon class="text-[11px]" icon="lucide:lock-keyhole"></iconify-icon>
+        对话仅保存在你的浏览器本地
+      </div>
+</aside>
+</main>
+<script>
+    const STORAGE_KEY = "thinklab_state_v1";
+    const DEFAULT_QUESTION = "我总在担心自己做得不够好，如何面对这种持续的焦虑？";
+
+    const VIEWS = {
+      stoic: {
+        name: "斯多葛主义",
+        en: "STOICISM",
+        short: "关注可控之事",
+        icon: "lucide:columns-3",
+        accent: "#43563f",
+        soft: "#e8ece0",
+        line: "#bfc9b8",
+        tagline: "关注可控之事，安放不可控之事",
+        coreAsk: "哪些事真正在我的掌控之内？",
+        intro: "欢迎来到这条探索路径。你不必立刻同意斯多葛主义，只需要借它的眼睛看一会儿。\n\n爱比克泰德说，让我们不安的往往不是事情本身，而是我们对事情的看法。我们可以先不急着解决焦虑，只做一次区分：在这件事里，哪一部分由你决定，哪一部分并不由你决定？\n\n你可以从最近一次具体的场景说起。",
+        prompts: [
+          "我正在担心的这件事，究竟哪部分可控？",
+          "如果结果不由我决定，努力还有意义吗？",
+          "我知道道理，但情绪来了还是做不到。"
+        ],
+        quickReplies: [
+          "这是斯多葛主义最核心的一次练习。可以试着把最近一次焦虑拆成三栏：发生了什么、我脑中立刻出现的解释、我实际能做的动作。\n\n你很可能发现，第一栏很短，第二栏很长，而第三栏才是你真正可以落脚的地方。此刻如果只选一个动作，你愿意先做哪一件？",
+          "斯多葛主义不会说努力没有意义。它更像一个射箭的人：认真瞄准、用力拉弓，但箭离弦后，风向不再完全由他决定。\n\n意义不只在命中靶心，也在你是否按照自己的判断，完成了一次诚实的拉弓。你正在瞄准的“靶心”，究竟是什么？",
+          "这并不矛盾。斯多葛主义从不要求人立刻无动于衷，它只是邀请你在情绪与行动之间留出一小段空隙。\n\n不是用道理压住情绪，而是让它先坐在旁边。此刻身体里最明显的感受是什么？你不需要马上改变它，只需要准确地说出它。"
+        ],
+        replies: [
+          "你刚才的描述里，有一部分是事实，还有一部分是你对事实的解释。斯多葛主义会先把这两层轻轻分开。\n\n不必急着同意这个区分。可以先问自己：如果去掉“这说明我不够好”这句话，剩下的那件事，具体是什么？",
+          "斯多葛主义并不承诺让人不再痛苦。它更关心的是：在痛苦出现之后，你还能保留多少选择。\n\n有时那个选择很小，只是决定今天先完成一件事，而不是把整个未来一次想完。此刻你能负责的最小一步是什么？",
+          "这里的难点，往往不是不知道道理，而是我们太快地把某个结果当成了自我价值的证明。\n\n可以试着问：如果这件事的结果不理想，它究竟会证明什么？这个“证明”是你自己相信的，还是你借来的？",
+          "区分控制边界不是一次完成的分类，而是一种反复练习。可以先问三个问题：这件事由我决定吗？我能影响哪一部分？剩下的部分，我是否愿意暂时放下？\n\n第三个问题最难，因为它不是放弃，而是不再把全部力气交给不可控之处。",
+          "有些情绪并不需要被立刻解释。它们可能只是身体在提醒你：这件事对你很重要。\n\n斯多葛主义会说，先承认这份重要，再决定如何回应。你认为这份焦虑在保护什么？"
+        ],
+        summary: {
+          insights: [
+            "区分「事实」与「判断」：让你疲惫的可能不是事情本身，而是你不断追加的解释。",
+            "把行动收回可控范围：下一步不必解决全部未来，只需完成今天能够负责的一小步。",
+            "允许结果保有不确定性：认真地做，同时不把自我价值押在单一结果上。"
+          ],
+          tensions: [
+            "接纳与改变之间：哪些处境应当被承受，哪些又值得被改变？斯多葛主义并不主张对一切逆来顺受。",
+            "情绪并不是判断：即使已经知道道理，身体仍需要时间慢慢跟上。清醒与感受可以同时存在。"
+          ],
+          practices: [
+            "写下今天最困扰你的一件事，分成「我能影响」与「我不能决定」两栏。",
+            "为可控的那一栏选择一个 20 分钟内能完成的动作。",
+            "睡前用一句话记录：今天我把注意力交给了什么？"
+          ]
+        }
+      },
+      existential: {
+        name: "存在主义",
+        en: "EXISTENTIALISM",
+        short: "承担自由与选择",
+        icon: "lucide:compass",
+        accent: "#9b4f35",
+        soft: "#f4e9e1",
+        line: "#d8bcac",
+        tagline: "在没有标准答案处，承担自己的选择",
+        coreAsk: "如果没有任何预设答案，你想如何选择？",
+        intro: "欢迎来到存在主义这条路径。这里不提供一张现成的人生答案。\n\n萨特说，人被判定为自由。自由意味着我们必须在没有标准答案的处境里，为自己的选择赋予意义。因此，你的焦虑也许不只是需要被消除的情绪，也可能是一个价值问题。\n\n我们先从这个问题开始：如果没有任何人替你评价，你真正想选择的是什么？",
+        prompts: [
+          "如果没有任何人评价，我会怎么选？",
+          "我害怕的是失败，还是失去某种身份？",
+          "自由为什么让人如此焦虑？"
+        ],
+        quickReplies: [
+          "这是一个很好的起点。可以先把“别人会怎么看”暂时放到门外，只留下你自己的声音。\n\n如果没有任何掌声，也没有任何指责，你仍然愿意为哪一个选择承担后果？你不需要立刻给出答案，只需要诚实地看见自己最先想到的那个。",
+          "失败会带来损失，但“失去某种身份”往往更深：它可能意味着你不再是自己以为的那个人。\n\n存在主义会问：那个身份是你选择的，还是一直由外界替你保管？如果放下它，你还剩下哪些更真实的愿望？",
+          "因为自由从来不是轻飘飘的。它意味着没有借口，也意味着必须承担。\n\n焦虑在此不是故障，而可能是自由在敲门：某件事仍然需要你决定。此刻最让你无法回避的选择是什么？"
+        ],
+        replies: [
+          "存在主义不会把焦虑简单当成需要修复的故障。它更愿意问：这份焦虑是否在提醒你，某个选择仍然悬而未决？\n\n如果这不是一个需要被“治好”的问题，而是一个正在等待回答的召唤，你会怎样描述它？",
+          "你提到的那份不甘心，也许正指向一个还没有被承认的价值。\n\n存在主义关心的是：你害怕失去的，是结果本身，还是那个借由结果被确认的自己？如果没有人给你确认，你还愿意选择它吗？",
+          "自由与责任是一体两面。我们无法只拥有自由，却把后果交给别人。\n\n不必现在就选对，只需要诚实地承认：此刻的迟疑，也在构成你的生活。你正在用这份迟疑保护什么？",
+          "“别人都这样”是一种处境，不是判决。它解释了压力从哪里来，却不能代替你回答要怎样活。\n\n如果把你的人生当作一件正在创作的作品，这一笔你想怎么落下？",
+          "意义不是先找到再行动，而常常是在行动中生成。\n\n你不需要先拥有一套完整的人生哲学，才能迈出一步。一个足够小、却能表达你价值的动作，会是什么？"
+        ],
+        summary: {
+          insights: [
+            "焦虑可能是自由的回声：它提示某个价值仍在等待被承认，而不只是情绪需要被消除。",
+            "价值不是被发现的标准答案，而是在选择与承担中被一点点确认。",
+            "不选择也是一种选择：把决定交给惯性、他人期待或“再等等”，同样在塑造你的生活。"
+          ],
+          tensions: [
+            "自由与责任之间：越想保留所有可能，越可能失去真正投入某一项生活的机会。",
+            "真实自我与角色期待之间：我们既渴望被看见，又不愿只成为别人期待中的那个人。"
+          ],
+          practices: [
+            "写下你正在逃避的那个选择，并补全这句话：如果我选择它，我需要承担的是……",
+            "设想十年后回看今天，你更可能后悔做过什么，还是没有尝试什么？",
+            "为接下来一周做一个有意识的小承诺，让行动表达你真正重视的价值。"
+          ]
+        }
+      },
+      taoist: {
+        name: "道家 · 庄子",
+        en: "DAOISM",
+        short: "顺势与松开执取",
+        icon: "lucide:waves",
+        accent: "#4c6065",
+        soft: "#eaf0ef",
+        line: "#afc1c2",
+        tagline: "松开对抗，辨认事物的纹理",
+        coreAsk: "如果不再对抗，事情会如何自然展开？",
+        intro: "欢迎来到道家这条路径。我们不妨先把“解决问题”的力气放轻一点。\n\n庄子常提醒人，事物各有其纹理。与其用意志强行扭转，不如先看清：你正在与什么较劲？这份用力，是出于真实的需要，还是对失控的恐惧？\n\n你可以从最难放下的那个念头说起。",
+        prompts: [
+          "我要怎么区分顺势和逃避？",
+          "如果不再对抗，事情会怎样展开？",
+          "怎样放下对结果的执念？"
+        ],
+        quickReplies: [
+          "这是一个重要的分辨。顺势不是把事情推给命运，而是先看清条件，再决定力气放在哪里。\n\n可以问自己：我是在回避一件必须面对的事，还是在停止推动一件本就不由我推动的事？这两者的身体感受往往不同。",
+          "如果不立刻对抗，事情未必会变好，但你会先看见它本来的形状。\n\n庄子关心的不是让你退出，而是让你不再用错误的方式用力。此刻这件事最自然的下一步，可能是什么？",
+          "执念常常不是因为你太想要，而是因为你害怕失去对结果的控制。\n\n可以试着把“我必须让它变成这样”改成“我愿意认真对待它，也允许它有别的走向”。说出这句话时，你的身体有什么变化？"
+        ],
+        replies: [
+          "你越是用力按住水面，涟漪越难平息。道家的松动不是放弃，而是换一种与水相处的方式。\n\n先不急着解决，观察一下：这个问题在你身体里像什么？是一块石头、一根绷紧的线，还是一团不断旋转的水？",
+          "“顺其自然”不是随波逐流，而是辨认事物本来的纹理。\n\n在这件事里，哪一部分是你真正想推动的，哪一部分只是害怕失控？把这两者分开，力气才可能落在该落的地方。",
+          "无用之用，方为大用。有些时刻，不立即产生结果的空间，反而让新的可能出现。\n\n如果允许这件事暂时没有答案，你会多出什么？",
+          "你与问题的关系，可能比答案更重要。\n\n试着把“我必须解决它”改成“我正在与它相处”。这句话会让你身体有什么变化？",
+          "水流遇石，不与之争，却会绕行。绕行不是失败，而是承认石头的存在。\n\n在眼下的处境里，那个可以绕开的“石头”是什么？"
+        ],
+        summary: {
+          insights: [
+            "松开对固定答案的执取：当问题暂时没有结果，人反而可能看见更完整的处境。",
+            "辨认事情的纹理：不是所有阻力都需要被击碎，有些只需要被绕开、被等待或被重新理解。",
+            "无用之用：留白、停顿与不立即行动，也可能是思考的一部分。"
+          ],
+          tensions: [
+            "顺势与放任之间：真正的顺势需要辨认条件，而不是把所有结果都交给“顺其自然”。",
+            "内在松弛与现实行动之间：松开执念并不等于停止负责，如何既不强求又不逃避，是持续的练习。"
+          ],
+          practices: [
+            "在下次想立刻解决一件事之前，先停下来观察三次呼吸，再决定是否行动。",
+            "把“我必须……”改写为“我可以尝试……，也允许事情有别的走向”。",
+            "为自己留出一段没有目的的时间，只观察念头如何来去，不急着给它结论。"
+          ]
+        }
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const savedState = loadSavedState();
+    const urlQuestion = (params.get("q") || "").trim().slice(0, 300);
+    const urlView = params.get("view") || "";
+
+    let initialQuestion = urlQuestion;
+    if (!initialQuestion) {
+      initialQuestion = savedState && typeof savedState.question === "string" && savedState.question.trim()
+        ? savedState.question.trim()
+        : DEFAULT_QUESTION;
+    }
+
+    let initialView = "stoic";
+    if (VIEWS[urlView]) {
+      initialView = urlView;
+    } else if (savedState && VIEWS[savedState.view] && savedState.question === initialQuestion) {
+      initialView = savedState.view;
+    }
+
+    let state;
+    if (
+      savedState &&
+      savedState.question === initialQuestion &&
+      savedState.view === initialView &&
+      Array.isArray(savedState.messages) &&
+      savedState.messages.length > 0
+    ) {
+      state = savedState;
+    } else {
+      const now = new Date().toISOString();
+      state = {
+        question: initialQuestion,
+        view: initialView,
+        messages: [
+          {
+            role: "agent",
+            text: VIEWS[initialView].intro,
+            time: now
+          }
+        ],
+        createdAt: now,
+        summary: null,
+        summaryGeneratedAt: null,
+        summaryStale: false
+      };
+      saveState();
+    }
+
+    let isReplying = false;
+    let typing = false;
+    let hasRendered = false;
+
+    const headerQuestion = document.getElementById("headerQuestion");
+    const headerViewChip = document.getElementById("headerViewChip");
+    const headerViewDot = document.getElementById("headerViewDot");
+    const headerViewText = document.getElementById("headerViewText");
+    const viewNameTitle = document.getElementById("viewNameTitle");
+    const viewBadge = document.getElementById("viewBadge");
+    const viewBadgeDot = document.getElementById("viewBadgeDot");
+    const viewBadgeText = document.getElementById("viewBadgeText");
+    const viewTagline = document.getElementById("viewTagline");
+    const turnCount = document.getElementById("turnCount");
+    const recordBadge = document.getElementById("recordBadge");
+    const messageScroll = document.getElementById("messageScroll");
+    const messageList = document.getElementById("messageList");
+    const promptChips = document.getElementById("promptChips");
+    const chatForm = document.getElementById("chatForm");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const composerStatus = document.getElementById("composerStatus");
+    const sideQuestion = document.getElementById("sideQuestion");
+    const journeyViewName = document.getElementById("journeyViewName");
+    const journeyStep3Dot = document.getElementById("journeyStep3Dot");
+    const journeyStep3Label = document.getElementById("journeyStep3Label");
+    const journeyStep3State = document.getElementById("journeyStep3State");
+    const journeyStep4Dot = document.getElementById("journeyStep4Dot");
+    const journeyStep4Label = document.getElementById("journeyStep4Label");
+    const journeyStep4State = document.getElementById("journeyStep4State");
+    const sideViewCard = document.getElementById("sideViewCard");
+    const sideViewIconWrap = document.getElementById("sideViewIconWrap");
+    const sideViewIcon = document.getElementById("sideViewIcon");
+    const sideViewName = document.getElementById("sideViewName");
+    const sideViewEn = document.getElementById("sideViewEn");
+    const sideViewAsk = document.getElementById("sideViewAsk");
+    const changeViewLink = document.getElementById("changeViewLink");
+    const questionClue = document.getElementById("questionClue");
+    const coreAskClue = document.getElementById("coreAskClue");
+    const latestClue = document.getElementById("latestClue");
+    const rightRecordLink = document.getElementById("rightRecordLink");
+
+    function loadSavedState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        // 原型在本地存储不可用时仍保持当前页面内的对话。
+      }
+    }
+
+    function clip(text, length) {
+      const value = String(text || "").replace(/\s+/g, " ").trim();
+      return value.length > length ? value.slice(0, length) + "…" : value;
+    }
+
+    function formatTime(iso) {
+      try {
+        return new Date(iso).toLocaleTimeString("zh-CN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false
+        });
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function getUserMessages() {
+      return state.messages.filter(function (message) {
+        return message.role === "user";
+      });
+    }
+
+    function applyViewUI() {
+      const meta = VIEWS[state.view];
+      document.title = meta.name + "对话 · ThinkLab";
+      headerQuestion.textContent = state.question;
+      headerQuestion.title = state.question;
+      headerViewText.textContent = "正在以 " + meta.name + " 探索";
+      headerViewChip.style.borderColor = meta.line;
+      headerViewChip.style.backgroundColor = meta.soft;
+      headerViewChip.style.color = meta.accent;
+      headerViewDot.style.backgroundColor = meta.accent;
+
+      viewNameTitle.textContent = meta.name;
+      viewNameTitle.style.color = meta.accent;
+      viewBadge.style.borderColor = meta.line;
+      viewBadge.style.backgroundColor = meta.soft;
+      viewBadge.style.color = meta.accent;
+      viewBadgeDot.style.backgroundColor = meta.accent;
+      viewBadgeText.textContent = "当前视角 · " + meta.name;
+      viewTagline.textContent = meta.tagline;
+
+      sideQuestion.textContent = state.question;
+      journeyViewName.textContent = meta.name;
+      sideViewCard.style.borderLeftColor = meta.accent;
+      sideViewIconWrap.style.borderColor = meta.line;
+      sideViewIconWrap.style.backgroundColor = meta.soft;
+      sideViewIconWrap.style.color = meta.accent;
+      sideViewIcon.setAttribute("icon", meta.icon);
+      sideViewName.textContent = meta.name;
+      sideViewEn.textContent = meta.en;
+      sideViewAsk.textContent = meta.coreAsk;
+      questionClue.textContent = clip(state.question, 62);
+      coreAskClue.textContent = meta.coreAsk;
+      changeViewLink.href = "perspectives.html?q=" + encodeURIComponent(state.question);
+      messageInput.placeholder = "从「" + clip(meta.coreAsk, 20) + "」说起，或写下此刻想到的第一句话…";
+
+      renderPrompts();
+      updateTurnMeta();
+      renderRecordState();
+      updateJourney();
+    }
+
+    function renderPrompts() {
+      const meta = VIEWS[state.view];
+      promptChips.innerHTML = "";
+      meta.prompts.forEach(function (prompt) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "shrink-0 border border-[#d3c7b4] bg-[#fbf7ef] px-2.5 py-1.5 text-[9px] text-[#746c5f] transition-colors hover:border-[#9b4f35] hover:text-[#9b4f35]";
+        const icon = document.createElement("iconify-icon");
+        icon.setAttribute("icon", "lucide:corner-down-right");
+        icon.className = "mr-1 text-[11px]";
+        button.appendChild(icon);
+        const text = document.createElement("span");
+        text.textContent = prompt;
+        button.appendChild(text);
+        button.addEventListener("click", function () {
+          messageInput.value = prompt;
+          resizeInput();
+          messageInput.focus();
+          composerStatus.textContent = "已填入追问，可继续编辑";
+        });
+        promptChips.appendChild(button);
+      });
+    }
+
+    function updateTurnMeta() {
+      const userMessages = getUserMessages();
+      turnCount.textContent = userMessages.length === 0 ? "尚未开始追问" : "第 " + userMessages.length + " 轮追问";
+      if (userMessages.length > 0) {
+        latestClue.textContent = clip(userMessages[userMessages.length - 1].text, 72);
+      } else {
+        latestClue.textContent = "还没有开始追问。从上面的建议里选一个方向，或写下此刻想到的第一句话。";
+      }
+    }
+
+    function updateJourney() {
+      const userTurns = getUserMessages().length;
+      const hasSummary = Boolean(state.summary);
+      const stale = Boolean(state.summaryStale);
+
+      if (userTurns > 0) {
+        journeyStep3Dot.className = "absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border-2 border-[#f0eadf] bg-[#52634e]";
+        journeyStep3Label.className = "text-[11px] font-medium text-[#59554b]";
+        journeyStep3State.textContent = "已留下 " + userTurns + " 次追问";
+      } else {
+        journeyStep3Dot.className = "absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border-2 border-[#f0eadf] bg-[#b08a4b] ring-4 ring-[#b08a4b]/15";
+        journeyStep3Label.className = "text-[11px] font-medium text-[#34332d]";
+        journeyStep3State.textContent = "正在这条视角里深入";
+      }
+
+      if (hasSummary) {
+        journeyStep4Dot.className = stale
+          ? "absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border-2 border-[#f0eadf] bg-[#b08a4b]"
+          : "absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border-2 border-[#f0eadf] bg-[#52634e]";
+        journeyStep4Label.className = "text-[11px] font-medium text-[#59554b]";
+        journeyStep4State.textContent = stale ? "已有新对话，可更新记录" : "记录已形成，仍可继续";
+      } else {
+        journeyStep4Dot.className = "absolute -left-[26px] top-0.5 h-3 w-3 rounded-full border border-[#c2b6a2] bg-[#f0eadf]";
+        journeyStep4Label.className = "text-[11px] font-medium text-[#8a8274]";
+        journeyStep4State.textContent = "随时可以生成总结";
+      }
+    }
+
+    function renderRecordState() {
+      const hasSummary = Boolean(state.summary);
+      const stale = Boolean(state.summaryStale);
+
+      if (hasSummary) {
+        recordBadge.className = stale
+          ? "inline-flex items-center gap-1.5 border border-[#dcc8a8] bg-[#f5ecdc] px-2 py-1 text-[8px] text-[#8a6234]"
+          : "inline-flex items-center gap-1.5 border border-[#c8d2c1] bg-[#eef1e8] px-2 py-1 text-[8px] text-[#52634e]";
+        recordBadge.innerHTML = "";
+        const icon = document.createElement("iconify-icon");
+        icon.setAttribute("icon", stale ? "lucide:refresh-cw" : "lucide:check");
+        icon.className = "text-[10px]";
+        const text = document.createElement("span");
+        text.textContent = stale ? "记录可更新" : "已生成记录";
+        recordBadge.appendChild(icon);
+        recordBadge.appendChild(text);
+
+        rightRecordLink.className = "mt-3 inline-flex items-center gap-1.5 text-[9px] text-[#d9c6a4] underline decoration-[#7b8a78] underline-offset-4 hover:text-[#f1dfbc]";
+        rightRecordLink.textContent = stale ? "查看上次记录" : "查看思考记录";
+      } else {
+        recordBadge.className = "hidden";
+        rightRecordLink.className = "mt-3 hidden items-center gap-1.5 text-[9px] text-[#d9c6a4]";
+        rightRecordLink.textContent = "";
+      }
+    }
+
+    function appendParagraphs(container, text, role) {
+      const parts = String(text || "").split(/\n\s*\n/);
+      parts.forEach(function (part, index) {
+        const paragraph = document.createElement("p");
+        paragraph.style.whiteSpace = "pre-line";
+        paragraph.textContent = part;
+        if (role === "agent") {
+          paragraph.className = (index === 0 ? "" : "mt-3 ") + "font-display text-[15px] leading-[1.95] text-[#403c33]";
+        } else {
+          paragraph.className = (index === 0 ? "" : "mt-2 ") + "font-display text-[13.5px] leading-[1.9] text-[#3e3b32]";
+        }
+        container.appendChild(paragraph);
+      });
+    }
+
+    function createAgentMessage(message, isLast) {
+      const meta = VIEWS[state.view];
+      const row = document.createElement("div");
+      row.className = "flex items-start gap-3.5" + (isLast ? " message-enter" : "");
+
+      const avatar = document.createElement("div");
+      avatar.className = "grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-[14px] text-[#f9f4e9]";
+      avatar.style.backgroundColor = meta.accent;
+      avatar.textContent = "思";
+
+      const content = document.createElement("div");
+      content.className = "min-w-0 flex-1";
+
+      const metaRow = document.createElement("div");
+      metaRow.className = "mb-2 flex flex-wrap items-center gap-2 text-[8px] tracking-[0.04em] text-[#a19889]";
+      const name = document.createElement("span");
+      name.className = "font-medium text-[#777064]";
+      name.textContent = "哲学 Agent";
+      const dot = document.createElement("span");
+      dot.className = "h-0.5 w-0.5 rounded-full bg-[#b6ad9e]";
+      const lens = document.createElement("span");
+      lens.textContent = meta.name;
+      lens.style.color = meta.accent;
+      const time = document.createElement("span");
+      time.className = "ml-auto";
+      time.textContent = formatTime(message.time);
+      metaRow.appendChild(name);
+      metaRow.appendChild(dot);
+      metaRow.appendChild(lens);
+      metaRow.appendChild(time);
+
+      const bubble = document.createElement("div");
+      bubble.className = "border border-l-2 border-[#e0d6c5] bg-[#fdfaf3] px-4 py-4 sm:px-5";
+      bubble.style.borderLeftColor = meta.accent;
+      appendParagraphs(bubble, message.text, "agent");
+
+      content.appendChild(metaRow);
+      content.appendChild(bubble);
+      row.appendChild(avatar);
+      row.appendChild(content);
+      return row;
+    }
+
+    function createUserMessage(message, isLast) {
+      const row = document.createElement("div");
+      row.className = "flex items-start justify-end gap-3" + (isLast ? " message-enter" : "");
+
+      const content = document.createElement("div");
+      content.className = "flex max-w-[84%] flex-col items-end";
+
+      const metaRow = document.createElement("div");
+      metaRow.className = "mb-2 flex items-center gap-2 text-[8px] text-[#a19889]";
+      const time = document.createElement("span");
+      time.textContent = formatTime(message.time);
+      const name = document.createElement("span");
+      name.className = "font-medium text-[#8a6a5b]";
+      name.textContent = "你";
+      metaRow.appendChild(time);
+      metaRow.appendChild(name);
+
+      const bubble = document.createElement("div");
+      bubble.className = "border border-[#cbd4c4] bg-[#e6ebdf] px-4 py-3.5 sm:px-5";
+      appendParagraphs(bubble, message.text, "user");
+
+      content.appendChild(metaRow);
+      content.appendChild(bubble);
+
+      const avatar = document.createElement("div");
+      avatar.className = "mt-5 grid h-7 w-7 shrink-0 place-items-center rounded-full border border-[#d4a795] bg-[#f1e4dc] text-[10px] text-[#8a4b35]";
+      avatar.textContent = "你";
+
+      row.appendChild(content);
+      row.appendChild(avatar);
+      return row;
+    }
+
+    function createRecordNote() {
+      const note = document.createElement("div");
+      note.className = "mb-7 flex flex-col gap-2 border border-[#d5c7b1] bg-[#f5efe3] px-4 py-3 sm:flex-row sm:items-center sm:justify-between";
+      const left = document.createElement("div");
+      left.className = "flex items-start gap-2.5";
+      const icon = document.createElement("iconify-icon");
+      icon.setAttribute("icon", state.summaryStale ? "lucide:refresh-cw" : "lucide:bookmark-check");
+      icon.className = "mt-0.5 shrink-0 text-[14px] text-[#8a6a3d]";
+      const text = document.createElement("p");
+      text.className = "text-[9px] leading-[1.8] text-[#7b7366]";
+      text.textContent = state.summaryStale
+        ? "思考记录生成之后，你又继续了对话。你可以回到记录页查看旧版，或稍后重新生成一份更新版。"
+        : "一份思考记录已经形成。对话没有被结束，你可以从这里继续追问，旧的记录会保留下来。";
+      left.appendChild(icon);
+      left.appendChild(text);
+      const link = document.createElement("a");
+      link.href = "summary.html";
+      link.className = "shrink-0 text-[9px] font-medium text-[#8a4b35] underline decoration-[#d8b8a8] underline-offset-4 hover:text-[#6f3724]";
+      link.textContent = "查看记录 →";
+      note.appendChild(left);
+      note.appendChild(link);
+      return note;
+    }
+
+    function createTypingIndicator() {
+      const meta = VIEWS[state.view];
+      const row = document.createElement("div");
+      row.className = "flex items-start gap-3.5";
+
+      const avatar = document.createElement("div");
+      avatar.className = "grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-[14px] text-[#f9f4e9]";
+      avatar.style.backgroundColor = meta.accent;
+      avatar.textContent = "思";
+
+      const bubble = document.createElement("div");
+      bubble.className = "border border-[#e0d6c5] bg-[#fdfaf3] px-4 py-3.5";
+      const dots = document.createElement("div");
+      dots.className = "flex items-center gap-1.5";
+      for (let i = 0; i < 3; i += 1) {
+        const dot = document.createElement("span");
+        dot.className = "typing-dot h-1.5 w-1.5 rounded-full bg-[#8a9584]";
+        dots.appendChild(dot);
+      }
+      const label = document.createElement("span");
+      label.className = "ml-2 text-[8px] tracking-[0.04em] text-[#9b9284]";
+      label.textContent = "正在顺着这个视角思考";
+      dots.appendChild(label);
+      bubble.appendChild(dots);
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      return row;
+    }
+
+    function renderMessages() {
+      messageList.innerHTML = "";
+      if (state.summaryGeneratedAt) {
+        messageList.appendChild(createRecordNote());
+      }
+
+      state.messages.forEach(function (message, index) {
+        const isLast = index === state.messages.length - 1 && !typing;
+        if (message.role === "user") {
+          messageList.appendChild(createUserMessage(message, isLast));
+        } else {
+          messageList.appendChild(createAgentMessage(message, isLast));
+        }
+      });
+
+      if (typing) {
+        messageList.appendChild(createTypingIndicator());
+      }
+
+      requestAnimationFrame(function () {
+        messageScroll.scrollTo({
+          top: messageScroll.scrollHeight,
+          behavior: hasRendered ? "smooth" : "auto"
+        });
+        hasRendered = true;
+      });
+    }
+
+    function resizeInput() {
+      messageInput.style.height = "auto";
+      const nextHeight = Math.min(messageInput.scrollHeight, 132);
+      messageInput.style.height = Math.max(nextHeight, 54) + "px";
+    }
+
+    function getReply(text) {
+      const meta = VIEWS[state.view];
+      const promptIndex = meta.prompts.indexOf(text);
+      if (promptIndex >= 0 && meta.quickReplies[promptIndex]) {
+        return meta.quickReplies[promptIndex];
+      }
+      const userTurns = getUserMessages().length;
+      const reply = meta.replies[Math.max(0, userTurns - 1) % meta.replies.length];
+      return "你提到的「" + clip(text, 24) + "」，可以再往深处放一放。\n\n" + reply;
+    }
+
+    function sendMessage() {
+      if (isReplying) {
+        return;
+      }
+      const text = messageInput.value.trim();
+      if (!text) {
+        messageInput.focus();
+        composerStatus.textContent = "先写下一句话，再继续追问";
+        return;
+      }
+
+      state.messages.push({
+        role: "user",
+        text: text,
+        time: new Date().toISOString()
+      });
+      if (state.summaryGeneratedAt) {
+        state.summaryStale = true;
+      }
+      saveState();
+
+      messageInput.value = "";
+      resizeInput();
+      composerStatus.textContent = "Enter 发送 · Shift + Enter 换行";
+      isReplying = true;
+      typing = true;
+      sendBtn.disabled = true;
+      sendBtn.classList.add("opacity-60", "cursor-not-allowed");
+
+      renderMessages();
+      updateTurnMeta();
+      updateJourney();
+      renderRecordState();
+
+      window.setTimeout(function () {
+        state.messages.push({
+          role: "agent",
+          text: getReply(text),
+          time: new Date().toISOString()
+        });
+        typing = false;
+        isReplying = false;
+        sendBtn.disabled = false;
+        sendBtn.classList.remove("opacity-60", "cursor-not-allowed");
+        saveState();
+        renderMessages();
+        updateTurnMeta();
+        updateJourney();
+        renderRecordState();
+        messageInput.focus();
+      }, 1050);
+    }
+
+    function buildSummary() {
+      const meta = VIEWS[state.view];
+      const userMessages = getUserMessages();
+      const lastUser = userMessages.length > 0 ? userMessages[userMessages.length - 1].text : "";
+      const insights = meta.summary.insights.slice();
+
+      if (lastUser) {
+        insights[0] = insights[0] + " 你在对话中提到的「" + clip(lastUser, 44) + "」，让这个方向落在了更具体的生活处境里。";
+      } else {
+        insights.unshift("你还没有展开追问。这份记录保留了这次选择的起点，也留下了一条可以随时返回的入口。");
+      }
+
+      const excerpts = state.messages.slice(-6).map(function (message) {
+        return {
+          role: message.role,
+          text: clip(message.text, 220),
+          time: message.time
+        };
+      });
+
+      return {
+        version: 1,
+        question: state.question,
+        view: state.view,
+        viewName: meta.name,
+        en: meta.en,
+        coreAsk: meta.coreAsk,
+        tagline: meta.tagline,
+        turns: userMessages.length,
+        startedAt: state.createdAt,
+        generatedAt: new Date().toISOString(),
+        lastUser: lastUser,
+        insights: insights,
+        tensions: meta.summary.tensions.slice(),
+        practices: meta.summary.practices.slice(),
+        excerpts: excerpts
+      };
+    }
+
+    function prepareSummary() {
+      state.summary = buildSummary();
+      state.summaryGeneratedAt = state.summary.generatedAt;
+      state.summaryStale = false;
+      saveState();
+    }
+
+    document.querySelectorAll(".js-summary").forEach(function (link) {
+      link.addEventListener("click", function () {
+        prepareSummary();
+      });
+    });
+
+    chatForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      sendMessage();
+    });
+
+    messageInput.addEventListener("input", function () {
+      resizeInput();
+      if (composerStatus.textContent === "先写下一句话，再继续追问") {
+        composerStatus.textContent = "Enter 发送 · Shift + Enter 换行";
+      }
+    });
+
+    messageInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+        event.preventDefault();
+        if (!isReplying) {
+          chatForm.requestSubmit();
+        }
+      }
+    });
+
+    applyViewUI();
+    renderMessages();
+    resizeInput();
+    messageInput.focus();
+  </script>
+</body>
+</html>

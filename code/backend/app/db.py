@@ -10,6 +10,9 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from .config import Settings, get_settings
+from thinklab_core.logging_utils import get_logger
+
+logger = get_logger("db")
 
 
 class Base(DeclarativeBase):
@@ -32,12 +35,13 @@ def _build_engine(settings: Settings):
             engine = create_engine(url, pool_pre_ping=True, future=True)
             with engine.connect() as conn:  # 实际连通性探测
                 conn.exec_driver_sql("SELECT 1")
-            print(f"[thinklab] 已连接 PostgreSQL：{url.split('@')[-1]}")
+            logger.info("已连接 PostgreSQL：%s", url.split("@")[-1])
             return engine
         except Exception as exc:
             if mode == "postgres":
+                logger.error("PostgreSQL 连接失败（db_mode=postgres，不降级）：%s", exc, exc_info=True)
                 raise
-            print(f"[thinklab] PostgreSQL 不可用（{exc}），降级为 SQLite：{sqlite_path}")
+            logger.warning("PostgreSQL 不可用（%s），降级为 SQLite：%s", exc, sqlite_path)
 
     sqlite_path.parent.mkdir(parents=True, exist_ok=True)
     engine = create_engine(f"sqlite:///{sqlite_path}", future=True)

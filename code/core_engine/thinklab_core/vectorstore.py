@@ -14,6 +14,9 @@ from langchain_core.vectorstores import VectorStore
 
 from .config import Settings, get_settings
 from .embeddings import build_embeddings
+from .logging_utils import get_logger
+
+logger = get_logger("vectorstore")
 
 _LOCK = threading.Lock()
 _STORE_CACHE: Dict[str, Any] = {}
@@ -191,7 +194,7 @@ def _build_pinecone(settings: Settings, embeddings: Embeddings, namespace: str):
                 spec=ServerlessSpec(cloud=settings.pinecone_cloud, region=settings.pinecone_region),
             )
     except Exception as exc:  # pragma: no cover - 索引已存在或权限受限
-        print(f"[thinklab] Pinecone 索引初始化跳过：{exc}")
+        logger.warning("Pinecone 索引初始化跳过：%s", exc)
 
     return PineconeVectorStore(
         index_name=settings.pinecone_index,
@@ -215,7 +218,7 @@ def get_vectorstore(settings: Settings | None = None, namespace: str | None = No
             try:
                 store = _build_pinecone(settings, embeddings, ns)
             except Exception as exc:  # pragma: no cover - 密钥无效时降级
-                print(f"[thinklab] Pinecone 不可用，降级本地向量库：{exc}")
+                logger.error("Pinecone 不可用，降级本地向量库：%s", exc, exc_info=True)
                 store = LocalVectorStore(
                     embeddings, persist_path=str(_default_local_path(settings)), namespace=ns
                 )

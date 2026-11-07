@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from thinklab_core.knowledge.faq import faq_entries
 from thinklab_core.knowledge.seed_docs import seed_documents
+from thinklab_core.logging_utils import get_logger
 
 from .. import repositories
 from ..deps import get_ai_agent, get_db
@@ -22,6 +23,8 @@ from ..schemas import (
     SourceItem,
 )
 from ..serializers import source_item
+
+logger = get_logger("knowledge")
 
 router = APIRouter(tags=["knowledge"])
 
@@ -60,7 +63,9 @@ def ingest_knowledge(
     try:
         result = agent.ingest(rebuild=rebuild)
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"灌库失败：{exc}")
+        db.rollback()
+        logger.error("灌库失败（rebuild=%s）：%s", rebuild, exc, exc_info=True)
+        raise HTTPException(status_code=502, detail=f"灌库失败：{exc}") from exc
 
     for doc in seed_documents():
         repositories.upsert_knowledge_doc(db, doc)

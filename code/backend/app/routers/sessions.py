@@ -8,11 +8,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from thinklab_core.lenses import LENS_PROFILES
+from thinklab_core.logging_utils import get_logger
 
 from .. import repositories
 from ..deps import get_ai_agent, get_db
 from ..schemas import CreateSessionIn, LensOut, SelectLensIn, SessionDetail, SessionOut
 from ..serializers import lens_out, session_detail, session_out
+
+logger = get_logger("sessions")
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
@@ -25,7 +28,8 @@ def create_session(payload: CreateSessionIn, db: Session = Depends(get_db), agen
         result = agent.read_and_perspectives(payload.question)
     except Exception as exc:
         db.rollback()
-        raise HTTPException(status_code=502, detail=f"视角生成失败：{exc}")
+        logger.error("视角生成失败（session=%s）：%s", session.id, exc, exc_info=True)
+        raise HTTPException(status_code=502, detail=f"视角生成失败：{exc}") from exc
 
     repositories.save_perspectives(db, session.id, [lens.model_dump() for lens in result.lenses])
     repositories.log_retrieval(

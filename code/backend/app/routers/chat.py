@@ -10,11 +10,14 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from thinklab_core.llm import bind_task
+from thinklab_core.logging_utils import get_logger
 
 from .. import repositories
 from ..deps import get_ai_agent, get_db
 from ..schemas import SendMessageIn, SendMessageOut
 from ..serializers import message_out
+
+logger = get_logger("chat")
 
 router = APIRouter(prefix="/sessions/{session_id}/messages", tags=["chat"])
 
@@ -56,7 +59,8 @@ def send_message(
         )
     except Exception as exc:
         db.rollback()
-        raise HTTPException(status_code=502, detail=f"Agent 回复失败：{exc}")
+        logger.error("Agent 回复失败（session=%s）：%s", session_id, exc, exc_info=True)
+        raise HTTPException(status_code=502, detail=f"Agent 回复失败：{exc}") from exc
 
     agent_message = repositories.add_message(
         db,
@@ -132,7 +136,14 @@ def send_message_stream(
                     sources = list(event.get("sources") or [])
                     rolling_summary = event.get("rolling_summary") or None
         except Exception as exc:  # pragma: no cover - 流式中断
-            yield _sse("error", {"message": str(exc)})
+            logger.error(
+                "流式对话中断（session=%s，已输出 %s 个片段）：%s", session_id, len(chunks), exc, exc_info=True
+            )
+            try:
+                db.rollback()
+            except Exception:  # pragma: no cover - 连接已断开时忽略
+                logger.debug("流式中断后回滚事务失败（连接可能已关闭）")
+            yield _sse("error", {"message": "对话生成中断，请重试", "request_id": None})
             return
 
         content = "".join(chunks).strip()

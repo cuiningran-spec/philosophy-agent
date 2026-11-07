@@ -8,6 +8,9 @@ from typing import Any, Dict, Iterator, List, Optional
 from . import chains
 from .config import Settings, get_settings
 from .llm import get_llm
+from .logging_utils import get_logger
+
+logger = get_logger("agent")
 from .schemas import (
     DialogueResult,
     FaqResult,
@@ -28,6 +31,13 @@ class ThinkLabAgent:
         self.vectorstore = get_vectorstore(self.settings)
         self.llm_mode = self.settings.resolved_llm_mode()
         self.vectorstore_mode = vectorstore_label(self.vectorstore)
+        logger.info(
+            "ThinkLabAgent 初始化：llm_mode=%s vectorstore=%s top_k=%s memory_window=%s",
+            self.llm_mode,
+            self.vectorstore_mode,
+            self.settings.retrieval_top_k,
+            self.settings.memory_window_turns,
+        )
 
     # ---------------- 视角 ----------------
     def lenses(self) -> List[LensProfile]:

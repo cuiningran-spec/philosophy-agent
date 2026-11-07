@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import argparse
 
+from .logging_utils import get_logger
 from .service import ThinkLabAgent
+
+logger = get_logger("ingest")
 
 
 def main() -> None:
@@ -15,11 +18,12 @@ def main() -> None:
 
     agent = ThinkLabAgent()
     result = agent.ingest(rebuild=args.rebuild)
-    print(f"灌库完成：{result}")
+    logger.info("灌库完成：%s", result)
 
     if args.query:
+        logger.info("检索测试：query=%s", args.query)
         for index, item in enumerate(agent.search(args.query), start=1):
-            print(f"[{index}] {item.title}（{item.school}） score={item.score}")
+            logger.info("[%s] %s（%s） score=%s", index, item.title, item.school, item.score)
 
 
 if __name__ == "__main__":

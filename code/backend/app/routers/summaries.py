@@ -7,10 +7,14 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from thinklab_core.logging_utils import get_logger
+
 from .. import repositories
 from ..deps import get_ai_agent, get_db
 from ..schemas import SummaryOut
 from ..serializers import summary_out
+
+logger = get_logger("summaries")
 
 router = APIRouter(tags=["summaries"])
 
@@ -37,7 +41,9 @@ def create_summary(session_id: str, db: Session = Depends(get_db), agent=Depends
             rolling_summary=session.rolling_summary or "",
         )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"总结生成失败：{exc}")
+        db.rollback()
+        logger.error("总结生成失败（session=%s）：%s", session_id, exc, exc_info=True)
+        raise HTTPException(status_code=502, detail=f"总结生成失败：{exc}") from exc
 
     messages = repositories.list_messages(db, session_id)
     excerpts = [

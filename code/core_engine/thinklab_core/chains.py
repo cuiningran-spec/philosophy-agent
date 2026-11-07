@@ -12,6 +12,9 @@ from pydantic import BaseModel, Field
 
 from .config import Settings, get_settings
 from .llm import TemplateChatModel, bind_task, intro_for, run_chain, stream_chain
+from .logging_utils import get_logger
+
+logger = get_logger("chains")
 from .memory import DialogueMemory
 from .prompts import (
     DIALOGUE_PROMPT,
@@ -115,6 +118,16 @@ def retrieve(
                 score=round(final, 4),
             )
         )
+    logger.debug(
+        "检索完成：query=%s school=%s 命中 %s/%s 条（top=%s）",
+        (query[:32] or "∅"),
+        school or "-",
+        len(items),
+        len(raw),
+        top_k,
+    )
+    if not items:
+        logger.warning("检索无命中：query=%s school=%s", query[:64], school or "-")
     return items
 
 
@@ -337,7 +350,7 @@ def generate_reply(
     try:
         content = run_chain(build_dialogue_chain, llm, inputs, TASK_DIALOGUE, ctx, settings)
     except Exception as exc:
-        print(f"[thinklab] 对话链失败，使用本地模板兜底：{exc}")
+        logger.error("对话链最终失败（已尝试模板兜底仍异常），使用本地模板兜底：%s", exc, exc_info=True)
         content = (
             TemplateChatModel()
             .bind(task=TASK_DIALOGUE, ctx=ctx)
@@ -350,6 +363,13 @@ def generate_reply(
         new_summary = memory.compress(bind_task(llm, "compress", {"question": question, "lens": lens_key}))
         used_summary = True
 
+    logger.debug(
+        "对话生成完成：lens=%s turn=%s 命中语料=%s 使用滚动摘要=%s",
+        lens_key,
+        memory.user_turns + 1,
+        len(sources),
+        used_summary,
+    )
     return DialogueResult(
         content=str(content).strip(),
         sources=sources,
@@ -388,7 +408,7 @@ def stream_reply(
         for chunk in stream_chain(build_dialogue_chain, llm, inputs, TASK_DIALOGUE, ctx, settings):
             yield {"type": "token", "content": chunk}
     except Exception as exc:
-        print(f"[thinklab] 流式链失败，回退一次性输出：{exc}")
+        logger.warning("流式链失败，回退一次性输出：%s", exc, exc_info=True)
         content = generate_reply(
             llm, vectorstore, question, lens_key, history, user_input, rolling_summary, settings
         )

@@ -43,6 +43,16 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("THINKLAB_LLM_FALLBACK", "llm_fallback_enabled"),
     )
 
+    # ---------- 日志（env: THINKLAB_LOG_*）----------
+    # DEBUG / INFO / WARNING / ERROR
+    log_level: str = Field(
+        default="INFO", validation_alias=AliasChoices("THINKLAB_LOG_LEVEL", "log_level")
+    )
+    # 可选文件输出路径；为空时仅输出到控制台
+    log_file: Optional[str] = Field(
+        default=None, validation_alias=AliasChoices("THINKLAB_LOG_FILE", "log_file")
+    )
+
     # ---------- 向量库 ----------
     pinecone_api_key: Optional[str] = Field(default=None)
     pinecone_index: str = Field(default="thinklab-philosophy")

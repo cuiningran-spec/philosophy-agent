@@ -8,6 +8,7 @@ DeepSeek 的对话接口与 OpenAI 兼容（``https://api.deepseek.com``），
 from __future__ import annotations
 
 import json
+import logging
 from typing import Any, Dict, Iterator, List, Optional
 
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -15,6 +16,9 @@ from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 
 from .config import Settings, get_settings
+from .logging_utils import get_logger
+
+logger = get_logger("llm")
 from .lenses import (
     INTROS,
     LENS_ORDER,
@@ -210,21 +214,25 @@ def get_llm(settings: Settings | None = None):
 
     if mode == "deepseek":
         if not settings.deepseek_api_key:
-            print("[thinklab] 未配置 DEEPSEEK_API_KEY，降级模板模型")
+            logger.warning("未配置 DEEPSEEK_API_KEY，降级模板模型")
             return TemplateChatModel()
         try:
-            return _build_deepseek(settings)
+            client = _build_deepseek(settings)
+            logger.info("LLM 已就绪：deepseek / model=%s base_url=%s", settings.deepseek_model, settings.deepseek_base_url)
+            return client
         except Exception as exc:  # pragma: no cover
-            print(f"[thinklab] DeepSeek 初始化失败，降级模板模型：{exc}")
+            logger.error("DeepSeek 初始化失败，降级模板模型：%s", exc, exc_info=True)
 
     elif mode == "openai":
         if not settings.openai_api_key:
-            print("[thinklab] 未配置 OPENAI_API_KEY，降级模板模型")
+            logger.warning("未配置 OPENAI_API_KEY，降级模板模型")
             return TemplateChatModel()
         try:
-            return _build_openai(settings)
+            client = _build_openai(settings)
+            logger.info("LLM 已就绪：openai / model=%s", settings.openai_model)
+            return client
         except Exception as exc:  # pragma: no cover
-            print(f"[thinklab] ChatOpenAI 初始化失败，降级模板模型：{exc}")
+            logger.error("ChatOpenAI 初始化失败，降级模板模型：%s", exc, exc_info=True)
 
     return TemplateChatModel()
 
@@ -255,8 +263,10 @@ def run_chain(
         return builder(bind_task(llm, task, ctx)).invoke(payload)
     except Exception as exc:
         if not _allow_fallback(llm, settings):
+            logger.error("LLM 调用失败且已关闭兜底（task=%s）：%s", task, exc, exc_info=True)
             raise
-        print(f"[thinklab] LLM 调用失败（{task}），使用模板模型兜底：{exc}")
+        logger.warning("LLM 调用失败（task=%s），使用模板模型兜底：%s", task, exc)
+        logger.debug("LLM 调用失败堆栈", exc_info=True)
         return builder(bind_task(TemplateChatModel(), task, ctx)).invoke(payload)
 
 
@@ -275,8 +285,10 @@ def stream_chain(
                 yield str(chunk)
     except Exception as exc:
         if not _allow_fallback(llm, settings):
+            logger.error("LLM 流式调用失败且已关闭兜底（task=%s）：%s", task, exc, exc_info=True)
             raise _FallbackNotAvailable(str(exc)) from exc
-        print(f"[thinklab] LLM 流式调用失败（{task}），使用模板模型兜底：{exc}")
+        logger.warning("LLM 流式调用失败（task=%s），使用模板模型兜底：%s", task, exc)
+        logger.debug("LLM 流式调用失败堆栈", exc_info=True)
         for chunk in builder(bind_task(TemplateChatModel(), task, ctx)).stream(payload):
             if chunk:
                 yield str(chunk)

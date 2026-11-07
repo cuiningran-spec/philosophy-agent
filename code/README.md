@@ -181,6 +181,8 @@ export OPENAI_API_KEY=sk-yyyy          # 可选：向量化（DeepSeek 不提供
 | `THINKLAB_LLM_FALLBACK` | `true` | DeepSeek 调用失败时用模板模型兜底，避免对话中断（设为 `false` 则直接报错） |
 | `THINKLAB_VECTORSTORE_MODE` | `auto` | `auto / pinecone / local` |
 | `THINKLAB_RETRIEVAL_TOP_K` | `4` | 每次召回条数 |
+| `THINKLAB_LOG_LEVEL` | `INFO` | 日志级别（DEBUG / INFO / WARNING / ERROR），内核与 API 共用 |
+| `THINKLAB_LOG_FILE` | 空 | 可选，日志同时写入该文件（自动建目录） |
 | `THINKLAB_MEMORY_WINDOW_TURNS` | `6` | 进入提示词的近期轮次 |
 | `THINKLAB_MEMORY_COMPRESS_TURNS` | `8` | 超过该轮次触发滚动摘要压缩 |
 | `AGENT_API_BASE` / `PORT` | `http://127.0.0.1:8000` / `4173` | Node.js Web 服务反代目标与端口 |

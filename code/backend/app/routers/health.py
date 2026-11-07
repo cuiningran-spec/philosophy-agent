@@ -6,8 +6,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from thinklab_core.logging_utils import get_logger
+
 from ..deps import get_ai_agent, get_db
 from ..schemas import HealthOut
+
+logger = get_logger("health")
 
 router = APIRouter(tags=["health"])
 
@@ -17,6 +21,7 @@ def health(db: Session = Depends(get_db), agent=Depends(get_ai_agent)):
     try:
         db.execute(text("SELECT 1"))
         database = "up"
-    except Exception:
+    except Exception as exc:
+        logger.warning("健康检查：数据库不可用：%s", exc)
         database = "down"
     return HealthOut(status="ok", database=database, agent=agent.runtime_info())

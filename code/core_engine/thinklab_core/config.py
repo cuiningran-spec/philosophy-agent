@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Optional
 
 from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# 项目根目录（code/），保证无论从哪个目录启动都能读取 code/.env
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(PROJECT_ROOT / ".env", ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,

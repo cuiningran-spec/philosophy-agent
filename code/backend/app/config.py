@@ -17,7 +17,12 @@ if str(CORE_ENGINE_PATH) not in sys.path:
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)
+    # code/.env 为全局配置（与启动目录无关）；backend/.env 可做后端局部覆盖
+    model_config = SettingsConfigDict(
+        env_file=(Path(__file__).resolve().parents[2] / ".env", ".env"),
+        extra="ignore",
+        case_sensitive=False,
+    )
 
     app_name: str = Field(default="ThinkLab Agent API")
     api_prefix: str = Field(default="/api")

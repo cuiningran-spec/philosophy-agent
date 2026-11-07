@@ -1,0 +1,34 @@
+2026-11-07 19:29:31 | INFO    | thinklab.main | ThinkLab API 启动：llm=template db_mode=auto log_level=INFO
+2026-11-07 19:29:31 | WARNING | thinklab.db | PostgreSQL 不可用（(psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/21/e3q8)），降级为 SQLite：/Users/cui/Downloads/suda/ThinkLab/philosophy-agent/code/backend/.cache/thinklab.db
+2026-11-07 19:29:31 | INFO    | thinklab.main | 数据库表已就绪
+2026-11-07 19:29:31 | INFO    | thinklab.agent | ThinkLabAgent 初始化：llm_mode=template vectorstore=local top_k=4 memory_window=6
+2026-11-07 19:29:31 | INFO    | thinklab.main | 知识库预热完成：{'documents': 46, 'vectorstore': 'local', 'llm': 'template', 'rebuilt': False}
+2026-11-07 19:29:39 | INFO    | thinklab.api | [rid=118e06ddd966] GET /api/sessions/no-such-id -> 404（12ms）
+2026-11-07 19:42:29 | INFO    | thinklab.main | ThinkLab API 启动：llm=template db_mode=auto log_level=INFO
+2026-11-07 19:42:29 | INFO    | thinklab.db | 已连接 PostgreSQL：localhost:5432/thinklab
+2026-11-07 19:42:29 | INFO    | thinklab.main | 数据库表已就绪
+2026-11-07 19:42:29 | INFO    | thinklab.agent | ThinkLabAgent 初始化：llm_mode=template vectorstore=local top_k=4 memory_window=6
+2026-11-07 19:42:29 | INFO    | thinklab.main | 知识库预热完成：{'documents': 46, 'vectorstore': 'local', 'llm': 'template', 'rebuilt': False}
+2026-11-07 19:42:36 | INFO    | thinklab.api | [rid=eb56bf66bafc] GET /favicon.ico -> 404（15ms）
+2026-11-07 19:43:38 | INFO    | thinklab.api | [rid=3b31e2f4d1c0] POST /api/sessions -> 201（78ms）
+2026-11-07 19:43:38 | INFO    | thinklab.api | [rid=a11f961e2d20] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5 -> 200（16ms）
+2026-11-07 19:43:38 | INFO    | thinklab.api | [rid=98a5a2ba5cb2] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5 -> 200（10ms）
+2026-11-07 19:43:44 | INFO    | thinklab.api | [rid=08837ad31359] POST /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/lens -> 200（36ms）
+2026-11-07 19:43:44 | INFO    | thinklab.api | [rid=ab9dbc75bf5e] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5 -> 200（15ms）
+2026-11-07 19:43:44 | INFO    | thinklab.api | [rid=863fc50594ec] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5 -> 200（10ms）
+2026-11-07 19:43:52 | INFO    | thinklab.api | [rid=a0bb0dfd1c28] POST /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/messages/stream -> 200（24ms）
+2026-11-07 19:43:52 | INFO    | thinklab.api | [rid=4fb28fb34ee4] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5 -> 200（13ms）
+2026-11-07 19:43:58 | INFO    | thinklab.api | [rid=6eafa0a19ade] POST /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/messages/stream -> 200（14ms）
+2026-11-07 19:43:58 | INFO    | thinklab.api | [rid=7acde34cbd1d] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5 -> 200（8ms）
+2026-11-07 19:44:03 | INFO    | thinklab.api | [rid=71411c190d56] POST /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/messages/stream -> 200（22ms）
+2026-11-07 19:44:03 | INFO    | thinklab.api | [rid=4c0d90377120] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5 -> 200（17ms）
+2026-11-07 19:44:12 | INFO    | thinklab.api | [rid=a3eabf9a20fd] POST /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 201（38ms）
+2026-11-07 19:44:12 | INFO    | thinklab.api | [rid=cffb42c2d30f] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 200（4ms）
+2026-11-07 19:44:12 | INFO    | thinklab.api | [rid=0aa737e72959] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 200（5ms）
+2026-11-07 19:52:19 | INFO    | thinklab.api | [rid=2f093d695871] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 200（13ms）
+2026-11-07 19:52:19 | INFO    | thinklab.api | [rid=a0a995c4fb29] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 200（4ms）

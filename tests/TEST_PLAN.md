@@ -26,7 +26,7 @@
 | 测试数据库 | SQLite（pytest 临时目录，每个测试独立、用后销毁） |
 | LLM | 固定 `template` 模式（零网络请求、输出确定；不访问 DeepSeek / OpenAI） |
 | 向量库 | 本地 JSON 向量索引（不访问 Pinecone） |
-| 运行目录 | `code/`（`pytest.ini` 所在目录即 rootdir） |
+| 运行目录 | 项目根目录 `philosophy-agent/`（`pytest.ini` 所在目录即 rootdir；业务代码位于 `code/`） |
 
 ## 3. 测试范围
 
@@ -94,7 +94,7 @@
 
 | 指标 | 值 |
 | --- | --- |
-| 覆盖率统计对象 | `thinklab_core`（配置于 `code/.coveragerc`：`source = thinklab_core`） |
+| 覆盖率统计对象 | `thinklab_core`（配置于项目根目录 `.coveragerc`：`source = thinklab_core`，实际覆盖 `code/core_engine/thinklab_core/`） |
 | 总覆盖率（%） | __（待实际运行填写） |
 | 覆盖率达标线 | ≥ 60% |
 | 未覆盖模块说明 | （如有，注明原因：外部依赖分支 / 数据文件等） |

@@ -13,6 +13,7 @@ from thinklab_core.logging_utils import get_logger
 
 from .. import repositories
 from ..deps import get_ai_agent, get_db
+from ..safety import guard_text, is_boundary_level
 from ..schemas import (
     FaqAskIn,
     FaqAskOut,
@@ -134,9 +135,22 @@ def ask_faq(
     db: Session = Depends(get_db),
     agent=Depends(get_ai_agent),
 ):
-    """FAQ 问答：先做知识库检索，再让 Agent 组织答案。"""
-    result = agent.ask_faq(payload.question)
-    repositories.log_retrieval(db, query=payload.question, hits=[s.model_dump() for s in result.sources])
+    """FAQ 问答：guardrails 分诊 → 知识库检索 → Agent 组织答案。"""
+    # guardrails：拦截/越界的问题在此终止；专业判断类直接返回能力边界提示
+    question, decision = guard_text(payload.question)
+    if is_boundary_level(decision):
+        logger.info("专业判断类问题（%s），FAQ 返回能力边界提示", decision.category)
+        repositories.log_retrieval(db, query=question, hits=[])
+        db.commit()
+        return FaqAskOut(
+            question=question,
+            answer=decision.reason,
+            matched=None,
+            sources=[],
+            mode="guardrails",
+        )
+    result = agent.ask_faq(question)
+    repositories.log_retrieval(db, query=question, hits=[s.model_dump() for s in result.sources])
     db.commit()
     return FaqAskOut(
         question=result.question,

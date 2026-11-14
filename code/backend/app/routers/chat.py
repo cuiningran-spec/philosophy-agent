@@ -14,6 +14,7 @@ from thinklab_core.logging_utils import get_logger
 
 from .. import repositories
 from ..deps import get_ai_agent, get_db
+from ..safety import guard_text, is_boundary_level
 from ..schemas import SendMessageIn, SendMessageOut
 from ..serializers import message_out
 
@@ -42,19 +43,34 @@ def send_message(
     db: Session = Depends(get_db),
     agent=Depends(get_ai_agent),
 ):
-    """一次完整的问答：写入用户追问 → 检索 → 生成 → 写入 Agent 回复。"""
+    """一次完整的问答：guardrails → 写入用户追问 → 检索 → 生成 → 写入 Agent 回复。"""
     session = _require_ready(session_id, db)
+    # guardrails：拦截/越界的输入在此终止（不会保存、不会调用 LLM）
+    content, decision = guard_text(payload.content)
     history = repositories.history_for_agent(db, session_id)
 
-    user_message = repositories.add_message(db, session_id, "user", payload.content)
+    user_message = repositories.add_message(db, session_id, "user", content)
     db.commit()
+
+    # 专业判断类：跳过 LLM，直接返回能力边界提示（对话可继续）
+    if is_boundary_level(decision):
+        logger.info("专业判断类输入（%s），返回能力边界提示（session=%s）", decision.category, session_id)
+        agent_message = repositories.add_message(
+            db, session_id, "agent", decision.reason, turn_index=user_message.turn_index
+        )
+        db.commit()
+        return SendMessageOut(
+            user_message=message_out(user_message),
+            agent_message=message_out(agent_message),
+            rolling_summary_updated=False,
+        )
 
     try:
         result = agent.reply(
             question=session.question,
             lens_key=session.lens,
             history=history,
-            user_input=payload.content,
+            user_input=content,
             rolling_summary=session.rolling_summary or "",
         )
     except Exception as exc:
@@ -72,7 +88,7 @@ def send_message(
     )
     repositories.log_retrieval(
         db,
-        query=payload.content,
+        query=content,
         hits=[s.model_dump() for s in result.sources],
         school=session.lens,
         session_id=session_id,
@@ -109,15 +125,36 @@ def send_message_stream(
     db: Session = Depends(get_db),
     agent=Depends(get_ai_agent),
 ):
-    """SSE 流式问答：user → token* → done。"""
+    """SSE 流式问答：guardrails → user → token* → done。"""
     session = _require_ready(session_id, db)
+    # guardrails：拦截/越界的输入在此终止（异常在流开始前返回，不会调用 LLM）
+    content, decision = guard_text(payload.content)
     history = repositories.history_for_agent(db, session_id)
-    user_message = repositories.add_message(db, session_id, "user", payload.content)
+    user_message = repositories.add_message(db, session_id, "user", content)
     db.commit()
     user_payload = message_out(user_message).model_dump(mode="json")
 
+    # 专业判断类：跳过 LLM，流式返回能力边界提示（对话可继续）
+    professional = is_boundary_level(decision)
+
     def event_stream() -> Iterator[str]:
         yield _sse("user", {"message": user_payload})
+        if professional:
+            logger.info("专业判断类输入（%s），流式返回能力边界提示（session=%s）", decision.category, session_id)
+            agent_message = repositories.add_message(
+                db, session_id, "agent", decision.reason, turn_index=user_message.turn_index
+            )
+            db.commit()
+            yield _sse("token", {"content": decision.reason})
+            yield _sse(
+                "done",
+                {
+                    "message": message_out(agent_message).model_dump(mode="json"),
+                    "sources": [],
+                },
+            )
+            return
+
         chunks: list[str] = []
         sources: list[dict] = []
         rolling_summary: str | None = None
@@ -126,7 +163,7 @@ def send_message_stream(
                 question=session.question,
                 lens_key=session.lens,
                 history=history,
-                user_input=payload.content,
+                user_input=content,
                 rolling_summary=session.rolling_summary or "",
             ):
                 if event.get("type") == "token":
@@ -146,18 +183,21 @@ def send_message_stream(
             yield _sse("error", {"message": "对话生成中断，请重试", "request_id": None})
             return
 
-        content = "".join(chunks).strip()
+        # 注意：这里必须用新名字 agent_content —— 若复用外层的 content，
+        # 本赋值会把 content 变成 event_stream 的局部变量，
+        # 导致上方 agent.stream_reply(user_input=content) 抛 UnboundLocalError（流式 100% 中断）
+        agent_content = "".join(chunks).strip()
         agent_message = repositories.add_message(
             db,
             session_id,
             "agent",
-            content,
+            agent_content,
             sources=sources,
             turn_index=user_message.turn_index,
         )
         repositories.log_retrieval(
             db,
-            query=payload.content,
+            query=content,
             hits=sources,
             school=session.lens,
             session_id=session_id,

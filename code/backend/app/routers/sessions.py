@@ -12,6 +12,7 @@ from thinklab_core.logging_utils import get_logger
 
 from .. import repositories
 from ..deps import get_ai_agent, get_db
+from ..safety import guard_text
 from ..schemas import CreateSessionIn, LensOut, SelectLensIn, SessionDetail, SessionOut
 from ..serializers import lens_out, session_detail, session_out
 
@@ -22,10 +23,12 @@ router = APIRouter(prefix="/sessions", tags=["sessions"])
 
 @router.post("", response_model=SessionDetail, status_code=201)
 def create_session(payload: CreateSessionIn, db: Session = Depends(get_db), agent=Depends(get_ai_agent)):
-    """输入一个现实问题 → 生成三种有区别的哲学视角。"""
-    session = repositories.create_session(db, payload.question)
+    """输入一个现实问题 → guardrails 分诊 → 生成三种有区别的哲学视角。"""
+    # guardrails：拦截/越界的问题在此终止（不建会话、不调用 LLM）
+    question, _decision = guard_text(payload.question)
+    session = repositories.create_session(db, question)
     try:
-        result = agent.read_and_perspectives(payload.question)
+        result = agent.read_and_perspectives(question)
     except Exception as exc:
         db.rollback()
         logger.error("视角生成失败（session=%s）：%s", session.id, exc, exc_info=True)
@@ -34,7 +37,7 @@ def create_session(payload: CreateSessionIn, db: Session = Depends(get_db), agen
     repositories.save_perspectives(db, session.id, [lens.model_dump() for lens in result.lenses])
     repositories.log_retrieval(
         db,
-        query=payload.question,
+        query=question,
         hits=[s.model_dump() for s in result.sources],
         session_id=session.id,
     )

@@ -22,10 +22,11 @@ import pytest
 # 1. 模块导入路径：code/core_engine 与 code/backend
 #    统一使用「app.main / app.db」导入后端（与 README 的 PYTHONPATH=backend 运行方式一致），
 #    避免同一模块以两个名字被重复导入导致单例分裂。
+#    注意：tests/ 位于项目根目录（philosophy-agent/），业务代码在其下的 code/ 中。
 # ------------------------------------------------------------------
-PROJECT_ROOT = Path(__file__).resolve().parents[1]  # code/
-CORE_ENGINE_DIR = PROJECT_ROOT / "core_engine"
-BACKEND_DIR = PROJECT_ROOT / "backend"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]  # philosophy-agent/
+CORE_ENGINE_DIR = PROJECT_ROOT / "code" / "core_engine"
+BACKEND_DIR = PROJECT_ROOT / "code" / "backend"
 
 for _path in (str(CORE_ENGINE_DIR), str(BACKEND_DIR)):
     if _path not in sys.path:

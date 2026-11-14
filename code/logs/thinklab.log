@@ -1,0 +1,1 @@
+2026-11-14 15:02:46 | WARNING | thinklab.api | [rid=6c02acac0e5a] 请求参数校验失败 POST /api/sessions：[{'type': 'missing', 'loc': ('body', 'question'), 'msg': 'Field required', 'input': {'wrong': 1}}]

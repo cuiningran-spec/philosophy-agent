@@ -1,0 +1,12 @@
+# ThinkLab 覆盖率配置（组员 A 维护）
+# coverage.py 读取本文件（它不读取 pytest.ini 中的 [coverage:*] 段）
+[run]
+# 覆盖率统计对象：核心逻辑包（位于 code/core_engine/thinklab_core）
+source = thinklab_core
+omit =
+    tests/*
+    */conftest.py
+
+[report]
+show_missing = true
+# 精确行（数据字典等 import 即覆盖的内容）不做豁免，如实统计

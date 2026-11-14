@@ -32,3 +32,39 @@ connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection re
 2026-11-07 19:44:12 | INFO    | thinklab.api | [rid=0aa737e72959] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 200（5ms）
 2026-11-07 19:52:19 | INFO    | thinklab.api | [rid=2f093d695871] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 200（13ms）
 2026-11-07 19:52:19 | INFO    | thinklab.api | [rid=a0a995c4fb29] GET /api/sessions/s_3e0bcb6119084abd8dcc41bbd1dd4ae5/summaries -> 200（4ms）
+2026-11-14 09:28:11 | INFO    | thinklab.main | ThinkLab API 启动：llm=template db_mode=auto log_level=INFO
+2026-11-14 09:28:11 | INFO    | thinklab.db | 已连接 PostgreSQL：localhost:5432/thinklab
+2026-11-14 09:28:11 | INFO    | thinklab.main | 数据库表已就绪
+2026-11-14 09:28:11 | INFO    | thinklab.agent | ThinkLabAgent 初始化：llm_mode=template vectorstore=local top_k=4 memory_window=6
+2026-11-14 09:28:11 | INFO    | thinklab.main | 知识库预热完成：{'documents': 46, 'vectorstore': 'local', 'llm': 'template', 'rebuilt': False}
+2026-11-14 09:29:24 | INFO    | thinklab.api | [rid=c1f5e326bf8c] GET /favicon.ico -> 404（13ms）
+2026-11-14 09:38:31 | INFO    | thinklab.api | [rid=ad94f035a5bb] POST /api/sessions -> 201（85ms）
+2026-11-14 09:38:31 | INFO    | thinklab.api | [rid=84637d3a22d5] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c -> 200（13ms）
+2026-11-14 09:38:31 | INFO    | thinklab.api | [rid=cba94f811e60] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c -> 200（12ms）
+2026-11-14 09:38:47 | INFO    | thinklab.api | [rid=d19951d9a344] POST /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c/lens -> 200（35ms）
+2026-11-14 09:38:47 | INFO    | thinklab.api | [rid=7fc90a43431a] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c -> 200（17ms）
+2026-11-14 09:38:47 | INFO    | thinklab.api | [rid=fd37a7fd1d9c] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c -> 200（11ms）
+2026-11-14 09:38:57 | INFO    | thinklab.api | [rid=4a06e0ff4893] POST /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c/messages/stream -> 200（24ms）
+2026-11-14 09:38:57 | INFO    | thinklab.api | [rid=3908b09ebac9] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c -> 200（14ms）
+2026-11-14 09:39:07 | INFO    | thinklab.api | [rid=8c03c2b3cbd7] POST /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c/messages/stream -> 200（22ms）
+2026-11-14 09:39:07 | INFO    | thinklab.api | [rid=1d39f96feb3e] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c -> 200（15ms）
+2026-11-14 09:39:19 | INFO    | thinklab.api | [rid=845e53d148e2] POST /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c/summaries -> 201（39ms）
+2026-11-14 09:39:19 | INFO    | thinklab.api | [rid=b951985857ee] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c/summaries -> 200（5ms）
+2026-11-14 09:39:19 | INFO    | thinklab.api | [rid=388454a5b6d0] GET /api/sessions/s_c746a3eb9cb84f1088b2293428a96f7c/summaries -> 200（5ms）
+2026-11-14 09:41:25 | INFO    | thinklab.api | [rid=bbc9955683aa] POST /api/sessions -> 201（42ms）
+2026-11-14 09:41:25 | INFO    | thinklab.api | [rid=e60b20017bc4] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（15ms）
+2026-11-14 09:41:25 | INFO    | thinklab.api | [rid=f179b1bcc5dc] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（14ms）
+2026-11-14 09:41:50 | INFO    | thinklab.api | [rid=4b66328d6aa3] POST /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c/lens -> 200（22ms）
+2026-11-14 09:41:50 | INFO    | thinklab.api | [rid=905e2071656a] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（11ms）
+2026-11-14 09:41:50 | INFO    | thinklab.api | [rid=c9bd14d49db6] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（9ms）
+2026-11-14 09:41:59 | INFO    | thinklab.api | [rid=b62e69206b67] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（18ms）
+2026-11-14 09:41:59 | INFO    | thinklab.api | [rid=d344a92aef75] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（13ms）
+2026-11-14 09:42:32 | INFO    | thinklab.api | [rid=86bfdcbca594] POST /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c/lens -> 200（31ms）
+2026-11-14 09:42:32 | INFO    | thinklab.api | [rid=c40bb803a3e8] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（13ms）
+2026-11-14 09:42:32 | INFO    | thinklab.api | [rid=05eabd736d45] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（14ms）
+2026-11-14 09:42:41 | INFO    | thinklab.api | [rid=34f76365d226] POST /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c/messages/stream -> 200（17ms）
+2026-11-14 09:42:41 | INFO    | thinklab.api | [rid=ae7a81eab019] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（8ms）
+2026-11-14 10:06:32 | INFO    | thinklab.api | [rid=be250942419e] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（11ms）
+2026-11-14 10:06:32 | INFO    | thinklab.api | [rid=e4f64600d2c7] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（6ms）
+2026-11-14 12:00:32 | INFO    | thinklab.api | [rid=d190e638fb8d] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（32ms）
+2026-11-14 12:00:32 | INFO    | thinklab.api | [rid=5c75131dc140] GET /api/sessions/s_ef85bda71a4c4dbe962570030c1f5d8c -> 200（9ms）

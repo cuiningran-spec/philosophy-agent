@@ -130,3 +130,18 @@ def api_client(fresh_db):
 
     with TestClient(app) as client:
         yield client
+
+
+@pytest.fixture
+def test_settings():
+    """为单元测试提供独立的配置对象。"""
+    from thinklab_core.config import Settings
+
+    return Settings(
+        llm_mode="template",
+        memory_window_turns=2,
+        memory_compress_turns=3,
+        retrieval_top_k=4,
+        retrieval_candidate_k=16,
+        retrieval_min_score=0.0,
+    )

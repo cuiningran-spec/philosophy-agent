@@ -2,9 +2,7 @@ name: Deploy Slidev
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'docs/slides/**'
+    branches: [main, master]
   workflow_dispatch:
 
 permissions:
@@ -33,7 +31,8 @@ jobs:
         run: npm ci || npm install
 
       - name: Build Slidev
-        run: npx slidev build --base /${{ github.event.repository.name }}/slides/
+        # 修正1：去掉了后面的 /slides/，让路径完全匹配
+        run: npx slidev build --base /${{ github.event.repository.name }}/
 
       - uses: actions/configure-pages@v4
 

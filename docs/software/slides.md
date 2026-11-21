@@ -122,11 +122,11 @@ mdc: true
 
 <div style="display: flex; justify-content: space-around; margin-top: 20px; align-items: center;">
   <div style="text-align: center;">
-    <img src="/1.png" style="height: 280px; border-radius: 8px;" alt="提交历史" />
+    <img src="./public/1.png" style="height: 280px; border-radius: 8px;" alt="提交历史" />
     <p style="margin-top: 10px;">Git 提交历史</p>
   </div>
   <div style="text-align: center;">
-    <img src="/2.png" style="height: 280px; border-radius: 8px;" alt="项目看板" />
+    <img src="./public/2.png" style="height: 280px; border-radius: 8px;" alt="项目看板" />
     <p style="margin-top: 10px;">Team Planning 看板</p>
   </div>
 </div>

@@ -122,11 +122,11 @@ mdc: true
 
 <div style="display: flex; justify-content: space-around; margin-top: 30px; align-items: center;">
   <div style="text-align: center;">
-    <img src="/commit-pulse.png" style="height: 300px; border-radius: 8px;" alt="提交历史" />
+    <img src="/commit-pulse.png" style="height: 260px; border-radius: 8px;" alt="提交历史" />
     <p style="margin-top: 10px;">Git 提交历史</p>
   </div>
   <div style="text-align: center;">
-    <img src="/kanban.png" style="height: 300px; border-radius: 8px;" alt="项目看板" />
+    <img src="/kanban.png" style="height: 260px; border-radius: 8px;" alt="项目看板" />
     <p style="margin-top: 10px;">Team Planning 看板</p>
   </div>
 </div>

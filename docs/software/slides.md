@@ -120,16 +120,22 @@ mdc: true
 
 - **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent)
 
-<div style="display: flex; justify-content: space-around; margin-top: 20px; align-items: center;">
+<div style="display: flex; justify-content: space-around; margin-top: 30px; align-items: center;">
   <div style="text-align: center;">
-    <img src="./public/1.png" style="height: 280px; border-radius: 8px;" alt="提交历史" />
+    <img src="/commit-pulse.png" style="height: 300px; border-radius: 8px;" alt="提交历史" />
     <p style="margin-top: 10px;">Git 提交历史</p>
   </div>
   <div style="text-align: center;">
-    <img src="./public/2.png" style="height: 280px; border-radius: 8px;" alt="项目看板" />
+    <img src="/kanban.png" style="height: 300px; border-radius: 8px;" alt="项目看板" />
     <p style="margin-top: 10px;">Team Planning 看板</p>
   </div>
 </div>
+
+---
+
+# 3. 产品实现
+
+## 3.4 整个生命周期遇到的问题及解决方法
 
 | 问题类别 | 问题名称 | 发生原因 | 解决办法 |
 |---|---|---|---|

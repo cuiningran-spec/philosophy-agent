@@ -117,9 +117,24 @@ mdc: true
 # 3. 产品实现
 
 ## 3.3 代码仓库链接及代码提交历史
-- **仓库链接**：(https://github.com/cuiningran-spec/philosophy-agent)
-- **提交历史**：/1.png
-- **项目管理**：/2.png
+
+- **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent)
+
+<div style="display: flex; justify-content: space-around; margin-top: 30px; align-items: center;">
+  <div style="text-align: center;">
+    <img src="/commit-pulse.png" style="height: 300px; border-radius: 8px;" alt="提交历史" />
+    <p style="margin-top: 10px;">Git 提交历史</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="/kanban.png" style="height: 300px; border-radius: 8px;" alt="项目看板" />
+    <p style="margin-top: 10px;">Team Planning 看板</p>
+  </div>
+</div>
+
+---
+
+# 3. 产品实现
+
 ## 3.4 整个生命周期遇到的问题及解决方法
 
 | 问题类别 | 问题名称 | 发生原因 | 解决办法 |
@@ -127,7 +142,6 @@ mdc: true
 | 分析阶段 | 概念同名冲突 | 不同哲学家对同一词汇定义不同 | 引入知识图谱锚点匹配，强制对齐概念 ID |
 | 测试阶段 | 引用幻觉未消除 | 大模型强行编造不存在的文献 | 输出侧护栏介入，强制校验引用合法性 |
 | 部署阶段 | 幻灯片构建失败 | 本地环境与 Playwright 兼容性问题 | 改用 GitHub Actions 云端自动构建部署 |
-
 ---
 
 # 3. 产品实现

@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: docs/slides
+        working-directory: docs/software
     steps:
       - uses: actions/checkout@v4
 
@@ -31,13 +31,15 @@ jobs:
         run: npm ci || npm install
 
       - name: Build Slidev
-        run: npx slidev build --base /${{ github.event.repository.name }}/slides/
+        # base 必须与 Pages 的实际部署路径一致（仓库页 = /philosophy-agent/），
+        # 多一层 /slides/ 会导致构建出的资源引用 404
+        run: npx slidev build --base /${{ github.event.repository.name }}/
 
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/slides/dist
+          path: docs/software/dist
 
   deploy:
     needs: build

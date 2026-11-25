@@ -10,7 +10,6 @@ transition: slide-left
 mdc: true
 ---
 
-# 第一部分：用幻灯片展示产品介绍
 
 ## 哲学智能体——创新工程实践营项目答辩
 

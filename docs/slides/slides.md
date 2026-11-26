@@ -202,9 +202,9 @@ graph LR
 
 ## 3.6.1 质量控制：全链路日志配置
 
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
-  <img src="/3.png" style="height: 380px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="日志配置代码" />
-  <p style="margin-top: 25px; font-size: 18px; color: #aaa; text-align: center;">
+<div style="text-align: center; margin-top: 20px;">
+  <img src="/3.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="日志配置代码" />
+  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
     统一全局日志格式，针对第三方库自动降噪；<br/>为每次请求注入唯一 <strong>Request ID</strong>，实现全链路追踪。
   </p>
 </div>
@@ -215,21 +215,21 @@ graph LR
 
 ## 3.6.1 质量控制：请求追踪与异常兜底
 
-<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px;">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
   
   <div style="width: 48%; text-align: center;">
-    <img src="/error1.png" style="height: 350px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="请求追踪" />
-    <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.6;">
+    <img src="/error1.png" style="max-height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="请求追踪" />
+    <p style="margin-top: 15px; font-size: 14px; color: #ddd; text-align: left; line-height: 1.5;">
       <strong>① 请求追踪 (Request ID)</strong><br/>
-      为每次提问注入唯一 ID，记录耗时与状态码；针对健康检查等噪声自动降级 DEBUG，实现精准排障。
+      为每次提问注入唯一 ID，记录耗时与状态码；针对健康检查等噪声自动降级 DEBUG。
     </p>
   </div>
 
   <div style="width: 48%; text-align: center;">
-    <img src="/error2.png" style="height: 350px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="异常兜底" />
-    <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.6;">
+    <img src="/error2.png" style="max-height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="异常兜底" />
+    <p style="margin-top: 15px; font-size: 14px; color: #ddd; text-align: left; line-height: 1.5;">
       <strong>② 全局异常兜底</strong><br/>
-      未捕获异常（如大模型超时）自动拦截并记录完整堆栈；对外仅返回通用 500，<strong>绝不泄露内部细节</strong>。
+      未捕获异常自动拦截并记录完整堆栈；对外仅返回通用 500，<strong>绝不泄露内部细节</strong>。
     </p>
   </div>
 
@@ -241,9 +241,9 @@ graph LR
 
 ## 3.6.2 质量工具：Pylint 规范扫描
 
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
-  <img src="/pylint.png" style="height: 380px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="Pylint 满分" />
-  <p style="margin-top: 25px; font-size: 18px; color: #aaa; text-align: center;">
+<div style="text-align: center; margin-top: 20px;">
+  <img src="/pylint.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="Pylint 满分" />
+  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
     核心模块实现 <strong>0 阻断性错误 (0 Blocker)</strong>；<br/>代码规范评分达 <strong>10.00 / 10（满分）</strong>。
   </p>
 </div>
@@ -254,9 +254,9 @@ graph LR
 
 ## 3.6.2 质量工具：圈复杂度分析
 
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
-  <img src="/圈复杂度.png" style="height: 380px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="复杂度检测" />
-  <p style="margin-top: 25px; font-size: 18px; color: #aaa; text-align: center;">
+<div style="text-align: center; margin-top: 20px;">
+  <img src="/圈复杂度.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="复杂度检测" />
+  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
     所有核心函数均通过检测（<strong>PASSED</strong>）；<br/>最高圈复杂度仅为 <strong>3</strong>，逻辑极简清晰，可测试性极高。
   </p>
 </div>
@@ -267,9 +267,9 @@ graph LR
 
 ## 3.6.2 质量工具：单元测试覆盖率
 
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
-  <img src="/覆盖率.png" style="height: 380px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="覆盖率100%" />
-  <p style="margin-top: 25px; font-size: 18px; color: #aaa; text-align: center;">
+<div style="text-align: center; margin-top: 20px;">
+  <img src="/覆盖率.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="覆盖率100%" />
+  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
     使用 Pytest 编写 <strong>8 个</strong>核心测试用例，全部通过（8 passed）；<br/>
     核心应用代码测试覆盖率达 <strong>100%</strong>，确保迭代安全无忧。
   </p>
@@ -281,51 +281,11 @@ graph LR
 
 ## 3.7 代码统计：工程目录与模块划分
 
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
-  <img src="/代码1.png" style="height: 400px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录树" />
-  <p style="margin-top: 25px; font-size: 18px; color: #aaa; text-align: center;">
+<div style="text-align: center; margin-top: 20px;">
+  <img src="/代码1.png" style="max-height: 380px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录树" />
+  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
     按功能高内聚划分 <strong>15+ 核心模块</strong>；<br/>前后端、测试、自动化部署脚本物理隔离，结构清晰。
   </p>
-</div>
-
----
-
-# 3. 产品实现
-
-## 3.7 代码统计：工程结构与开发比例
-
-<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
-  
-  <div style="width: 48%; text-align: center;">
-    <img src="/代码1.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="代码语言统计" />
-    <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.5;">
-      <strong>代码规模与占比：</strong><br/>
-      • 剔除了自动生成的依赖锁文件后，核心 Python 后端逻辑约 107 行（含 56 行详细注释）。<br/>
-      • 遵循“零废话”原则，单行代码含金量高，确保逻辑精炼。
-    </p>
-  </div>
-
-  <div style="width: 48%; text-align: center;">
-    <img src="/代码2.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录与模块统计" />
-    <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.5;">
-      <strong>模块划分：</strong><br/>
-      • <code>.github/workflows</code>：自动化部署脚本。<br/>
-      • <code>tests</code>：独立测试模块。<br/>
-      • <code>docs/slides</code>：文档与演示系统。高内聚、低耦合。
-    </p>
-  </div>
-
-</div>
-
-<div style="margin-top: 20px; text-align: center; width: 90%; margin-left: auto; margin-right: auto;">
-  <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-    <span style="font-size: 16px; font-weight: bold;">AI 辅助生成 (约 80%)</span>
-    <div style="width: 20%; height: 16px; background-color: #333; border-radius: 8px; display: flex; overflow: hidden;">
-      <div style="width: 80%; background-color: #f39c12; text-align: center; font-size: 10px; line-height: 16px; color: white;">AI</div>
-      <div style="width: 20%; background-color: #3498db; text-align: center; font-size: 10px; line-height: 16px; color: white;">团队手写 (核心编排/测试)</div>
-    </div>
-    <span style="font-size: 16px; font-weight: bold;">团队手写 (约 20%)</span>
-  </div>
 </div>
 
 ---

@@ -1,20 +1,18 @@
 ---
 theme: default
-title: 哲学智能体——创新工程实践营项目答辩
+title: ThinkLab · 知识库检索智能体 答辩
 class: text-center
 highlighter: shiki
 lineNumbers: false
-drawings:
-  persist: false
 transition: slide-left
 mdc: true
 ---
 
-# 哲学智能体
+# ThinkLab
 
-## 创新工程实践营项目答辩
+## 知识库检索智能体
 
-**基于 RAG / 知识图谱 / 多智能体编排的领域问答系统**
+**帮助用户从多个哲学视角理解现实问题，形成个人思考的 AI Agent**
 
 日期：2026 年 11 月
 
@@ -32,88 +30,78 @@ mdc: true
 
 ## 1.1 产品使命、口号和策略
 
-- **1.1.1 使命**：让哲学知识“有据可查、有源可溯”，消除大模型在哲学领域的知识幻觉。
-- **1.1.2 口号**：“探究思想脉络，追溯哲学本源。”
-- **1.1.3 目标用户**：哲学专业学生、研究人员、深度哲学爱好者。
-- **1.1.4 如何获得用户**：通过 GitHub 开源社区推广、高校哲学系试点合作、学术论坛分享。
-- **1.1.5 团队优势**：具备扎实的 NLP 算法与 Agent 开发能力，熟悉知识图谱构建，且拥有丰富的哲学文本阅读积累。
+- **1.1.1 使命**：打破单一思维的局限，帮助用户从多个哲学视角审视现实问题，最终形成属于个人的独立见解。
+- **1.1.2 口号**：“多一种视角，多一种可能。”
+- **1.1.3 目标用户**：面临人生困惑的青年群体、对哲学思辨感兴趣的爱好者、需要思维启发的创作者。
+- **1.1.4 如何获得用户**：通过高质量哲学社群推广、社交媒体“现实问题+哲学视角”内容引流。
+- **1.1.5 团队优势**：具备全栈开发能力（React + Node.js + FastAPI），深入理解 LangChain 编排机制，且拥有丰富的人文知识积累。
 
 ---
 
+# 1. 产品设计
 
 ## 1.1.6 如何做到差异化
 
-| 维度 | 通用大模型 (如 ChatGPT) | 传统文献检索库 | 我们的“哲学智能体” |
+| 维度 | 通用大模型 (如 ChatGPT) | 传统问答社区 | 我们的“ThinkLab 智能体” |
 |---|---|---|---|
-| **回答方式** | 生成式，易产生事实幻觉 | 关键词匹配，缺乏逻辑推理 | 基于 RAG 与图谱生成，附带精准引用 |
-| **多轮连贯性** | 上下文容易漂移、遗忘 | 无法进行多轮对话 | 三层记忆机制保障跨轮一致性 |
-| **概念严谨度** | 容易混用不同流派同名概念 | 仅呈现原文字段 | 图谱锚点匹配，强约束概念边界 |
+| **回答方式** | 单一生成，容易爹味说教 | 人类网友主观碎片化回答 | **生成 3 种截然不同的哲学视角供选择** |
+| **深度体验** | 缺乏追问空间 | 难以进行深度多轮对话 | 选择视角后，基于 RAG 知识库进行**深度多轮追问** |
+| **最终产出** | 没有沉淀 | 页面冗长难以阅读 | **一键生成结构化思考总结（洞见/张力/实践）** |
 
 ---
 
+# 1. 产品设计
 
-## 1.2 产品定义
+## 1.2 产品定义与用户故事
 
-### 产品描述：
-- **对于**（哲学研究人员）
-- **他们**（苦于大模型回答缺乏依据、无法追溯原文）
-- **产品/项目** 是一个（基于知识图谱与多智能体编排的领域问答系统）
-- **它能够**（提供带有精准原文引用的专业级哲学解答）
-- **不同于**（通用大模型或传统检索库）
-- **我们的产品/项目**（通过图谱与 RAG 双通道协作，确保逻辑推演与原文证据完美结合）。
+### 产品定义：
+- **对于**（面临现实困惑的用户）
+- **他们**（苦于大模型回答过于同质化，缺乏多元视角）
+- **产品/项目** 是一个（多视角哲学探索智能体）
+- **它能够**（针对用户的现实问题，生成三种不同的哲学视角，并引导用户持续追问，最终生成思考总结）
+- **不同于**（传统的聊天机器人）
+- **我们的产品**（强调“探索”与“沉淀”，通过 RAG 知识库确保回答的哲学严谨性）。
 
----
-
-## 1.2.1 解决的问题
-解决大模型在哲学问答中的**“概念漂移”**（同名概念混用）与**“引用不可追溯”**（缺乏可验证的文本依据）两大痛点。
-
-## 1.2.2 对客户的价值（用户故事）
-> 作为一个**“比较哲学研究者”**，我想要**“快速对比康德与休谟在因果性上的原文表述”**，以便于**“我能在撰写论文时准确引用，避免概念混淆”**。
-*(注：使用业务语言描述，不涉及底层技术)*
-
-## 1.2.3 解决方案
-提供 **Web 网页端应用** 及 **API 接口**，支持多轮长程对话。
+## 用户故事
+> 作为一个“**面临职业焦虑的青年**”，我想要“**看看斯多葛主义和存在主义会怎么看待我现在的处境**”，以便于“**我能跳出单一的情绪，形成自己的解决思路**”。
 
 ---
 
 # 2. 产品设计应用的原则
 
-本项目参考【实战技能】产品设计小文集锦，应用了以下原则：
+本项目在设计中应用了以下原则：
 
-- **需求原则**：直击学术研究的“文献溯源”核心需求。
-- **信息和创新原则**：打破纯文本 RAG 的局限，创新性引入知识图谱多跳推理。
-- **系统和收敛原则**：构建“编排—记忆—护栏”三层闭环系统，确保输出收敛且可控。
-- **定量和简化原则**：通过护栏过滤低置信度片段，简化生成过程中的不确定性。
-- **继承和时间原则**：基于成熟的开源生态快速构建，缩短研发周期。
+- **需求原则**：直击用户“需要多视角启发”的核心需求。
+- **信息和创新原则**：创新性地引入“三视角生成”与“结构化总结”流程。
+- **系统和收敛原则**：限制模型只扮演特定流派，禁止跨流派漂移，确保视角纯粹。
+- **降级和可用原则**：实行“零密钥体验”策略，在无模型 Key 时自动降级模板引擎，保证永不宕机。
 
 ---
 
 # 3. 产品实现
 
-## 3.1 用户体验设计考虑的因素
-- **交互简洁**：对话式 UI，支持 Markdown 渲染与原文片段高亮。
-- **可解释性**：回答下方直接展示引用的文献来源与章节（Chunk ID）。
-- **响应速度**：引入语义缓存与图谱索引，降低大模型首字延迟。
+## 3.1 用户体验设计因素
+- **交互简洁**：对话式 UI，纸质/墨色的视觉风格，契合哲学思辨的沉静感。
+- **可解释性**：界面直接展示检索出处（“这一步借用了知识库中的...”），提升可信度。
+- **流式响应**：后端支持 SSE，前端边打边出，极大降低用户等待焦虑。
 
-## 3.2 产品所用编程语言及IDE、平台、框架等
+## 3.2 编程语言及框架选型
 
-| 条目名称 | 条目内容 | 版本号 | 选型原因/备注 |
-|---|---|---|---|
-| **编程语言** | Python | 3.10.12 | AI 与 NLP 生态最完善 |
-| **IDE** | VS Code | 1.85.0 | 轻量且支持远程开发 |
-| **大模型框架** | LangChain | 0.1.0 | 成熟的 Agent 编排生态 |
-| **图数据库** | Neo4j | 5.15.0 | 擅长处理复杂的图遍历查询 |
-| **向量数据库** | ChromaDB | 0.4.22 | 轻量级本地向量检索库 |
-| **接口框架** | FastAPI | 0.109.0 | 自动生成 Swagger 文档，性能高 |
-
-*(注：技术选型遵循“不要太重，也不要太轻”的原则，均写入项目 readme.md)*
+| 条目名称 | 条目内容 | 选型原因 |
+|---|---|---|
+| **Agent 编排** | LangChain | 统一 Prompt / LLM / Parser 链式调用。 |
+| **LLM 模型** | DeepSeek-chat | 兼容 OpenAI 协议，成本低，中文能力强。 |
+| **向量数据库** | Pinecone | Serverless 索引自动创建，检索性能优异。 |
+| **API 框架** | FastAPI | 异步支持极好，自动生成 Swagger 文档。 |
+| **持久化** | PostgreSQL | 支持 JSONB，完美适配结构化总结的存储。 |
+| **前端/服务** | React + Node.js | Vite 极速打包，Node 作为 BFF 层反向代理支持 SSE 透传。 |
 
 ---
 
-## 3.3 代码仓库链接及代码提交历史
+# 3. 产品实现
 
-- **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent)
-
+## 3.3 代码仓库与生命周期管理
+- **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent）
 <div style="display: flex; justify-content: space-around; margin-top: 30px; align-items: center;">
   <div style="text-align: center;">
     <img src="/1.png" style="height: 260px; border-radius: 8px;" alt="提交历史" />
@@ -127,147 +115,139 @@ mdc: true
 
 ---
 
-## 3.4 整个生命周期遇到的问题及解决方法
+## 3.4 生命周期遇到的问题及解决
 
-| 问题类别 | 问题名称 | 发生原因 | 解决办法 |
-|---|---|---|---|
-| 分析阶段 | 概念同名冲突 | 不同哲学家对同一词汇定义不同 | 引入知识图谱锚点匹配，强制对齐概念 ID |
-| 测试阶段 | 引用幻觉未消除 | 大模型强行编造不存在的文献 | 输出侧护栏介入，强制校验引用合法性 |
-| 部署阶段 | 幻灯片构建失败 | 本地环境与 Playwright 兼容性问题 | 改用 GitHub Actions 云端自动构建部署 |
+| 问题类别 | 问题名称 | 解决办法 |
+|---|---|---|
+| 分析阶段 | 多流派概念混淆 | 在系统提示词中锁定当前视角，禁止模型跨流派闲聊。 |
+| 开发阶段 | 长对话导致 Token 爆炸 | 引入多轮记忆机制，超过 8 轮自动压缩为“滚动摘要”。 |
+| 部署阶段 | 缺乏模型 Key 时无法演示 | 设计自动降级策略，无缝切换至本地模板模型。 |
 
 ---
 
-## 3.5 软件概要设计
-### 3.5.0 使用工具
-使用 **Mermaid** 进行图表绘制，支持纯文本代码化图表。
+# 3. 产品实现
 
-### 3.5.1 系统架构图（Web应用三层架构）
+# 3. 产品实现
+
+## 3.5.1 软件概要设计：系统架构图
 
 ```mermaid
-graph LR
-    A[展示层<br/>Web 前端 / Slidev] --> B[业务逻辑层<br/>Agent 编排 / FastAPI]
-    B --> C[数据层<br/>Neo4j 图谱 / ChromaDB 向量库]
-```
+graph TD
+    subgraph 前端体验层
+        U[用户] --> React[React 18 + Vite]
+        React -->|SSE 流式对话| Node[Node.js BFF 反代]
+    end
 
-### 3.5.2 基础设施图
-本项目部署于单台云服务器（GitHub Actions 自动推送），故省略架构图。
+    subgraph 业务逻辑层
+        Node -->|REST/SSE| FastAPI[FastAPI 服务]
+        FastAPI --> Engine[LangChain 智能体内核]
+    end
+
+    subgraph 数据存储层
+        Engine -->|向量检索| Pinecone[(Pinecone 向量库)]
+        Engine -->|读写记忆/总结| PG[(PostgreSQL)]
+    end
+```
 
 ---
 
-## 3.5.3 算法模型设计说明（智能体技术设计）
+## 3.5.2 基础设施与部署架构图
 
-本项目使用 LangChain 编排哲学智能体，其核心技术设计如下：
+```mermaid
+graph TD
+    User((用户浏览器)) -->|HTTPS| Nginx[Nginx / 静态资源托管]
+    
+    subgraph 服务器 / Docker 容器环境
+        Nginx -->|SSE 流式请求| Node[Node.js BFF 反代]
+        Node -->|REST API| FastAPI[FastAPI 业务后端]
+        FastAPI -->|读写数据| PG[(PostgreSQL 数据库)]
+    end
+    
+    subgraph 云服务
+        FastAPI -->|向量检索| Pinecone[(Pinecone 向量库)]
+        FastAPI -->|API 调用| DeepSeek[DeepSeek 大模型接口]
+    end
+```
 
-1. **任务编排**：采用**规划—执行分离**结构，将复杂哲学问题拆解为子任务 DAG（有向无环图）。
-2. **工具调用**：每个工具声明输入契约（参数 schema）、输出契约（置信度）、副作用声明。
-3. **记忆机制**：工作记忆（当前对话）、语义记忆（概念摘要）、情景记忆（问答轨迹）协同工作。
-4. **护栏（Guardrails）**：输入侧拦截越界问题，检索侧过滤低置信度文本，输出侧校验引用真实性。
-5. **专业知识库协作**：
-   - **RAG** 负责**召回广度**（原文本片段）；
-   - **图谱** 负责**关系精度**（多跳逻辑推理）；
-   - 两者通过 Chunk ID 双向关联，结合记忆层，确保最终回答可信。
+---
+
+## 3.5.3 智能体技术设计
+
+1. **多视角生成**：用户提问后，RAG 检索知识库，通过 `PydanticOutputParser` 强制模型输出 3 种截然不同的哲学视角。
+2. **加权 RAG 检索**：召回 `top_k*3` 条语料后，按当前流派加权（同流派 +0.18），确保回答不串味。
+3. **多轮记忆机制**：
+   - **窗口记忆**：保留最近 6 轮对话。
+   - **滚动摘要**：超过 8 轮，触发 LLM 压缩生成摘要存入数据库，实现长对话不丢上下文且不膨胀。
+4. **抗崩设计（护栏）**：LLM 如果调用失败（网络或鉴权问题），自动降级至模板模型继续输出，不中断对话。
 
 ---
 
 ## 3.5.4 数据库设计
-- **图数据库（Neo4j）**：节点包括“哲学家、著作、概念、命题”，关系包含“提出、继承、批判、引用”等。
-- **向量数据库（ChromaDB）**：存储原文章节的 Embedding，实现语义检索。
-- *(注：关系型数据库仅使用 SQLite 存储用户基本会话记录，核心为图与向量双库)*
+本项目共有 7 张核心数据表，支撑完整的探索链路：
+- `sessions`（会话）：记录问题、选择的视角以及**滚动摘要**。
+- `perspectives`（视角）：记录生成的三种哲学视角详情。
+- `messages`（对话）：流水记录，包含 JSONB 格式的引用来源。
+- `summaries`（总结）：支持版本记录（Version 递增），即使生成了总结，依然可以继续对话。
+- `knowledge_docs`（知识库文档）：34 条种子语料与 12 条 FAQ。
 
 ## 3.5.5 接口设计
-| 接口名称 | 接口功能 | 输入变量或对象 | 输出对象 |
-|---|---|---|---|
-| `/chat/completions` | 核心问答接口 | `query` (问题), `session_id` | 回答文本, 引用列表 |
-| `/graph/search` | 图谱实体查询 | `entity_name` (概念名) | 实体关系 JSON 图 |
-
-*(注：接口已使用 FastAPI 和 Swagger 自动生成文档)*
-
----
-
-## 3.6.1 质量控制：全链路日志配置
-
-<img src="/3.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="日志配置代码" />
-
-<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
-  统一全局日志格式，针对第三方库自动降噪；<br/>为每次请求注入唯一 <strong>Request ID</strong>，实现全链路追踪。
-</div>
+| 接口名称 | 功能 | 特点 |
+|---|---|---|
+| `POST /api/sessions` | 创建会话生成视角 | 并发调用大模型与向量库 |
+| `POST /api/sessions/{id}/messages/stream` | 流式对话 | **SSE（Server-Sent Events）** 实时推送 |
+| `POST /api/sessions/{id}/summaries` | 生成思考总结 | 输出洞见、张力、实践等结构化 JSON |
 
 ---
 
-## 请求追踪与异常兜底
+## 3.6.1 质量控制：全链路日志与降级
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
   <div style="width: 48%; text-align: center;">
-    <img src="/error1.png" style="display: block; margin: 0 auto; height: 300px; width: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="请求追踪" />
-    <p style="margin-top: 15px; font-size: 14px; color: #ddd; text-align: left; line-height: 1.5;">
-      <strong>① 请求追踪 (Request ID)</strong><br/>
-      为每次提问注入唯一 ID，记录耗时与状态码；针对健康检查等噪声自动降级 DEBUG。
-    </p>
+    <img src="/error1.png" style="height: 300px; border-radius: 8px;" />
+    <p style="margin-top: 10px; font-size: 14px;">全链路日志配置，支持文件写入</p>
   </div>
-
   <div style="width: 48%; text-align: center;">
-    <img src="/error2.png" style="display: block; margin: 0 auto; height: 300px; width: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="异常兜底" />
-    <p style="margin-top: 15px; font-size: 14px; color: #ddd; text-align: left; line-height: 1.5;">
-      <strong>② 全局异常兜底</strong><br/>
-      未捕获异常自动拦截并记录完整堆栈；对外仅返回通用 500，<strong>绝不泄露内部细节</strong>。
-    </p>
+    <img src="/error2.png" style="height: 300px; border-radius: 8px;" />
+    <p style="margin-top: 10px; font-size: 14px;">异常兜底：DeepSeek 失败降级模板模型</p>
+  </div>
+</div>
+
+> **零密钥体验**：即使没有任何 API Key 和数据库，通过 SQLite 降级和本地哈希向量降级，系统仍能完整跑通 MVP。
+
+---
+
+## 3.6.2 质量工具：Pylint 扫描与复杂度
+
+<div style="display: flex; justify-content: space-around; margin-top: 20px;">
+  <div style="text-align: center;">
+    <img src="/pylint.png" style="height: 250px; border-radius: 8px;" />
+    <p style="margin-top: 10px;">Pylint 规范扫描：0 阻断性错误</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="/圈复杂度.png" style="height: 250px; border-radius: 8px;" />
+    <p style="margin-top: 10px;">所有函数圈复杂度低，通过检测</p>
   </div>
 </div>
 
 ---
 
-## Pylint 规范扫描
+## 3.7 代码统计：全栈模块划分
 
-<img src="/pylint.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="Pylint 满分" />
+<img src="/代码1.png" style="display: block; margin: 0 auto; height: 300px; border-radius: 8px;" />
 
-<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
-  核心模块实现 <strong>0 阻断性错误 (0 Blocker)</strong>；<br/>代码规范评分达 <strong>10.00 / 10（满分）</strong>。
-</div>
-
----
-
-## 圈复杂度分析
-
-<img src="/圈复杂度.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="复杂度检测" />
-
-<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
-  所有核心函数均通过检测（<strong>PASSED</strong>）；<br/>最高圈复杂度仅为 <strong>3</strong>，逻辑极简清晰，可测试性极高。
-</div>
-
----
-
-## 单元测试覆盖率
-
-<img src="/覆盖率.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="覆盖率100%" />
-
-<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
-  使用 Pytest 编写 <strong>8 个</strong>核心测试用例，全部通过（8 passed）；<br/>
-  核心应用代码测试覆盖率达 <strong>100%</strong>，确保迭代安全无忧。
-</div>
-
----
-
-## 3.7 代码统计：工程目录与模块划分
-
-<img src="/代码1.png" style="display: block; margin: 20px auto; height: 360px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录树" />
-
-<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
-  按功能高内聚划分 <strong>15+ 核心模块</strong>；<br/>前后端、测试、自动化部署脚本物理隔离，结构清晰。
-</div>
+- **模块划分**：`core_engine`（AI 内核）、`backend`（FastAPI 后端）、`frontend`（React 前端）。
+- **AI 辅助生成 (80%)**：UI 组件、样板 CRUD 代码。
+- **团队手写 (20%)**：RAG 重排逻辑、多轮记忆压缩、异常降级兜底机制。
 
 ---
 
 # 附录：相关开源代码与文献来源
 
-按照答辩要求，本项目在研发及本汇报过程中参考了以下开源项目和文献：
-
 1. **Slidev 幻灯片框架**: https://github.com/slidevjs/slidev
-2. **Mermaid 图表渲染引擎**: https://mermaid.js.org/
-3. **LangChain 智能体框架**: https://github.com/langchain-ai/langchain
-4. **AnchorRAG 检索框架**: 参考自相关多智能体检索学术论文。
-5. **GraphRAG 协作模式**: 参考自微软 GraphRAG 相关文献及开源实现。
-6. **提示词模板**: https://github.com/bettermorn/AIAgent/blob/main/courseware/AIAgentPromptTemplate.md
-7. **部署工作流参考**: https://github.com/bettermorn/AIAgent/tree/main/code/IndustryAgent/WindOnMAgent/deployment.md
+2. **LangChain 智能体框架**: https://github.com/langchain-ai/langchain
+3. **Pinecone 向量数据库**: https://www.pinecone.io/
+4. **DeepSeek API 文档**: https://platform.deepseek.com/
+5. **FastAPI 官方文档**: https://fastapi.tiangolo.com/
 
 ---
 
@@ -275,10 +255,10 @@ graph LR
 
 **在本机运行作品，展示核心功能逻辑：**
 
-1. **展示单概念界定**：提问哲学概念，展示返回原文片段及引用来源。
-2. **展示跨哲学家比较**：提问“比较康德与休谟的因果性”，展示 DAG 拆解与对比生成。
-3. **展示多轮追问**：追问“刚才引用的原文出自哪一章”，验证情景记忆。
-4. **展示边界测试**：提出超纲问题，展示护栏拒绝或降级处理。
+1. **多视角生成**：输入现实问题（如“我最近很焦虑”），展示生成的三种哲学视角（斯多葛、存在主义、尼采）。
+2. **知识库溯源**：选择其中一个视角，提问并展示回答底部引用的「知识库出处」。
+3. **多轮记忆验证**：追问几个问题后，问“我最开始问你的问题是什么”，验证记忆窗口。
+4. **结构化总结**：点击生成总结，展示包含“洞见、张力、实践”的结构化卡片。
 
 *(演示完毕)*
 

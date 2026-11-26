@@ -40,7 +40,6 @@ mdc: true
 
 ---
 
-# 1. 产品设计
 
 ## 1.1.6 如何做到差异化
 
@@ -52,7 +51,6 @@ mdc: true
 
 ---
 
-# 1. 产品设计
 
 ## 1.2 产品定义
 
@@ -65,8 +63,6 @@ mdc: true
 - **我们的产品/项目**（通过图谱与 RAG 双通道协作，确保逻辑推演与原文证据完美结合）。
 
 ---
-
-# 1. 产品设计
 
 ## 1.2.1 解决的问题
 解决大模型在哲学问答中的**“概念漂移”**（同名概念混用）与**“引用不可追溯”**（缺乏可验证的文本依据）两大痛点。
@@ -114,8 +110,6 @@ mdc: true
 
 ---
 
-# 3. 产品实现
-
 ## 3.3 代码仓库链接及代码提交历史
 
 - **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent)
@@ -133,8 +127,6 @@ mdc: true
 
 ---
 
-# 3. 产品实现
-
 ## 3.4 整个生命周期遇到的问题及解决方法
 
 | 问题类别 | 问题名称 | 发生原因 | 解决办法 |
@@ -144,8 +136,6 @@ mdc: true
 | 部署阶段 | 幻灯片构建失败 | 本地环境与 Playwright 兼容性问题 | 改用 GitHub Actions 云端自动构建部署 |
 
 ---
-
-# 3. 产品实现
 
 ## 3.5 软件概要设计
 ### 3.5.0 使用工具
@@ -164,8 +154,6 @@ graph LR
 
 ---
 
-# 3. 产品实现
-
 ## 3.5.3 算法模型设计说明（智能体技术设计）
 
 本项目使用 LangChain 编排哲学智能体，其核心技术设计如下：
@@ -180,8 +168,6 @@ graph LR
    - 两者通过 Chunk ID 双向关联，结合记忆层，确保最终回答可信。
 
 ---
-
-# 3. 产品实现
 
 ## 3.5.4 数据库设计
 - **图数据库（Neo4j）**：节点包括“哲学家、著作、概念、命题”，关系包含“提出、继承、批判、引用”等。
@@ -208,7 +194,7 @@ graph LR
 
 ---
 
-## 3.6.1 质量控制：请求追踪与异常兜底
+## 请求追踪与异常兜底
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
   <div style="width: 48%; text-align: center;">
@@ -230,9 +216,7 @@ graph LR
 
 ---
 
-# 3. 产品实现
-
-## 3.6.2 质量工具：Pylint 规范扫描
+## Pylint 规范扫描
 
 <img src="/pylint.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="Pylint 满分" />
 
@@ -242,7 +226,7 @@ graph LR
 
 ---
 
-## 3.6.2 质量工具：圈复杂度分析
+## 圈复杂度分析
 
 <img src="/圈复杂度.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="复杂度检测" />
 
@@ -252,9 +236,7 @@ graph LR
 
 ---
 
-# 3. 产品实现
-
-## 3.6.2 质量工具：单元测试覆盖率
+## 单元测试覆盖率
 
 <img src="/覆盖率.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="覆盖率100%" />
 

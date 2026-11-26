@@ -131,16 +131,14 @@ mdc: true
 
 ## 3.5.1 软件概要设计：系统架构图
 
-```mermaid {theme: 'dark', scale:0.72}
+```mermaid {scale: 0.72}
 flowchart LR
     U[用户] --> React[React 18 + Vite]
-    React -->|SSE 流式对话| Node[Node.js BFF 反代]
-    Node -->|REST / SSE| FastAPI[FastAPI 服务]
-    FastAPI --> Engine[LangChain 智能体内核]
-    %% 下面两个数据库向下分支，不继续往右拉长
-    Engine -.->|向量检索| Pinecone[(Pinecone 向量库)]
-    Engine -.->|读写记忆/总结| PG[(PostgreSQL)]
-
+    React -->|SSE| Node[Node.js BFF 反代]
+    Node -->|REST/SSE| FastAPI[FastAPI 服务]
+    FastAPI --> Engine[LangChain 内核]
+    Engine -.-> PC[(Pinecone 向量库)]
+    Engine -.-> PG[(PostgreSQL)]
 ```
 ---
 

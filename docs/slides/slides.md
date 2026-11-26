@@ -10,8 +10,9 @@ transition: slide-left
 mdc: true
 ---
 
+# 哲学智能体
 
-## 哲学智能体——创新工程实践营项目答辩
+## 创新工程实践营项目答辩
 
 **基于 RAG / 知识图谱 / 多智能体编排的领域问答系统**
 
@@ -141,6 +142,7 @@ mdc: true
 | 分析阶段 | 概念同名冲突 | 不同哲学家对同一词汇定义不同 | 引入知识图谱锚点匹配，强制对齐概念 ID |
 | 测试阶段 | 引用幻觉未消除 | 大模型强行编造不存在的文献 | 输出侧护栏介入，强制校验引用合法性 |
 | 部署阶段 | 幻灯片构建失败 | 本地环境与 Playwright 兼容性问题 | 改用 GitHub Actions 云端自动构建部署 |
+
 ---
 
 # 3. 产品实现
@@ -198,10 +200,6 @@ graph LR
 
 # 3. 产品实现
 
-## 3.6 软件质量
-
-# 3. 产品实现
-
 ## 3.6.1 质量控制：全链路日志配置
 
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
@@ -219,7 +217,6 @@ graph LR
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px;">
   
-  <!-- 左边图：Request ID 追踪 -->
   <div style="width: 48%; text-align: center;">
     <img src="/error1.png" style="height: 350px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="请求追踪" />
     <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.6;">
@@ -228,7 +225,6 @@ graph LR
     </p>
   </div>
 
-  <!-- 右边图：全局异常兜底 -->
   <div style="width: 48%; text-align: center;">
     <img src="/error2.png" style="height: 350px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="异常兜底" />
     <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.6;">
@@ -269,19 +265,6 @@ graph LR
 
 # 3. 产品实现
 
-## 3.7 代码统计：工程目录与模块划分
-
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
-  <img src="/vscode-tree.png" style="height: 400px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录树" />
-  <p style="margin-top: 25px; font-size: 18px; color: #aaa; text-align: center;">
-    按功能高内聚划分 <strong>15+ 核心模块</strong>；<br/>前后端、测试、自动化部署脚本物理隔离，结构清晰。
-  </p>
-</div>
-
----
-
-# 3. 产品实现
-
 ## 3.6.2 质量工具：单元测试覆盖率
 
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
@@ -296,11 +279,23 @@ graph LR
 
 # 3. 产品实现
 
+## 3.7 代码统计：工程目录与模块划分
+
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%;">
+  <img src="/代码1.png" style="height: 400px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录树" />
+  <p style="margin-top: 25px; font-size: 18px; color: #aaa; text-align: center;">
+    按功能高内聚划分 <strong>15+ 核心模块</strong>；<br/>前后端、测试、自动化部署脚本物理隔离，结构清晰。
+  </p>
+</div>
+
+---
+
+# 3. 产品实现
+
 ## 3.7 代码统计：工程结构与开发比例
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
   
-  <!-- 左侧：语言与行数统计 -->
   <div style="width: 48%; text-align: center;">
     <img src="/代码1.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="代码语言统计" />
     <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.5;">
@@ -310,7 +305,6 @@ graph LR
     </p>
   </div>
 
-  <!-- 右侧：目录与模块统计 -->
   <div style="width: 48%; text-align: center;">
     <img src="/代码2.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录与模块统计" />
     <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.5;">
@@ -323,13 +317,12 @@ graph LR
 
 </div>
 
-<!-- 底部补充 AI 比例 -->
 <div style="margin-top: 20px; text-align: center; width: 90%; margin-left: auto; margin-right: auto;">
   <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
     <span style="font-size: 16px; font-weight: bold;">AI 辅助生成 (约 80%)</span>
-    <div style="width: 80%; height: 16px; background-color: #333; border-radius: 8px; display: flex; overflow: hidden;">
-      <div style="width: 20%; background-color: #f39c12; text-align: center; font-size: 10px; line-height: 16px; color: white;">AI</div>
-      <div style="width: 80%; background-color: #3498db; text-align: center; font-size: 10px; line-height: 16px; color: white;">团队手写 (核心编排/测试)</div>
+    <div style="width: 20%; height: 16px; background-color: #333; border-radius: 8px; display: flex; overflow: hidden;">
+      <div style="width: 80%; background-color: #f39c12; text-align: center; font-size: 10px; line-height: 16px; color: white;">AI</div>
+      <div style="width: 20%; background-color: #3498db; text-align: center; font-size: 10px; line-height: 16px; color: white;">团队手写 (核心编排/测试)</div>
     </div>
     <span style="font-size: 16px; font-weight: bold;">团队手写 (约 20%)</span>
   </div>

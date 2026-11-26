@@ -202,11 +202,10 @@ graph LR
 
 ## 3.6.1 质量控制：全链路日志配置
 
-<div style="text-align: center; margin-top: 20px;">
-  <img src="/3.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="日志配置代码" />
-  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
-    统一全局日志格式，针对第三方库自动降噪；<br/>为每次请求注入唯一 <strong>Request ID</strong>，实现全链路追踪。
-  </p>
+<img src="/3.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="日志配置代码" />
+
+<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
+  统一全局日志格式，针对第三方库自动降噪；<br/>为每次请求注入唯一 <strong>Request ID</strong>，实现全链路追踪。
 </div>
 
 ---
@@ -216,9 +215,8 @@ graph LR
 ## 3.6.1 质量控制：请求追踪与异常兜底
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
-  
   <div style="width: 48%; text-align: center;">
-    <img src="/error1.png" style="max-height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="请求追踪" />
+    <img src="/error1.png" style="display: block; margin: 0 auto; height: 300px; width: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="请求追踪" />
     <p style="margin-top: 15px; font-size: 14px; color: #ddd; text-align: left; line-height: 1.5;">
       <strong>① 请求追踪 (Request ID)</strong><br/>
       为每次提问注入唯一 ID，记录耗时与状态码；针对健康检查等噪声自动降级 DEBUG。
@@ -226,13 +224,12 @@ graph LR
   </div>
 
   <div style="width: 48%; text-align: center;">
-    <img src="/error2.png" style="max-height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); object-fit: cover;" alt="异常兜底" />
+    <img src="/error2.png" style="display: block; margin: 0 auto; height: 300px; width: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="异常兜底" />
     <p style="margin-top: 15px; font-size: 14px; color: #ddd; text-align: left; line-height: 1.5;">
       <strong>② 全局异常兜底</strong><br/>
       未捕获异常自动拦截并记录完整堆栈；对外仅返回通用 500，<strong>绝不泄露内部细节</strong>。
     </p>
   </div>
-
 </div>
 
 ---
@@ -241,11 +238,10 @@ graph LR
 
 ## 3.6.2 质量工具：Pylint 规范扫描
 
-<div style="text-align: center; margin-top: 20px;">
-  <img src="/pylint.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="Pylint 满分" />
-  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
-    核心模块实现 <strong>0 阻断性错误 (0 Blocker)</strong>；<br/>代码规范评分达 <strong>10.00 / 10（满分）</strong>。
-  </p>
+<img src="/pylint.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="Pylint 满分" />
+
+<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
+  核心模块实现 <strong>0 阻断性错误 (0 Blocker)</strong>；<br/>代码规范评分达 <strong>10.00 / 10（满分）</strong>。
 </div>
 
 ---
@@ -254,11 +250,10 @@ graph LR
 
 ## 3.6.2 质量工具：圈复杂度分析
 
-<div style="text-align: center; margin-top: 20px;">
-  <img src="/圈复杂度.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="复杂度检测" />
-  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
-    所有核心函数均通过检测（<strong>PASSED</strong>）；<br/>最高圈复杂度仅为 <strong>3</strong>，逻辑极简清晰，可测试性极高。
-  </p>
+<img src="/圈复杂度.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="复杂度检测" />
+
+<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
+  所有核心函数均通过检测（<strong>PASSED</strong>）；<br/>最高圈复杂度仅为 <strong>3</strong>，逻辑极简清晰，可测试性极高。
 </div>
 
 ---
@@ -267,12 +262,11 @@ graph LR
 
 ## 3.6.2 质量工具：单元测试覆盖率
 
-<div style="text-align: center; margin-top: 20px;">
-  <img src="/覆盖率.png" style="max-height: 340px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="覆盖率100%" />
-  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
-    使用 Pytest 编写 <strong>8 个</strong>核心测试用例，全部通过（8 passed）；<br/>
-    核心应用代码测试覆盖率达 <strong>100%</strong>，确保迭代安全无忧。
-  </p>
+<img src="/覆盖率.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="覆盖率100%" />
+
+<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
+  使用 Pytest 编写 <strong>8 个</strong>核心测试用例，全部通过（8 passed）；<br/>
+  核心应用代码测试覆盖率达 <strong>100%</strong>，确保迭代安全无忧。
 </div>
 
 ---
@@ -281,11 +275,10 @@ graph LR
 
 ## 3.7 代码统计：工程目录与模块划分
 
-<div style="text-align: center; margin-top: 20px;">
-  <img src="/代码1.png" style="max-height: 380px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录树" />
-  <p style="margin-top: 15px; font-size: 16px; color: #aaa;">
-    按功能高内聚划分 <strong>15+ 核心模块</strong>；<br/>前后端、测试、自动化部署脚本物理隔离，结构清晰。
-  </p>
+<img src="/代码1.png" style="display: block; margin: 20px auto; height: 360px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录树" />
+
+<div style="text-align: center; font-size: 16px; color: #aaa; margin-top: 15px;">
+  按功能高内聚划分 <strong>15+ 核心模块</strong>；<br/>前后端、测试、自动化部署脚本物理隔离，结构清晰。
 </div>
 
 ---

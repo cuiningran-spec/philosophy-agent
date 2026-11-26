@@ -302,7 +302,7 @@ graph LR
   
   <!-- 左侧：语言与行数统计 -->
   <div style="width: 48%; text-align: center;">
-    <img src="/counter-lang.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="代码语言统计" />
+    <img src="/代码1.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="代码语言统计" />
     <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.5;">
       <strong>代码规模与占比：</strong><br/>
       • 剔除了自动生成的依赖锁文件后，核心 Python 后端逻辑约 107 行（含 56 行详细注释）。<br/>
@@ -312,7 +312,7 @@ graph LR
 
   <!-- 右侧：目录与模块统计 -->
   <div style="width: 48%; text-align: center;">
-    <img src="/counter-dir.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录与模块统计" />
+    <img src="/代码2.png" style="height: 320px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="目录与模块统计" />
     <p style="margin-top: 15px; font-size: 15px; color: #ddd; text-align: left; line-height: 1.5;">
       <strong>模块划分：</strong><br/>
       • <code>.github/workflows</code>：自动化部署脚本。<br/>
@@ -327,9 +327,9 @@ graph LR
 <div style="margin-top: 20px; text-align: center; width: 90%; margin-left: auto; margin-right: auto;">
   <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
     <span style="font-size: 16px; font-weight: bold;">AI 辅助生成 (约 80%)</span>
-    <div style="width: 60%; height: 16px; background-color: #333; border-radius: 8px; display: flex; overflow: hidden;">
-      <div style="width: 40%; background-color: #f39c12; text-align: center; font-size: 10px; line-height: 16px; color: white;">AI</div>
-      <div style="width: 60%; background-color: #3498db; text-align: center; font-size: 10px; line-height: 16px; color: white;">团队手写 (核心编排/测试)</div>
+    <div style="width: 80%; height: 16px; background-color: #333; border-radius: 8px; display: flex; overflow: hidden;">
+      <div style="width: 20%; background-color: #f39c12; text-align: center; font-size: 10px; line-height: 16px; color: white;">AI</div>
+      <div style="width: 80%; background-color: #3498db; text-align: center; font-size: 10px; line-height: 16px; color: white;">团队手写 (核心编排/测试)</div>
     </div>
     <span style="font-size: 16px; font-weight: bold;">团队手写 (约 20%)</span>
   </div>

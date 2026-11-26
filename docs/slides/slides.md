@@ -146,15 +146,15 @@ flowchart LR
 
 ## 3.5.2 基础设施与部署架构图
 
-```mermaid {theme: 'dark', scale:0.72}
+```mermaid {theme: 'dark', scale: 0.68}
 flowchart LR
     User((用户浏览器)) -->|HTTPS| Nginx[Nginx / 静态资源托管]
     Nginx -->|SSE 流式请求| Node[Node.js BFF 反代]
     Node -->|REST API| FastAPI[FastAPI 业务后端]
-    FastAPI -->|读写数据| PG[(PostgreSQL 数据库)]
-    FastAPI -->|向量检索| Pinecone[(Pinecone 向量库)]
-    FastAPI -->|API 调用| DeepSeek[DeepSeek 大模型接口]
 
+    FastAPI -.->|读写数据| PG[(PostgreSQL 数据库)]
+    FastAPI -.->|向量检索| Pinecone[(Pinecone 向量库)]
+    FastAPI -.->|API 调用| DeepSeek[DeepSeek 大模型接口]
 ```
 
 ---

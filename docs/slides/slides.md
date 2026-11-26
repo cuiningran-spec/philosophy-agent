@@ -131,7 +131,7 @@ mdc: true
 
 ## 3.5.1 软件概要设计：系统架构图
 
-```mermaid {scale:0.75}
+```mermaid {scale:0.5}
 graph TD
     subgraph 前端体验层
         U[用户] --> React[React 18 + Vite]
@@ -153,7 +153,7 @@ graph TD
 
 ## 3.5.2 基础设施与部署架构图
 
-```mermaid {scale:0.75}
+```mermaid {scale:0.5}
 graph TD
     User((用户浏览器)) -->|HTTPS| Nginx[Nginx / 静态资源托管]
     

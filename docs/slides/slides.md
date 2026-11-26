@@ -131,35 +131,23 @@ mdc: true
 
 ## 3.5.1 软件概要设计：系统架构图
 
-```mermaid {scale: 0.8}
-%%{init: {'theme': 'dark', 'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}}}%%
-
-graph LR
+```mermaid {theme: 'dark', scale:0.72}
+flowchart LR
     U[用户] --> React[React 18 + Vite]
     React -->|SSE 流式对话| Node[Node.js BFF 反代]
     Node -->|REST / SSE| FastAPI[FastAPI 服务]
     FastAPI --> Engine[LangChain 智能体内核]
+    %% 下面两个数据库向下分支，不继续往右拉长
+    Engine -.->|向量检索| Pinecone[(Pinecone 向量库)]
+    Engine -.->|读写记忆/总结| PG[(PostgreSQL)]
 
-    Engine -->|向量检索| Pinecone[(Pinecone 向量库)]
-    Engine -->|读写记忆 / 总结| PG[(PostgreSQL)]
-
-    classDef layer fill:#1f1f1f,stroke:#888,color:#fff;
-    class React,Node layer;
-    class FastAPI,Engine layer;
-    class Pinecone,PG layer;
 ```
-
 ---
 
-## 3.5.2 部署架构图
-
-```markdown
 ## 3.5.2 基础设施与部署架构图
 
-```mermaid {scale: 0.8}
-%%{init: {'theme': 'dark', 'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}}}%%
-
-graph LR
+```mermaid {theme: 'dark', scale:0.72}
+flowchart LR
     User((用户浏览器)) -->|HTTPS| Nginx[Nginx / 静态资源托管]
     Nginx -->|SSE 流式请求| Node[Node.js BFF 反代]
     Node -->|REST API| FastAPI[FastAPI 业务后端]
@@ -167,9 +155,6 @@ graph LR
     FastAPI -->|向量检索| Pinecone[(Pinecone 向量库)]
     FastAPI -->|API 调用| DeepSeek[DeepSeek 大模型接口]
 
-    classDef server fill:#1f1f1f,stroke:#888,color:#fff;
-    class Nginx,Node,FastAPI,PG server;
-    class Pinecone,DeepSeek server;
 ```
 
 ---

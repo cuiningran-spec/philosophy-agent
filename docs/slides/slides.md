@@ -198,8 +198,6 @@ graph LR
 
 ---
 
-# 3. 产品实现
-
 ## 3.6.1 质量控制：全链路日志配置
 
 <img src="/3.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="日志配置代码" />
@@ -209,8 +207,6 @@ graph LR
 </div>
 
 ---
-
-# 3. 产品实现
 
 ## 3.6.1 质量控制：请求追踪与异常兜底
 
@@ -246,8 +242,6 @@ graph LR
 
 ---
 
-# 3. 产品实现
-
 ## 3.6.2 质量工具：圈复杂度分析
 
 <img src="/圈复杂度.png" style="display: block; margin: 20px auto; height: 320px; max-width: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);" alt="复杂度检测" />
@@ -270,8 +264,6 @@ graph LR
 </div>
 
 ---
-
-# 3. 产品实现
 
 ## 3.7 代码统计：工程目录与模块划分
 

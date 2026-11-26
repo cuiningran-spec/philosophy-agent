@@ -131,43 +131,45 @@ mdc: true
 
 ## 3.5.1 软件概要设计：系统架构图
 
-```mermaid {scale:0.5}
-graph TD
-    subgraph 前端体验层
-        U[用户] --> React[React 18 + Vite]
-        React -->|SSE 流式对话| Node[Node.js BFF 反代]
-    end
+```mermaid {scale: 0.8}
+%%{init: {'theme': 'dark', 'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}}}%%
 
-    subgraph 业务逻辑层
-        Node -->|REST/SSE| FastAPI[FastAPI 服务]
-        FastAPI --> Engine[LangChain 智能体内核]
-    end
+graph LR
+    U[用户] --> React[React 18 + Vite]
+    React -->|SSE 流式对话| Node[Node.js BFF 反代]
+    Node -->|REST / SSE| FastAPI[FastAPI 服务]
+    FastAPI --> Engine[LangChain 智能体内核]
 
-    subgraph 数据存储层
-        Engine -->|向量检索| Pinecone[(Pinecone 向量库)]
-        Engine -->|读写记忆/总结| PG[(PostgreSQL)]
-    end
+    Engine -->|向量检索| Pinecone[(Pinecone 向量库)]
+    Engine -->|读写记忆 / 总结| PG[(PostgreSQL)]
+
+    classDef layer fill:#1f1f1f,stroke:#888,color:#fff;
+    class React,Node layer;
+    class FastAPI,Engine layer;
+    class Pinecone,PG layer;
 ```
 
 ---
 
+## 3.5.2 部署架构图
+
+```markdown
 ## 3.5.2 基础设施与部署架构图
 
-```mermaid {scale:0.5}
-graph TD
-    User((用户浏览器)) -->|HTTPS| Nginx[Nginx / 静态资源托管]
-    
-    subgraph 服务器 / Docker 容器环境
-        Nginx -->|SSE 流式请求| Node[Node.js BFF 反代]
-        Node -->|REST API| FastAPI[FastAPI 业务后端]
-        FastAPI -->|读写数据| PG[(PostgreSQL 数据库)]
-    end
-    
-    subgraph 云服务
-        FastAPI -->|向量检索| Pinecone[(Pinecone 向量库)]
-        FastAPI -->|API 调用| DeepSeek[DeepSeek 大模型接口]
-    end
+```mermaid {scale: 0.8}
+%%{init: {'theme': 'dark', 'flowchart': {'curve': 'basis', 'nodeSpacing': 50, 'rankSpacing': 60}}}%%
 
+graph LR
+    User((用户浏览器)) -->|HTTPS| Nginx[Nginx / 静态资源托管]
+    Nginx -->|SSE 流式请求| Node[Node.js BFF 反代]
+    Node -->|REST API| FastAPI[FastAPI 业务后端]
+    FastAPI -->|读写数据| PG[(PostgreSQL 数据库)]
+    FastAPI -->|向量检索| Pinecone[(Pinecone 向量库)]
+    FastAPI -->|API 调用| DeepSeek[DeepSeek 大模型接口]
+
+    classDef server fill:#1f1f1f,stroke:#888,color:#fff;
+    class Nginx,Node,FastAPI,PG server;
+    class Pinecone,DeepSeek server;
 ```
 
 ---

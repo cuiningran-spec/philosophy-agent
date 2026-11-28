@@ -8,9 +8,9 @@ transition: slide-left
 mdc: true
 ---
 
-# 哲学智能体
+# ThinkLab
 
-## 知识库检索智能体
+## 哲学知识库检索智能体
 
 **帮助用户从多个哲学视角理解现实问题，形成个人思考的 AI Agent**
 

@@ -15,6 +15,7 @@ mdc: true
 **帮助用户从多个哲学视角理解现实问题，形成个人思考的 AI Agent**
 
 日期：2026 年 11 月 28 日
+小组成员：崔凝然 曹晓延 魏思缘 申佳鑫
 
 ---
 
@@ -195,6 +196,30 @@ flowchart LR
 
 > **架构亮点**：通过 LLM 的推理能力结合知识库，配合多轮记忆机制，实现了真正“懂哲学、能追问、有记忆”的智能体。
 
+---
+
+## 3.5.3 核心技术：RAG 检索增强生成流程
+
+```mermaid {scale: 0.8}
+%%{init: {'theme': 'dark'}}%%
+flowchart LR
+    U([用户提问]) --> E[文本向量化<br/>Embedding]
+    U --> P[Prompt 组装]
+    
+    subgraph 向量数据库 (Pinecone)
+        E --> DB[(检索 Top-K * 3 语料)]
+    end
+    
+    DB --> R[流派加权重排<br/>同流派 +0.18 分]
+    R -->|精排后的高质量语料| P
+    
+    P --> LLM[大模型生成<br/>DeepSeek-Flash]
+    LLM --> Ans([输出最终回答<br/>强制附带引用出处])
+    
+    style U fill:#3498db,stroke:#fff,stroke-width:2px,color:#fff
+    style Ans fill:#2ecc71,stroke:#fff,stroke-width:2px,color:#fff
+    style R fill:#e67e22,stroke:#fff,stroke-width:2px,color:#fff
+```
 ---
 
 ## 3.5.4 数据库设计：E-R 图

@@ -207,11 +207,11 @@ flowchart LR
     U([用户提问]) --> E[文本向量化<br/>Embedding]
     U --> P[Prompt 组装]
     
-    subgraph 向量数据库 (Pinecone)
-        E --> DB[(检索 Top-K * 3 语料)]
+    subgraph VectorDB ["向量数据库 (Pinecone)"]
+        E --> DB[(检索 Top-K 倍语料)]
     end
     
-    DB --> R[流派加权重排<br/>同流派 +0.18 分]
+    DB --> R[流派加权重排<br/>同流派加 0.18 分]
     R -->|精排后的高质量语料| P
     
     P --> LLM[大模型生成<br/>DeepSeek-Flash]

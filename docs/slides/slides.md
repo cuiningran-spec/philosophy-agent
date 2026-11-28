@@ -207,7 +207,7 @@ flowchart LR
 ```mermaid {scale: 0.6}
 %%{init: {'theme': 'dark'}}%%
 flowchart LR
-    U([提问]) --> E[向量化] --> DB[(Pinecone)]
+    U([提问]) --> E[向量化] --> DB[(PineCone)]
     DB --> R[流派重排]
     U --> P[Prompt 组装]
     R --> P

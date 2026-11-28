@@ -145,6 +145,7 @@ mdc: true
 ## 3.5.1 软件概要设计：系统架构图
 
 ```mermaid {scale: 0.6}
+%%{init: {'theme': 'dark'}}%%
 flowchart LR
     subgraph 前端
         U[用户] --> React[React 18 + Vite]
@@ -203,54 +204,57 @@ flowchart LR
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px;">
   
-  <!-- 左侧：E-R 图 -->
+  <!-- 左侧：E-R 图 (注意 mermaid 前不要留空格) -->
   <div style="width: 55%;">
-    ```mermaid {scale: 0.55}
-    erDiagram
-        SESSIONS ||--o{ MESSAGES : contains
-        SESSIONS ||--o{ PERSPECTIVES : generates
-        SESSIONS ||--o{ SUMMARIES : produces
-        SESSIONS {
-            int id PK
-            string question
-            string lens
-            string rolling_summary
-            string status
-        }
-        MESSAGES {
-            int id PK
-            int session_id FK
-            string role
-            string content
-            int turn_index
-            json sources
-        }
-        PERSPECTIVES {
-            int id PK
-            int session_id FK
-            string key
-            string name
-            string headline
-            string thinker
-        }
-        SUMMARIES {
-            int id PK
-            int session_id FK
-            int version
-            json insights
-            json tensions
-            json practices
-        }
-    ```
+
+```mermaid {scale: 0.55}
+%%{init: {'theme': 'dark'}}%%
+erDiagram
+    SESSIONS ||--o{ MESSAGES : contains
+    SESSIONS ||--o{ PERSPECTIVES : generates
+    SESSIONS ||--o{ SUMMARIES : produces
+    SESSIONS {
+        int id PK
+        string question
+        string lens
+        string rolling_summary
+        string status
+    }
+    MESSAGES {
+        int id PK
+        int session_id FK
+        string role
+        string content
+        int turn_index
+        json sources
+    }
+    PERSPECTIVES {
+        int id PK
+        int session_id FK
+        string key
+        string name
+        string headline
+        string thinker
+    }
+    SUMMARIES {
+        int id PK
+        int session_id FK
+        int version
+        json insights
+        json tensions
+        json practices
+    }
+```
+
   </div>
 
   <!-- 右侧：文字说明 -->
-  <div style="width: 42%; font-size: 15px; line-height: 1.6; margin-top: 20px;">
+  <div style="width: 42%; font-size: 14px; line-height: 1.6; margin-top: 20px;">
     <strong>核心表关系说明：</strong><br/><br/>
-    • <strong>SESSIONS (会话)</strong>：主表，记录用户的一次完整探索（问题、当前视角、滚动摘要、状态）。<br/><br/>
-    • <strong>MESSAGES (对话)</strong>：一对多。存储对话流水，<code>sources</code> 字段用 JSONB 保存每次回答的引用来源。<br/><br/>
-    • <strong>PERSPECTIVES (视角)</strong>：一对多。保存该次会话生成的三种哲学视角。<br/><br/>
-    • <strong>SUMMARIES (总结)</strong>：一对多。支持版本递增，生成总结后仍可继续对话。
+    • <strong>SESSIONS (会话)</strong>：主表，记录用户一次探索（问题、视角、滚动摘要）。<br/><br/>
+    • <strong>MESSAGES (对话)</strong>：对话流水，<code>sources</code> 字段用 JSONB 保存引用来源。<br/><br/>
+    • <strong>PERSPECTIVES (视角)</strong>：保存该次会话生成的三种哲学视角。<br/><br/>
+    • <strong>SUMMARIES (总结)</strong>：支持版本递增，生成后仍可继续对话。
   </div>
 
 </div>
@@ -324,7 +328,7 @@ flowchart LR
 
 **在本机运行作品，展示核心功能逻辑：**
 
-1. **多视角生成**：输入现实问题（如“我最近很焦虑”），展示生成的三种哲学视角（斯多葛、存在主义、尼采）。
+1. **多视角生成**：输入现实问题（如“我最近很焦虑”），展示生成的三种哲学视角（斯多葛、存在主义、道家）。
 2. **知识库溯源**：选择其中一个视角，提问并展示回答底部引用的「知识库出处」。
 3. **多轮记忆验证**：追问几个问题后，问“我最开始问你的问题是什么”，验证记忆窗口。
 4. **结构化总结**：点击生成总结，展示包含“洞见、张力、实践”的结构化卡片。

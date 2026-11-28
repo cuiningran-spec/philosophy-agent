@@ -1,514 +1,1091 @@
-# ThinkLab 阿里云 ECS 部署实施记录
+# ThinkLab 阿里云 ECS 部署记录
 
-> **项目名称：** ThinkLab — 哲学对话 AI Agent  
-> **部署目标：** 将 ThinkLab 从本地 Docker 环境部署到阿里云 ECS，实现公网访问和 Demo 演示。  
-> **部署模式：** Demo 演示模式  
-> **记录日期：** 2026 年 11 月 21 日  
-> **项目仓库：** https://github.com/cuiningran-spec/philosophy-agent
-
----
-
-## 一、部署目标与总体方案
-
-### 1.1 部署目标
-
-将 ThinkLab 项目从本地 Docker 环境迁移到阿里云 ECS，实现以下目标：
-
-1. 将项目部署到云服务器，摆脱本地电脑运行限制。
-2. 通过公网 IP 或域名访问 ThinkLab。
-3. 保持前端、后端、数据库之间的正常通信。
-4. 接入 DeepSeek API，实现哲学视角生成与 AI 对话。
-5. 支持项目展示、功能演示和阶段性测试。
-6. 控制服务器运行时间，尽量将 Demo 阶段的云资源费用控制在 300 元以内。
-
-### 1.2 项目技术架构
-
-ThinkLab 采用前后端分离的部署架构，通过 Docker Compose 管理服务。
-
-| 模块 | 技术 | 主要作用 |
-|---|---|---|
-| 前端 | React + Vite + TypeScript | 用户交互与页面展示 |
-| BFF | Node.js + Express | 前后端请求转发、SSE 流式响应 |
-| 后端 | Python + FastAPI | 核心业务逻辑和 AI 服务 |
-| 数据库 | PostgreSQL 16 | 用户会话等数据存储 |
-| AI 模型 | DeepSeek API | 哲学分析与对话生成 |
-| 容器管理 | Docker Compose | 管理项目运行服务 |
-| 云服务器 | 阿里云 ECS | 提供公网运行环境 |
-
-说明：DeepSeek 使用外部 API 调用，不需要在 ECS 上部署本地大语言模型，也不需要 GPU。
+> 本文记录 ThinkLab 从本地项目到阿里云 ECS 公网部署的完整过程，包括环境准备、项目上传、前后端部署、数据库配置、Nginx 反向代理、DeepSeek API 配置、故障排查以及 systemd 服务管理。
+>
+> **当前部署方式：** Ubuntu 22.04 + Python 虚拟环境 + Node.js + Nginx + systemd  
+> **部署时间：** 2026 年 11 月  
+> **项目目录：** `/root/philosophy-agent`
 
 ---
 
-## 二、阿里云 ECS 配置方案
+## 一、项目部署架构
 
-### 2.1 服务器规格
+ThinkLab 是一个基于大语言模型的哲学对话 Agent 项目，采用前后端分离的架构。
 
-根据项目架构、Demo 使用场景和预算，确定以下推荐配置：
+### 1. 技术栈
 
-| 配置项 | 选择 |
+| 模块 | 技术 |
 |---|---|
-| 云服务商 | 阿里云 |
-| 实例类型 | 经济型 e |
-| CPU | 2 核 |
-| 内存 | 4 GiB |
-| 操作系统 | Ubuntu 22.04 LTS 64 位 |
-| 系统盘 | ESSD Entry |
-| 磁盘容量 | 40 GiB |
-| CPU 架构 | x86 |
-| 公网网络 | 分配公网 IPv4 |
-| 公网带宽 | 1–3 Mbps 起步 |
-| 计费方式 | 按量付费，结合可用优惠额度 |
+| 云服务器 | 阿里云 ECS |
+| 操作系统 | Ubuntu 22.04 |
+| 后端框架 | FastAPI |
+| 后端运行环境 | Python 3.10 + venv |
+| 前端框架 | React + TypeScript + Vite |
+| 前端服务 | Node.js + Express |
+| Web 服务器 | Nginx |
+| 数据库 | SQLite（当前实际运行配置） |
+| 向量存储 | Local VectorStore |
+| 大语言模型 | DeepSeek |
+| 服务管理 | systemd |
 
-### 2.2 配置选择原因
-
-项目需要同时运行：
-
-- React 前端及 Node.js BFF；
-- Python FastAPI 后端；
-- PostgreSQL 数据库；
-- Docker 容器及相关服务。
-
-2 核 2 GiB 虽然成本更低，但多个容器同时运行可能出现内存不足的问题。因此，选择 2 核 4 GiB 作为 Demo 阶段更稳妥的起点。
-
-### 2.3 预算规划
-
-根据阿里云控制台此前显示的参考价格：
-
-- 2 核 4 GiB 经济型 e：约 0.254 元/小时；
-- 页面显示的免费可用时长：约 1181 小时；
-- 对应实例运行额度：约 300 元；
-- 1181 小时约等于连续运行 49 天。
-
-Demo 模式不要求服务器全年 24 小时运行，因此采用按需启动、演示结束后停止的方式控制费用。
-
-**预算注意事项：**
-
-1. 300 元额度并不代表服务器全年免费。
-2. 云盘、公网带宽、流量、快照等资源可能独立计费。
-3. 停机后部分资源仍可能产生费用。
-4. 最终费用以阿里云订单页面和实际账单为准。
-5. 购买前需要确认个人实名认证账号是否具备相应优惠资格。
-
----
-
-## 三、本地 Docker 部署环境
-
-### 3.1 Docker 环境
-
-ThinkLab 已在 Windows 本地环境使用 Docker 完成容器化部署。
-
-环境信息：
-
-| 项目 | 版本或状态 |
-|---|---|
-| Docker Desktop | 4.99.0 |
-| Docker Engine | 29.9.3 |
-| Docker Compose | v5.7.0 |
-| 后端镜像 | thinklab-api:local |
-| 前端镜像 | thinklab-web:local |
-
-### 3.2 本地服务架构与验证
-
-Docker Compose 管理的服务包括：
-
-| 容器 | 作用 |
-|---|---|
-| thinklab-api-prod | Python 后端服务 |
-| thinklab-postgres-prod | PostgreSQL 数据库 |
-| thinklab-web-prod | 前端及相关 Web 服务 |
-
-本地访问地址：
-
-- 前端：http://localhost:4173
-- 后端健康检查：`/api/health`
-
-此前本地验证结果：
-
-- 前端页面能够正常打开，HTTP 状态码为 200；
-- 后端健康检查返回正常；
-- 数据库连接正常；
-- DeepSeek API 配置已被后端识别；
-- 已成功获取三个哲学分析视角。
-
-健康检查中曾显示：
-
-| 检查项 | 状态 |
-|---|---|
-| API | ok |
-| Database | up |
-| LLM Mode | deepseek |
-| Model | deepseek-chat |
-| Embedding Provider | local |
-| Vector Store | local |
-
-以上是本地环境的验证结果，云端部署后仍需重新确认。
-
-### 3.3 项目仓库结构
-
-项目公开仓库：
-
-https://github.com/cuiningran-spec/philosophy-agent
-
-主要目录结构：
+### 2. 部署架构
 
 ```text
-philosophy-agent/
-├── docs/
-├── code/
-│   ├── backend/
-│   ├── frontend/
-│   └── core_engine/
-├── tests/
-└── .github/
-    └── workflows/
+                   用户浏览器
+                       |
+                       | HTTP :80
+                       v
+                 Nginx Web Server
+                       |
+                       v
+              Node.js / Express
+                 前端服务 :4173
+                       |
+                       | /api 请求转发
+                       v
+                FastAPI Backend
+                   :8000
+                       |
+          +------------+------------+
+          |            |            |
+          v            v            v
+       SQLite      VectorStore   DeepSeek API
+       数据库       本地向量存储   大语言模型
 ```
 
-项目采用 Docker Compose 组织前后端服务和数据库，云端部署将以现有项目配置为基础，不需要重新开发业务功能。
+其中：
+
+- Nginx 负责接收公网 HTTP 请求。
+- Node.js 提供前端页面，并将 `/api` 请求转发给 FastAPI。
+- FastAPI 负责处理业务逻辑、Agent 调用和数据读写。
+- DeepSeek 提供大语言模型能力。
+- SQLite 和本地向量存储用于当前 MVP 阶段的数据管理。
+
+### 3. 端口规划
+
+| 服务 | 端口 | 监听地址 | 用途 |
+|---|---:|---|---|
+| Nginx | 80 | `0.0.0.0` | 公网 HTTP 入口 |
+| Node.js | 4173 | `127.0.0.1`（建议后续调整） | 前端服务 |
+| FastAPI | 8000 | `127.0.0.1` | 后端 API |
+| PostgreSQL | 5432 | 未启用 | 预留数据库端口 |
+
+公网只需要开放 80 端口。4173、8000 和 5432 不应直接对公网开放。
 
 ---
 
-## 四、ECS 网络与安全组配置
+## 二、云服务器环境准备
 
-### 4.1 服务器创建
+### 1. 创建 ECS 实例
 
-进入阿里云 ECS 控制台：
+在阿里云控制台创建 ECS 云服务器，选择：
 
-https://ecs.console.aliyun.com/
+- 操作系统：Ubuntu 22.04
+- 登录方式：root 用户，通过 ECS Workbench 登录
+- 网络：配置公网 IP
+- 安全组：开放 TCP 80 端口
 
-按照以下配置创建实例：
+安全组中的 80 端口用于网站访问。
 
-1. 选择经济型 e，2 核 4 GiB。
-2. 选择 Ubuntu 22.04 LTS 64 位镜像。
-3. 配置 ESSD Entry 40 GiB 系统盘。
-4. 分配公网 IPv4。
-5. 配置公网带宽。
-6. 设置登录密码或 SSH 密钥。
-7. 创建或选择安全组。
-8. 检查最终费用明细。
-9. 提交订单并启动实例。
+不建议将数据库端口、后端端口和前端内部端口直接开放给公网。
 
-### 4.2 安全组配置
+### 2. 安装 Git
 
-云服务器需要配置安全组入方向规则：
-
-| 端口 | 协议 | 授权对象 | 用途 |
-|---|---|---|---|
-| 22 | TCP | 自己的公网 IP | SSH 远程连接 |
-| 80 | TCP | 0.0.0.0/0 | HTTP 访问 |
-| 443 | TCP | 0.0.0.0/0 | HTTPS 访问 |
-
-以下端口不应直接开放到公网：
-
-| 端口 | 服务 | 处理方式 |
-|---|---|---|
-| 5432 | PostgreSQL | 仅内部访问 |
-| 8000 | FastAPI | 仅内部访问 |
-| 4173 | 前端服务 | 由反向代理访问 |
-
----
-
-## 五、服务器初始化与项目部署
-
-### 5.1 通过 SSH 连接服务器
-
-在 Windows PowerShell 中执行：
-
-```powershell
-ssh root@服务器公网IP
-```
-
-首次连接时确认主机指纹，然后按照所选认证方式完成登录。连接成功后，终端将进入 Ubuntu 服务器环境。
-
-### 5.2 初始化服务器环境
-
-更新系统软件包：
+在 ECS 终端执行：
 
 ```bash
-sudo apt update
-sudo apt upgrade -y
+apt update
+apt install -y git
 ```
 
-安装 Git：
+验证：
 
 ```bash
-sudo apt install git -y
+git --version
 ```
 
-安装 Docker：
+### 3. 安装 Docker
+
+执行：
 
 ```bash
-curl -fsSL https://get.docker.com | sudo sh
+apt install -y docker.io docker-compose-v2
 ```
 
 启动 Docker：
 
 ```bash
-sudo systemctl enable docker
-sudo systemctl start docker
+systemctl enable --now docker
 ```
 
-检查 Docker：
+检查：
 
 ```bash
 docker --version
-```
-
-检查 Docker Compose：
-
-```bash
 docker compose version
 ```
 
-### 5.3 拉取 ThinkLab 项目代码
+**说明：** Docker 已安装，但本次最终运行的前后端服务并没有使用 Docker Compose。
 
-在服务器中执行：
+### 4. 安装 Python 环境
+
+安装 Python 和虚拟环境工具：
+
+```bash
+apt install -y python3 python3-venv python3-pip
+```
+
+检查：
+
+```bash
+python3 --version
+```
+
+本次服务器实际使用 Python 3.10.12。
+
+### 5. 安装 Node.js
+
+使用 NodeSource 安装 Node.js 20：
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt install -y nodejs
+```
+
+检查：
+
+```bash
+node -v
+npm -v
+```
+
+本次实际安装的是 Node.js 20。
+
+### 6. 安装 Nginx
+
+```bash
+apt install -y nginx
+systemctl enable --now nginx
+```
+
+检查：
+
+```bash
+nginx -v
+systemctl status nginx
+```
+
+---
+
+## 三、上传项目到 ECS
+
+### 1. 最初尝试 Git Clone
+
+原计划直接从 GitHub 克隆项目：
 
 ```bash
 git clone https://github.com/cuiningran-spec/philosophy-agent.git
 ```
 
+但是执行时遇到了网络连接超时，ECS 无法正常连接 GitHub。
+
+### 2. 最终解决方法：ZIP 上传
+
+由于 Git Clone 无法正常完成，改为：
+
+1. 在本地电脑打开 GitHub 仓库。
+2. 下载项目 ZIP 压缩包。
+3. 将 ZIP 文件上传到 ECS。
+4. 在服务器解压项目。
+
+项目最终存放在：
+
+```text
+/root/philosophy-agent
+```
+
+项目关键目录：
+
+```text
+philosophy-agent/
+├── code/
+│   ├── backend/
+│   ├── frontend/
+│   ├── core_engine/
+│   ├── tests/
+│   └── ...
+├── docs/
+├── tests/
+└── ...
+```
+
+### 3. 解压项目
+
+如果 ZIP 文件已上传到服务器，可以使用：
+
+```bash
+apt install -y unzip
+unzip 项目压缩包.zip -d /root/
+```
+
+根据实际解压结果确认项目目录。
+
+---
+
+## 四、后端部署
+
+### 1. 创建 Python 虚拟环境
+
 进入项目目录：
 
 ```bash
-cd philosophy-agent
+cd /root/philosophy-agent/code
 ```
 
-查看项目文件：
+创建虚拟环境：
 
 ```bash
-ls -la
+python3 -m venv .venv
 ```
 
-根据仓库实际 Docker Compose 配置和目录结构，确定生产部署文件的位置和启动命令。
+激活环境：
+
+```bash
+source .venv/bin/activate
+```
+
+### 2. 安装 Python 依赖
+
+进入后端目录：
+
+```bash
+cd /root/philosophy-agent/code/backend
+```
+
+安装依赖：
+
+```bash
+pip install -r requirements.txt
+```
+
+如果项目依赖文件位置不同，需要根据实际项目结构调整。
+
+### 3. 配置后端运行环境
+
+后端启动时需要从 `code/backend` 目录执行，并通过 `PYTHONPATH=.` 使项目模块能够正确导入。
+
+最终启动命令：
+
+```bash
+cd /root/philosophy-agent/code/backend
+
+PYTHONPATH=. ../.venv/bin/python -m uvicorn app.main:app \
+  --host 127.0.0.1 \
+  --port 8000
+```
+
+后端监听本机 8000 端口，不直接暴露给公网。
 
 ---
 
-## 六、生产环境配置
+## 五、前端部署
 
-### 6.1 配置生产环境变量
+### 1. 安装前端依赖
 
-需要在 ECS 上配置生产环境变量，主要包括：
+进入前端目录：
 
-| 配置项 | 用途 |
+```bash
+cd /root/philosophy-agent/code/frontend
+```
+
+安装依赖：
+
+```bash
+npm ci
+```
+
+### 2. 构建前端
+
+执行：
+
+```bash
+npm run build
+```
+
+构建成功后生成：
+
+```text
+frontend/dist/
+```
+
+该目录保存 Vite 构建后的前端静态资源。
+
+### 3. 启动 Express 服务
+
+本项目通过 Express 提供前端页面，并代理后端 API 请求。
+
+最终使用的启动命令：
+
+```bash
+cd /root/philosophy-agent/code/frontend
+
+PORT=4173 \
+AGENT_API_BASE=http://127.0.0.1:8000 \
+npm run server
+```
+
+其中：
+
+- `PORT=4173`：指定前端服务端口。
+- `AGENT_API_BASE`：指定 FastAPI 后端地址。
+
+---
+
+## 六、数据库部署及问题处理
+
+### 1. 原计划使用 PostgreSQL
+
+项目中提供了 Docker Compose 配置，原计划使用 PostgreSQL 16。
+
+但执行 Docker Compose 启动数据库时出现错误：
+
+```text
+failed to resolve reference "docker.io/library/postgres:16"
+
+dial tcp ...:443: i/o timeout
+```
+
+原因是 ECS 无法正常连接 Docker Hub，导致 PostgreSQL 镜像拉取失败。
+
+### 2. 最终解决方法
+
+考虑到当前项目处于 MVP 阶段，并且后端配置中：
+
+```env
+THINKLAB_DB_MODE=auto
+```
+
+因此采用了自动回退方案，使用 SQLite 运行。
+
+数据库文件位置：
+
+```text
+/root/philosophy-agent/code/backend/.cache/thinklab.db
+```
+
+向量存储使用本地模式：
+
+```env
+THINKLAB_VECTORSTORE_MODE=local
+```
+
+**注意：** 当前正式运行的是 SQLite，而不是 PostgreSQL。后续如果迁移到 PostgreSQL，需要重新配置数据库连接、迁移数据并验证业务功能。
+
+---
+
+## 七、DeepSeek API 配置
+
+### 1. 创建环境变量文件
+
+在以下位置配置环境变量：
+
+```text
+/root/philosophy-agent/code/.env
+```
+
+配置内容：
+
+```env
+THINKLAB_LLM_MODE=deepseek
+THINKLAB_LLM_FALLBACK=false
+THINKLAB_DB_MODE=auto
+THINKLAB_VECTORSTORE_MODE=local
+
+DEEPSEEK_API_KEY=填写自己的真实API_KEY
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-chat
+```
+
+其中：
+
+- `THINKLAB_LLM_MODE`：指定大语言模型运行模式。
+- `THINKLAB_LLM_FALLBACK`：控制是否允许回退。
+- `THINKLAB_DB_MODE`：数据库运行模式。
+- `THINKLAB_VECTORSTORE_MODE`：向量存储模式。
+- `DEEPSEEK_API_KEY`：DeepSeek API 密钥。
+- `DEEPSEEK_BASE_URL`：DeepSeek API 地址。
+- `DEEPSEEK_MODEL`：使用的模型名称。
+
+### 2. API Key 安全要求
+
+真实 API Key 只能保存在服务器的环境变量文件中。
+
+不要：
+
+- 上传真实 `.env` 文件到 GitHub。
+- 将 API Key 写进前端代码。
+- 将 API Key 提交到公开仓库。
+- 在公开截图中暴露 API Key。
+
+可以通过以下命令检查是否填写了 API Key，但不要打印真实密钥：
+
+```bash
+if grep -q '^DEEPSEEK_API_KEY=.' /root/philosophy-agent/code/.env; then
+    echo "API Key 已填写"
+else
+    echo "API Key 未填写"
+fi
+```
+
+### 3. 后端启动日志验证
+
+后端日志曾显示：
+
+```text
+LLM 已就绪：deepseek / model=deepseek-chat
+ThinkLabAgent 初始化：llm_mode=deepseek
+知识库预热完成
+Application startup complete.
+```
+
+这说明后端已经成功读取 DeepSeek 配置并初始化模型。
+
+仍应通过网站实际发送对话请求，确认模型 API 调用正常。
+
+---
+
+## 八、Nginx 反向代理配置
+
+### 1. Nginx 的作用
+
+用户访问 ECS 公网 IP 时，请求首先到达 Nginx。
+
+Nginx 再将请求转发给本机的 Node.js 前端服务。
+
+### 2. 配置文件
+
+本次使用 Nginx 默认站点配置进行反向代理。
+
+配置文件：
+
+```text
+/etc/nginx/sites-available/default
+```
+
+配置示例：
+
+```nginx
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:4173;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+如果项目需要 SSE 流式响应，应根据实际代理链路进一步检查缓冲配置，必要时对相关 API 路径关闭代理缓冲。
+
+### 3. 检查配置
+
+```bash
+nginx -t
+```
+
+如果显示：
+
+```text
+syntax is ok
+test is successful
+```
+
+说明配置语法正确。
+
+重载 Nginx：
+
+```bash
+systemctl reload nginx
+```
+
+---
+
+## 九、首次启动与后台运行
+
+最初没有使用 systemd，而是使用 `nohup` 将前后端进程放在后台运行。
+
+### 1. 后端启动
+
+```bash
+cd /root/philosophy-agent/code/backend
+
+nohup env PYTHONPATH=. \
+../.venv/bin/python -m uvicorn app.main:app \
+--host 127.0.0.1 \
+--port 8000 \
+> ../logs/backend.log 2>&1 < /dev/null &
+```
+
+### 2. 前端启动
+
+```bash
+cd /root/philosophy-agent/code/frontend
+
+nohup env PORT=4173 \
+AGENT_API_BASE=http://127.0.0.1:8000 \
+npm run server \
+> ../logs/frontend.log 2>&1 < /dev/null &
+```
+
+### 3. 首次访问成功
+
+通过公网 IP 访问网站，ThinkLab 首页可以正常打开。
+
+此时部署已经基本完成，但服务管理仍然存在不足。
+
+---
+
+## 十、部署过程中遇到的主要问题
+
+### 问题一：GitHub 克隆项目超时
+
+**现象：**
+
+```text
+git clone https://github.com/cuiningran-spec/philosophy-agent.git
+```
+
+执行失败，提示连接超时。
+
+**原因：**
+
+ECS 无法正常连接 GitHub。
+
+**解决方法：**
+
+改为本地下载 GitHub ZIP，再上传到 ECS 解压。
+
+---
+
+### 问题二：Docker Compose 无法拉取 PostgreSQL 镜像
+
+**现象：**
+
+```text
+failed to resolve reference "docker.io/library/postgres:16"
+```
+
+**原因：**
+
+ECS 无法正常连接 Docker Hub，导致 PostgreSQL 镜像拉取失败。
+
+**解决方法：**
+
+暂时放弃 PostgreSQL 容器部署，利用项目的自动数据库回退机制，改用 SQLite。
+
+**最终状态：**
+
+- Docker 已安装。
+- PostgreSQL 容器未成功启动。
+- ThinkLab 使用 SQLite 正常运行。
+
+---
+
+### 问题三：网站出现 502 Bad Gateway
+
+**现象：**
+
+浏览器访问网站时显示：
+
+```text
+502 Bad Gateway
+
+nginx/1.18.0 (Ubuntu)
+```
+
+**排查过程：**
+
+执行：
+
+```bash
+ps aux | grep -E 'uvicorn|server/index.mjs' | grep -v grep
+```
+
+检查端口：
+
+```bash
+ss -lntp | grep -E ':80|:4173|:8000'
+```
+
+发现：
+
+- Nginx 的 80 端口正常。
+- FastAPI 的 8000 端口正常。
+- Node.js 的 4173 端口没有监听。
+
+**原因：**
+
+Node 前端服务已经停止，而 Nginx 仍然尝试将请求转发到 4173 端口。
+
+**临时解决方法：**
+
+重新启动前端：
+
+```bash
+cd /root/philosophy-agent/code/frontend
+
+nohup env PORT=4173 \
+AGENT_API_BASE=http://127.0.0.1:8000 \
+npm run server \
+> ../logs/frontend.log 2>&1 < /dev/null &
+```
+
+之后网站恢复正常。
+
+**进一步分析：**
+
+`nohup` 只能让进程在后台运行，并不能保证进程异常退出后自动重启，也不能自动管理 ECS 重启后的服务启动。
+
+因此，最终决定使用 systemd 管理前后端。
+
+---
+
+## 十一、最终解决方案：systemd 服务管理
+
+这是本次部署中最重要的后续优化。
+
+### 1. 为什么使用 systemd？
+
+systemd 是 Ubuntu 的系统服务管理工具。
+
+相比手动使用 `nohup`，它可以：
+
+- 设置服务开机自动启动。
+- 服务意外退出后自动尝试重启。
+- 统一查看服务状态。
+- 统一查看运行日志。
+- 使用标准命令启动、停止和重启服务。
+
+### 2. 创建后端服务
+
+创建：
+
+```text
+/etc/systemd/system/thinklab-backend.service
+```
+
+内容：
+
+```ini
+[Unit]
+Description=ThinkLab FastAPI Backend
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/philosophy-agent/code/backend
+Environment=PYTHONPATH=.
+ExecStart=/root/philosophy-agent/code/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 3. 创建前端服务
+
+首先获取 npm 路径：
+
+```bash
+command -v npm
+```
+
+创建：
+
+```text
+/etc/systemd/system/thinklab-frontend.service
+```
+
+本次使用的配置：
+
+```ini
+[Unit]
+Description=ThinkLab Node Frontend
+After=network.target thinklab-backend.service
+Wants=thinklab-backend.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/philosophy-agent/code/frontend
+Environment=PORT=4173
+Environment=AGENT_API_BASE=http://127.0.0.1:8000
+ExecStart=/usr/bin/npm run server
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+注意：`ExecStart` 中的 npm 路径应与服务器上 `command -v npm` 的实际结果一致。
+
+### 4. 加载 systemd 配置
+
+```bash
+systemctl daemon-reload
+```
+
+### 5. 停止旧的 nohup 进程
+
+```bash
+pkill -f '[u]vicorn app.main:app' || true
+pkill -f '[n]ode server/index.mjs' || true
+```
+
+避免旧进程占用端口。
+
+### 6. 启动并启用开机自启
+
+```bash
+systemctl enable --now thinklab-backend.service
+
+systemctl enable --now thinklab-frontend.service
+
+systemctl enable --now nginx
+```
+
+至此，前后端正式交由 systemd 管理。
+
+---
+
+## 十二、最终部署验证
+
+### 1. 检查后端状态
+
+```bash
+systemctl status thinklab-backend --no-pager
+```
+
+正常情况下应显示：
+
+```text
+Active: active (running)
+```
+
+### 2. 检查前端状态
+
+```bash
+systemctl status thinklab-frontend --no-pager
+```
+
+正常情况下应显示：
+
+```text
+Active: active (running)
+```
+
+### 3. 检查 Nginx 状态
+
+```bash
+systemctl status nginx --no-pager
+```
+
+正常情况下应显示：
+
+```text
+Active: active (running)
+```
+
+### 4. 检查端口
+
+```bash
+ss -lntp | grep -E ':80|:4173|:8000'
+```
+
+最终检查到：
+
+```text
+0.0.0.0:80
+127.0.0.1:8000
+*:4173
+```
+
+其中，前端目前监听 `*:4173`，后续建议将其调整为仅监听 `127.0.0.1`，并同步修改 Express 服务监听配置。
+
+### 5. 检查后端 API
+
+```bash
+curl -sS -o /dev/null \
+-w 'Backend HTTP %{http_code}\n' \
+http://127.0.0.1:8000/openapi.json
+```
+
+实际返回：
+
+```text
+Backend HTTP 200
+```
+
+### 6. 检查前端
+
+```bash
+curl -I http://127.0.0.1:4173/
+```
+
+实际返回：
+
+```text
+HTTP/1.1 200 OK
+```
+
+### 7. 检查 Nginx 网站入口
+
+```bash
+curl -I http://127.0.0.1/
+```
+
+实际返回：
+
+```text
+HTTP/1.1 200 OK
+```
+
+说明：
+
+- 后端 API 可以访问。
+- 前端服务可以访问。
+- Nginx 可以正常代理请求。
+- 网站入口可以正常返回页面。
+
+**最终验证结果：前后端服务均已运行，网站入口返回 HTTP 200，部署成功。**
+
+---
+
+## 十三、日常运维命令
+
+完成 systemd 配置后，不需要再使用 nohup 手动启动服务。
+
+### 1. 查看服务状态
+
+```bash
+systemctl status thinklab-backend
+
+systemctl status thinklab-frontend
+
+systemctl status nginx
+```
+
+### 2. 重启服务
+
+重启后端：
+
+```bash
+systemctl restart thinklab-backend
+```
+
+重启前端：
+
+```bash
+systemctl restart thinklab-frontend
+```
+
+重启 Nginx：
+
+```bash
+systemctl restart nginx
+```
+
+### 3. 查看日志
+
+查看后端最近 50 条日志：
+
+```bash
+journalctl -u thinklab-backend -n 50 --no-pager
+```
+
+查看前端最近 50 条日志：
+
+```bash
+journalctl -u thinklab-frontend -n 50 --no-pager
+```
+
+实时查看后端日志：
+
+```bash
+journalctl -u thinklab-backend -f
+```
+
+实时查看前端日志：
+
+```bash
+journalctl -u thinklab-frontend -f
+```
+
+### 4. 检查是否启用了开机自启
+
+```bash
+systemctl is-enabled thinklab-backend
+
+systemctl is-enabled thinklab-frontend
+
+systemctl is-enabled nginx
+```
+
+正常情况下均应返回：
+
+```text
+enabled
+```
+
+### 5. 服务异常时的处理
+
+如果网站再次出现 502：
+
+第一步，检查服务：
+
+```bash
+systemctl status thinklab-backend
+systemctl status thinklab-frontend
+systemctl status nginx
+```
+
+第二步，查看前端日志：
+
+```bash
+journalctl -u thinklab-frontend -n 50 --no-pager
+```
+
+第三步，必要时重启前端：
+
+```bash
+systemctl restart thinklab-frontend
+```
+
+如果仍然无法访问，再检查后端和 Nginx 日志。
+
+---
+
+## 十四、Docker 部署方案说明
+
+本次部署过程中还使用 CodeBuddy 创建了以下 Docker 部署文件：
+
+```text
+code/
+├── backend/
+│   └── Dockerfile
+├── frontend/
+│   └── Dockerfile
+├── .dockerignore
+├── .env.production.example
+├── docker-compose.prod.yml
+└── .gitignore
+```
+
+这些文件的作用：
+
+| 文件 | 用途 |
 |---|---|
-| DEEPSEEK_API_KEY | DeepSeek API 身份认证 |
-| DeepSeek 模型配置 | 指定使用的模型 |
-| DATABASE_URL | PostgreSQL 数据库连接 |
-| PostgreSQL 密码 | 数据库身份认证 |
-| CORS 配置 | 限制允许访问后端的来源 |
-| 前端 API 地址 | 指向生产环境 API 或代理路径 |
-| 其他项目变量 | 根据项目配置文件确定 |
+| `backend/Dockerfile` | 构建后端镜像 |
+| `frontend/Dockerfile` | 构建前端镜像 |
+| `.dockerignore` | 排除不需要进入镜像的文件 |
+| `.env.production.example` | 生产环境变量模板 |
+| `docker-compose.prod.yml` | 编排生产环境服务 |
+| `.gitignore` | 忽略敏感配置及临时文件 |
 
-具体变量名称和格式必须以项目现有 `.env.production.example`、Docker Compose 文件及后端配置为准。
+**重要说明：**
 
-### 6.2 环境变量安全要求
+这些 Docker 部署文件虽然已经创建，但本次 ECS 最终运行的前后端并没有通过 Docker Compose 启动。
 
-1. API Key 只保存在服务器环境变量或受保护的环境文件中。
-2. 不将真实密钥提交到 GitHub。
-3. 不在前端代码中写入 API Key。
-4. 不将 PostgreSQL 密码暴露给公网。
-5. 不把 `.env.production` 文件上传到公开仓库。
-6. 不在聊天中发送密码、私钥和 API Key。
-
-### 6.3 Docker Compose 生产部署配置
-
-本地部署使用的 Docker Compose 配置需要结合云端部署环境进行调整：
-
-1. 确保 PostgreSQL 仅供 Docker 内部网络访问。
-2. 确保 FastAPI 不直接暴露公网端口。
-3. 配置前端与 BFF 的生产环境请求地址。
-4. 确认 SSE 流式响应能够正常工作。
-5. 配置持久化数据库卷。
-6. 确认后端环境变量能够正确读取。
-7. 配置容器重启策略。
-8. 处理本地向量存储目录的写入权限问题。
-
-特别注意：
-
-此前本地健康检查显示：
+当前正式运行方式仍然是：
 
 ```text
-embedding_provider=local
-vectorstore=local
+systemd
+  ├── thinklab-backend
+  ├── thinklab-frontend
+  └── nginx
 ```
 
-这说明当时使用的是本地向量存储，不能因为配置了 Pinecone API Key 就认定已经启用 Pinecone。云端是否使用 Pinecone，需要依据项目实际支持的配置和运行状态确定。
+Docker Compose 可以作为后续标准化部署和环境迁移的方案，但需要先单独验证镜像构建、容器网络、数据库连接和 API 配置，再考虑迁移。
 
 ---
 
-## 七、Docker 服务构建与启动
+## 十五、当前部署状态与后续优化
 
-在项目根目录执行实际生产 Compose 文件对应的构建命令，例如：
+### 1. 当前已经完成
 
-```bash
-docker compose -f docker-compose.prod.yml build
-```
+- [x] 阿里云 ECS 创建与 Ubuntu 环境准备
+- [x] Git、Python、Node.js、Docker 安装
+- [x] 项目上传到 ECS
+- [x] Python 虚拟环境创建
+- [x] 后端依赖安装
+- [x] 前端依赖安装
+- [x] 前端生产构建
+- [x] FastAPI 后端运行
+- [x] Node.js 前端运行
+- [x] SQLite 数据库运行
+- [x] 本地向量存储配置
+- [x] DeepSeek 环境变量配置
+- [x] Nginx 反向代理配置
+- [x] 公网 HTTP 访问
+- [x] systemd 后端服务配置
+- [x] systemd 前端服务配置
+- [x] Nginx 开机自启
+- [x] 前后端服务开机自启
+- [x] 网站 HTTP 200 验证
 
-具体文件名需要以仓库实际配置为准。
+### 2. 后续建议
 
-构建完成后启动：
+以下工作尚不应视为已经完成：
 
-```bash
-docker compose -f docker-compose.prod.yml up -d
-```
+| 优化项目 | 当前情况 | 建议 |
+|---|---|---|
+| HTTPS | 尚未配置 | 申请 SSL 证书并配置 HTTPS |
+| PostgreSQL | 尚未启用 | 后续根据用户量和数据需求迁移 |
+| SQLite 备份 | 尚未建立自动备份机制 | 定期备份数据库文件 |
+| 前端监听地址 | 当前为 `*:4173` | 调整为 `127.0.0.1` |
+| Docker Compose | 文件已创建，未用于当前运行 | 单独测试后再迁移 |
+| 监控告警 | 尚未配置 | 增加网站可用性监测 |
+| 日志管理 | 已有 systemd 日志 | 后续设置日志保留和磁盘空间管理 |
 
-查看运行状态：
+### 3. 服务器与本地电脑的关系
 
-```bash
-docker compose ps
-```
+ECS 是独立运行的云服务器。
 
-查看服务日志：
+因此：
 
-```bash
-docker compose logs -f
-```
-
-如果项目使用的生产 Compose 文件名称不同，需要替换为实际文件名。
-
-需要确认以下服务均能正常运行：
-
-- 前端容器；
-- BFF 服务；
-- FastAPI 后端；
-- PostgreSQL 数据库。
-
----
-
-## 八、Nginx 反向代理与公网访问
-
-### 8.1 配置 Nginx 反向代理
-
-为了让用户通过公网 IP 或域名访问，需要配置 Nginx。
-
-Nginx 主要负责：
-
-1. 接收公网 HTTP/HTTPS 请求。
-2. 将页面请求转发给前端。
-3. 将 API 请求转发给对应服务。
-4. 支持 SSE 流式响应。
-5. 提供统一的公网访问入口。
-
-预期部署架构：
-
-```text
-用户浏览器
-     |
-     v
-公网 IP / 域名
-     |
-     v
-Nginx 反向代理
-     |
-     +------> React 前端
-     |
-     +------> Node.js BFF
-                    |
-                    v
-               FastAPI 后端
-                    |
-                    +------> PostgreSQL
-                    |
-                    +------> DeepSeek API
-```
-
-### 8.2 域名与 HTTPS 配置
-
-Demo 初期可以先通过公网 IP 进行部署验证。如果需要长期展示或正式对外开放，建议配置域名和 HTTPS。
-
-操作内容：
-
-1. 准备域名。
-2. 配置 DNS 解析，将域名指向 ECS 公网 IP。
-3. 根据域名和服务器使用情况完成 ICP 备案等必要手续。
-4. 申请 SSL 证书。
-5. 配置 Nginx HTTPS。
-6. 验证 HTTPS 访问。
+- 关闭本地电脑，不会关闭 ECS。
+- 关闭 VS Code，不会关闭 ECS。
+- 关闭浏览器或 Workbench 页面，不会停止网站。
+- 只要 ECS 实例保持运行，且相关服务正常，其他用户就可以访问网站。
+- 如果主动停止 ECS，网站就会停止访问。
 
 ---
 
-## 九、云端功能验证
+## 十六、部署总结
 
-云端部署完成后，需要重点确认以下功能：
+本次 ThinkLab 部署经历了从直接上传代码、安装运行环境，到前后端分离部署、Nginx 反向代理，再到 systemd 服务管理的完整过程。
 
-| 测试项目 | 验证内容 |
-|---|---|
-| 页面访问 | 浏览器能否正常打开 ThinkLab |
-| API 健康检查 | 后端能否正常响应 |
-| 数据库连接 | PostgreSQL 是否正常 |
-| AI 请求 | DeepSeek API 是否能够正常调用 |
-| 哲学视角生成 | 能否正常返回三个哲学视角 |
-| 继续探索 | 用户选择视角后能否继续对话 |
-| SSE 流式响应 | AI 回复是否能够正常流式输出 |
-| 会话功能 | 会话创建和数据保存是否正常 |
-| 异常处理 | API 失败时是否有明确提示 |
-| 公网访问 | 非本机网络是否能够正常访问 |
+部署中主要遇到三个问题：
 
-重点验证项目的核心 MVP 流程：
+1. ECS 无法正常连接 GitHub，最终采用 ZIP 上传方式。
+2. ECS 无法从 Docker Hub 拉取 PostgreSQL 镜像，最终使用 SQLite 完成当前阶段部署。
+3. 前端进程意外停止导致 Nginx 返回 502，最终通过 systemd 配置前后端自动启动和异常重启机制。
 
-```text
-用户输入现实问题
-        |
-        v
-AI 分析用户问题
-        |
-        v
-生成三个哲学视角
-        |
-        v
-用户选择其中一个视角
-        |
-        v
-继续针对性探索
-        |
-        v
-整理本次思考结果
-```
+最终，ThinkLab 已经能够通过阿里云 ECS 公网访问，后端、前端和 Nginx 均通过 HTTP 200 检查。
 
----
+**本次部署的最终方案是：Ubuntu 22.04 + Python venv + FastAPI + Node.js + Nginx + SQLite + DeepSeek + systemd。**
 
-## 十、Demo 运行与费用管理
-
-由于采用 Demo 演示模式，服务器不需要全年运行。
-
-建议：
-
-1. 演示前提前启动 ECS。
-2. 确认 Docker 容器全部正常。
-3. 演示结束后根据实际需求停止实例。
-4. 关注按量付费账单。
-5. 重要演示前备份数据库。
-6. 保留项目代码和生产配置的安全副本。
-7. 不需要时及时释放不再使用的资源。
-
-注意：停止实例不代表所有云资源都停止计费，应确认停机模式、云盘和公网 IP 的计费规则。
-
----
-
-## 十一、最终部署目标与执行流程
-
-完成全部部署工作后，ThinkLab 将具备以下运行能力：
-
-- 通过阿里云 ECS 提供云端运行环境；
-- 通过公网 IP 或域名访问前端；
-- 使用 Docker Compose 管理前后端和数据库；
-- 通过 DeepSeek API 提供哲学分析与对话能力；
-- 支持用户输入现实问题、生成三个哲学视角、选择视角并继续探索；
-- 支持阶段性 Demo 展示；
-- 通过按需启动和停止控制云服务器运行成本。
-
-整体部署按照以下顺序推进：
-
-1. 完成阿里云 ECS 购买与安全组配置。
-2. 获取公网 IP，通过 SSH 连接服务器。
-3. 安装 Docker、Docker Compose 和 Git。
-4. 克隆 GitHub 仓库。
-5. 配置生产环境变量。
-6. 调整 Docker Compose 生产配置。
-7. 构建并启动 Docker 服务。
-8. 配置 Nginx 和公网访问。
-9. 根据需要配置域名和 HTTPS。
-10. 验证 ThinkLab 核心功能。
-11. 完成 Demo 演示准备和费用管理。
-
-**最终目标：让 ThinkLab 从本地可运行的项目，转变为能够通过公网访问、完整展示核心功能的云端 AI 应用。**
+这套方案满足当前 MVP 阶段的基本部署和运行需求，后续可以继续完善 HTTPS、数据库备份、服务监控以及 Docker Compose 部署。

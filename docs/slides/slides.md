@@ -199,27 +199,23 @@ flowchart LR
 
 ---
 
+
+---
+
 ## 3.5.3 核心技术：RAG 检索增强生成流程
 
-```mermaid {scale: 0.75}
-%%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '14px' }}}%%
+```mermaid {scale: 0.6}
+%%{init: {'theme': 'dark'}}%%
 flowchart LR
-    U([用户提问]) --> E[文本向量化]
+    U([提问]) --> E[向量化] --> DB[(Pinecone)]
+    DB --> R[流派重排]
     U --> P[Prompt 组装]
+    R --> P
+    P --> LLM[大模型] --> Ans([回答+出处])
     
-    subgraph VectorDB ["向量数据库 (Pinecone)"]
-        E --> DB[(召回 Top-K 语料)]
-    end
-    
-    DB --> R[流派加权重排<br/>同流派加 0.18 分]
-    R -->|高质量语料| P
-    
-    P --> LLM[大模型生成<br/>DeepSeek-Flash]
-    LLM --> Ans([输出最终回答<br/>强制附带引用出处])
-    
-    style U fill:#3498db,stroke:#fff,stroke-width:2px,color:#fff
-    style Ans fill:#2ecc71,stroke:#fff,stroke-width:2px,color:#fff
-    style R fill:#e67e22,stroke:#fff,stroke-width:2px,color:#fff
+    style U fill:#3498db,stroke:#fff,color:#fff
+    style Ans fill:#2ecc71,stroke:#fff,color:#fff
+    style R fill:#e67e22,stroke:#fff,color:#fff
 ```
 ---
 

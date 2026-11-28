@@ -20,9 +20,9 @@ mdc: true
 
 # 目录
 
-- **1. 产品设计**
-- **2. 产品设计应用的原则**
-- **3. 产品实现**
+## 1. 产品设计
+## 2. 产品设计应用的原则
+## 3. 产品实现
 
 ---
 
@@ -69,12 +69,12 @@ mdc: true
 
 # 2. 产品设计应用的原则
 
-本项目在设计中应用了以下原则：
+本项目在设计中遵循了以下几条原则：
 
-- **需求原则**：直击用户“需要多视角启发”的核心需求。
-- **信息和创新原则**：创新性地引入“三视角生成”与“结构化总结”流程。
-- **系统和收敛原则**：限制模型只扮演特定流派，禁止跨流派漂移，确保视角纯粹。
-- **降级和可用原则**：实行“零密钥体验”策略，在无模型 Key 时自动降级模板引擎，保证永不宕机。
+- **需求原则**：一切从用户“需要多视角启发”这个真实痛点出发，没有为了做而做。产品功能直接对应需求，而非堆砌技术。
+- **创新原则**：没有走“一个聊天框包打天下”的捷径，而是把“三视角生成”和“结构化总结”作为核心差异点，让用户能真正看到不同哲学流派如何解读同一个问题。
+- **收敛原则**：用提示词锁定当前流派，禁止模型跨流派漂移。用户选了斯多葛，AI 就只从斯多葛的角度回应，不会突然切换到尼采。
+- **降级可用原则**：考虑到演示和部署环境的不确定性，做了多级降级——没有模型 Key 时切模板引擎，没有 Pinecone 时用本地向量库，保证任何情况下系统都能跑起来。
 
 ---
 
@@ -92,7 +92,7 @@ mdc: true
 | 条目名称 | 条目内容 | 选型原因 |
 |---|---|---|
 | **Agent 编排** | LangChain | 统一 Prompt / LLM / Parser 链式调用。 |
-| **LLM 模型** | DeepSeek-chat | 兼容 OpenAI 协议，成本低，中文能力强。 |
+| **LLM 模型** | DeepSeek-Flash | 兼容 OpenAI 协议，成本低，中文能力强。 |
 | **向量数据库** | Pinecone | Serverless 索引自动创建，检索性能优异。 |
 | **API 框架** | FastAPI | 异步支持极好，自动生成 Swagger 文档。 |
 | **持久化** | PostgreSQL | 支持 JSONB，完美适配结构化总结的存储。 |
@@ -103,7 +103,8 @@ mdc: true
 # 3. 产品实现
 
 ## 3.3 代码仓库与生命周期管理
-- **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent）
+- **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent)
+
 <div style="display: flex; justify-content: space-around; margin-top: 30px; align-items: center;">
   <div style="text-align: center;">
     <img src="/1.png" style="height: 260px; border-radius: 8px;" alt="提交历史" />
@@ -122,8 +123,12 @@ mdc: true
 | 问题类别 | 问题名称 | 解决办法 |
 |---|---|---|
 | 分析阶段 | 多流派概念混淆 | 在系统提示词中锁定当前视角，禁止模型跨流派闲聊。 |
+| 分析阶段 | 三视角区分度不足 | 在 Prompt 中显式定义每个视角的“核心追问”与“典型哲学家”，强制拉开差异。 |
 | 开发阶段 | 长对话导致 Token 爆炸 | 引入多轮记忆机制，超过 8 轮自动压缩为“滚动摘要”。 |
+| 开发阶段 | SSE 流式输出在 Node BFF 层断流 | 在 Node 反向代理中透传 `text/event-stream` 头，并关闭缓冲。 |
+| 测试阶段 | 本地无 PostgreSQL 时启动失败 | `THINKLAB_DB_MODE=auto` 自动降级 SQLite，保证零依赖可演示。 |
 | 部署阶段 | 缺乏模型 Key 时无法演示 | 设计自动降级策略，无缝切换至本地模板模型。 |
+| 部署阶段 | Pinecone 连接超时导致检索阻塞 | 降级至本地 JSON 向量库，同时记录日志并返回兜底结果。 |
 
 ---
 
@@ -131,8 +136,8 @@ mdc: true
 
 ## 3.5.1 软件概要设计：系统架构图
 
-```mermaid {scale: 0.72}
-flowchart LR
+```mermaid {scale: 0.65}
+flowchart TD
     U[用户] --> React[React 18 + Vite]
     React -->|SSE| Node[Node.js BFF 反代]
     Node -->|REST/SSE| FastAPI[FastAPI 服务]
@@ -140,6 +145,7 @@ flowchart LR
     Engine -.-> PC[(Pinecone 向量库)]
     Engine -.-> PG[(PostgreSQL)]
 ```
+
 ---
 
 ## 3.5.2 基础设施与部署架构图
@@ -158,31 +164,76 @@ flowchart LR
 ---
 
 ## 3.5.3 智能体技术设计：Agent 基本组成
+
+<div style="font-size: 14px;">
+
 本项目采用经典的 Agent 架构，通过 LangChain 编排，各核心组件分工如下：
-| 核心组件 | 在本项目中的具体实现 | 发挥的作用 |
-| :--- | :--- | :--- |
-| **大脑 (LLM)** | DeepSeek-chat (OpenAI 兼容协议) | 负责逻辑推理、文本生成、多视角角色扮演。 |
-| **规划 (Planning)** | LangChain 链式调用（视角/对话/总结链） | 将复杂的探索任务拆解为“生成视角 -> 多轮对话 -> 结构化总结”的 SOP 流程。 |
-| **记忆 (Memory)** | 窗口记忆 + 滚动摘要压缩 (PostgreSQL) | 记住多轮对话上下文，长对话自动压缩摘要，防止 Token 爆炸并保持人设不崩。 |
-| **工具与知识库** | RAG 检索 (Pinecone 向量库 + 加权重排) | 提供外挂知识库，按用户选择的哲学流派加权召回语料，确保回答不串味且有据可查。 |
-| **执行与安全** | 降级兜底机制 & 视角锁定 | 在模型 API 失败时自动降级模板模型；提示词锁定当前流派，禁止跨流派漂移。 |
+
+| 核心组件 | 在本项目中的具体实现 | 发挥的作用 | 对应文件 |
+| :--- | :--- | :--- | :--- |
+| **大脑 (LLM)** | DeepSeek-Flash (OpenAI 兼容协议) | 负责逻辑推理、文本生成、多视角角色扮演。 | `core_engine/thinklab_core/llm.py` |
+| **规划 (Planning)** | LangChain 链式调用（视角/对话/总结链） | 将复杂的探索任务拆解为“生成视角 -> 多轮对话 -> 结构化总结”的 SOP 流程。 | `core_engine/thinklab_core/chains.py` |
+| **记忆 (Memory)** | 窗口记忆 + 滚动摘要压缩 (PostgreSQL) | 记住多轮对话上下文，长对话自动压缩摘要，防止 Token 爆炸并保持人设不崩。 | `core_engine/thinklab_core/memory.py` |
+| **工具与知识库** | RAG 检索 (Pinecone 向量库 + 加权重排) | 提供外挂知识库，按用户选择的哲学流派加权召回语料，确保回答不串味且有据可查。 | `core_engine/thinklab_core/vectorstore.py` |
+| **护栏** | 降级兜底机制 & 视角锁定 | 在模型 API 失败时自动降级模板模型；提示词锁定当前流派，禁止跨流派漂移。 | `core_engine/thinklab_core/config.py` + `prompts.py` |
+
+</div>
 
 > **架构亮点**：通过 LLM 的推理能力结合 RAG 的外部知识，配合多轮记忆机制，实现了真正“懂哲学、能追问、有记忆”的智能体。
 
 ---
 
-## 3.5.4 数据库设计
-数据库中的核心表来管理全部链路数据：
-- `sessions`（会话）：记录问题、选择的视角以及**滚动摘要**。
-- `perspectives`（视角）：记录生成的三种哲学视角详情。
-- `messages`（对话）：流水记录，包含 JSONB 格式的引用来源。
-- `summaries`（总结）：支持版本记录（Version 递增），即使生成了总结，依然可以继续对话。
-- `knowledge_docs`（知识库文档）：34 条种子语料与 12 条 FAQ。
+## 3.5.4 数据库设计：E-R 图
+
+```mermaid {scale: 0.62}
+erDiagram
+    SESSIONS ||--o{ MESSAGES : contains
+    SESSIONS ||--o{ PERSPECTIVES : generates
+    SESSIONS ||--o{ SUMMARIES : produces
+    SESSIONS {
+        int id PK
+        string question
+        string lens
+        string rolling_summary
+        string status
+    }
+    MESSAGES {
+        int id PK
+        int session_id FK
+        string role
+        string content
+        int turn_index
+        json sources
+    }
+    PERSPECTIVES {
+        int id PK
+        int session_id FK
+        string key
+        string name
+        string headline
+        string thinker
+    }
+    SUMMARIES {
+        int id PK
+        int session_id FK
+        int version
+        json insights
+        json tensions
+        json practices
+    }
+```
+
+**核心表关系说明**：
+- **SESSIONS** 是主表，记录用户的一次完整探索（问题、当前视角、滚动摘要、状态）。
+- **MESSAGES** 与 SESSIONS 一对多，存储对话流水，`sources` 字段用 JSONB 保存每次回答的引用来源。
+- **PERSPECTIVES** 与 SESSIONS 一对多，保存该次会话生成的三种哲学视角。
+- **SUMMARIES** 与 SESSIONS 一对多，支持版本递增，生成总结后仍可继续对话。
 
 ---
 
 ## 3.5.5 接口设计
 对外暴露三个核心接口：
+
 | 接口名称 | 功能 | 特点 |
 |---|---|---|
 | `POST /api/sessions` | 创建会话生成视角 | 并发调用大模型与向量库 |
@@ -243,7 +294,7 @@ flowchart LR
 
 ---
 
-# 第二部分：展示作品功能 
+# 第二部分：展示作品功能
 
 **在本机运行作品，展示核心功能逻辑：**
 
@@ -254,6 +305,6 @@ flowchart LR
 
 ---
 
-# 第三部分：回答评委问题 
+# 第三部分：回答评委问题
 
 ## 感谢聆听，欢迎提问！

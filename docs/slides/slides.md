@@ -103,7 +103,7 @@ mdc: true
 |---|---|---|
 | **Agent 编排** | LangChain | 统一 Prompt / LLM / Parser 链式调用。 |
 | **LLM 模型** | DeepSeek-Flash | 兼容 OpenAI 协议，成本低，中文能力强。 |
-| **向量数据库** | Pinecone | Serverless 索引自动创建，检索性能优异。 |
+| **向量数据库** | PineCone | Serverless 索引自动创建，检索性能优异。 |
 | **API 框架** | FastAPI | 异步支持极好，自动生成 Swagger 文档。 |
 | **持久化** | PostgreSQL | 支持 JSONB，完美适配结构化总结的存储。 |
 | **前端/服务** | React + Node.js | Vite 极速打包，Node 作为 BFF 层反向代理支持 SSE 透传。 |
@@ -199,8 +199,6 @@ flowchart LR
 
 ---
 
-
----
 
 ## 3.5.3 核心技术：RAG 检索增强生成流程
 

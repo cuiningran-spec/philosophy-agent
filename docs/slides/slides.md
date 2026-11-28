@@ -20,8 +20,16 @@ mdc: true
 
 # 目录
 
+<br/>
+
 ## 1. 产品设计
+
+<br/>
+
 ## 2. 产品设计应用的原则
+
+<br/>
+
 ## 3. 产品实现
 
 ---
@@ -103,7 +111,7 @@ mdc: true
 # 3. 产品实现
 
 ## 3.3 代码仓库与生命周期管理
-- **仓库链接**：[点击访问 GitHub 仓库](https://github.com/cuiningran-spec/philosophy-agent)
+- **仓库链接**：https://github.com/cuiningran-spec/philosophy-agent
 
 <div style="display: flex; justify-content: space-around; margin-top: 30px; align-items: center;">
   <div style="text-align: center;">
@@ -136,14 +144,22 @@ mdc: true
 
 ## 3.5.1 软件概要设计：系统架构图
 
-```mermaid {scale: 0.65}
-flowchart TD
-    U[用户] --> React[React 18 + Vite]
-    React -->|SSE| Node[Node.js BFF 反代]
-    Node -->|REST/SSE| FastAPI[FastAPI 服务]
-    FastAPI --> Engine[LangChain 内核]
-    Engine -.-> PC[(Pinecone 向量库)]
-    Engine -.-> PG[(PostgreSQL)]
+```mermaid {scale: 0.6}
+flowchart LR
+    subgraph 前端
+        U[用户] --> React[React 18 + Vite]
+    end
+    
+    subgraph 业务逻辑
+        React -->|SSE| Node[Node.js BFF 反代]
+        Node -->|REST/SSE| FastAPI[FastAPI 服务]
+        FastAPI --> Engine[LangChain 内核]
+    end
+    
+    subgraph 数据存储
+        Engine -.-> PC[(Pinecone 向量库)]
+        Engine -.-> PG[(PostgreSQL)]
+    end
 ```
 
 ---
@@ -165,7 +181,7 @@ flowchart LR
 
 ## 3.5.3 智能体技术设计：Agent 基本组成
 
-<div style="font-size: 14px;">
+<div style="font-size: 13px; line-height: 1.2; margin-top: 5px;">
 
 本项目采用经典的 Agent 架构，通过 LangChain 编排，各核心组件分工如下：
 
@@ -185,49 +201,59 @@ flowchart LR
 
 ## 3.5.4 数据库设计：E-R 图
 
-```mermaid {scale: 0.62}
-erDiagram
-    SESSIONS ||--o{ MESSAGES : contains
-    SESSIONS ||--o{ PERSPECTIVES : generates
-    SESSIONS ||--o{ SUMMARIES : produces
-    SESSIONS {
-        int id PK
-        string question
-        string lens
-        string rolling_summary
-        string status
-    }
-    MESSAGES {
-        int id PK
-        int session_id FK
-        string role
-        string content
-        int turn_index
-        json sources
-    }
-    PERSPECTIVES {
-        int id PK
-        int session_id FK
-        string key
-        string name
-        string headline
-        string thinker
-    }
-    SUMMARIES {
-        int id PK
-        int session_id FK
-        int version
-        json insights
-        json tensions
-        json practices
-    }
-```
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px;">
+  
+  <!-- 左侧：E-R 图 -->
+  <div style="width: 55%;">
+    ```mermaid {scale: 0.55}
+    erDiagram
+        SESSIONS ||--o{ MESSAGES : contains
+        SESSIONS ||--o{ PERSPECTIVES : generates
+        SESSIONS ||--o{ SUMMARIES : produces
+        SESSIONS {
+            int id PK
+            string question
+            string lens
+            string rolling_summary
+            string status
+        }
+        MESSAGES {
+            int id PK
+            int session_id FK
+            string role
+            string content
+            int turn_index
+            json sources
+        }
+        PERSPECTIVES {
+            int id PK
+            int session_id FK
+            string key
+            string name
+            string headline
+            string thinker
+        }
+        SUMMARIES {
+            int id PK
+            int session_id FK
+            int version
+            json insights
+            json tensions
+            json practices
+        }
+    ```
+  </div>
 
-**核心表关系说明**：
-- **SESSIONS** 是主表，记录用户的一次完整探索（问题、当前视角、滚动摘要、状态）。
-- **MESSAGES** 与 SESSIONS 一对多，存储对话流水，`sources` 字段用 JSONB 保存每次回答的引用来源。
-- **PERSPECTIVES** 与 SESSIONS 一对多，保存该次会话生成的三种哲学视角。
-- **SUMMARIES** 与 SESSIONS 一对多，支持版本递增，生成总结后仍可继续对话。
+  <!-- 右侧：文字说明 -->
+  <div style="width: 42%; font-size: 15px; line-height: 1.6; margin-top: 20px;">
+    <strong>核心表关系说明：</strong><br/><br/>
+    • <strong>SESSIONS (会话)</strong>：主表，记录用户的一次完整探索（问题、当前视角、滚动摘要、状态）。<br/><br/>
+    • <strong>MESSAGES (对话)</strong>：一对多。存储对话流水，<code>sources</code> 字段用 JSONB 保存每次回答的引用来源。<br/><br/>
+    • <strong>PERSPECTIVES (视角)</strong>：一对多。保存该次会话生成的三种哲学视角。<br/><br/>
+    • <strong>SUMMARIES (总结)</strong>：一对多。支持版本递增，生成总结后仍可继续对话。
+  </div>
+
+</div>
 
 ---
 
@@ -294,7 +320,7 @@ erDiagram
 
 ---
 
-# 第二部分：展示作品功能
+# 第二部分：展示作品功能 
 
 **在本机运行作品，展示核心功能逻辑：**
 
@@ -305,6 +331,6 @@ erDiagram
 
 ---
 
-# 第三部分：回答评委问题
+# 第三部分：回答评委问题 
 
 ## 感谢聆听，欢迎提问！

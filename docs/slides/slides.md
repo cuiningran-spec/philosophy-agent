@@ -186,15 +186,14 @@ flowchart LR
 
 | 核心组件 | 在本项目中的具体实现 | 发挥的作用 | 对应文件 |
 | :--- | :--- | :--- | :--- |
-| **大脑 (LLM)** | DeepSeek-Flash (OpenAI 兼容协议) | 负责逻辑推理、文本生成、多视角角色扮演。 | `core_engine/thinklab_core/llm.py` |
 | **规划 (Planning)** | LangChain 链式调用（视角/对话/总结链） | 将复杂的探索任务拆解为“生成视角 -> 多轮对话 -> 结构化总结”的 SOP 流程。 | `core_engine/thinklab_core/chains.py` |
 | **记忆 (Memory)** | 窗口记忆 + 滚动摘要压缩 (PostgreSQL) | 记住多轮对话上下文，长对话自动压缩摘要，防止 Token 爆炸并保持人设不崩。 | `core_engine/thinklab_core/memory.py` |
-| **工具与知识库** | RAG 检索 (Pinecone 向量库 + 加权重排) | 提供外挂知识库，按用户选择的哲学流派加权召回语料，确保回答不串味且有据可查。 | `core_engine/thinklab_core/vectorstore.py` |
+| **工具与知识库** | DeepSeek-Flash；RAG 检索 (Pinecone 向量库 + 加权重排) |  负责逻辑推理、文本生成、多视角角色扮演；提供知识库，按用户选择的哲学流派加权召回语料，确保回答不串味且有据可查。 | `core_engine/thinklab_core/llm.py`；`core_engine/thinklab_core/vectorstore.py` |
 | **护栏** | 降级兜底机制 & 视角锁定 | 在模型 API 失败时自动降级模板模型；提示词锁定当前流派，禁止跨流派漂移。 | `core_engine/thinklab_core/config.py` + `prompts.py` |
 
 </div>
 
-> **架构亮点**：通过 LLM 的推理能力结合 RAG 的外部知识，配合多轮记忆机制，实现了真正“懂哲学、能追问、有记忆”的智能体。
+> **架构亮点**：通过 LLM 的推理能力结合知识库，配合多轮记忆机制，实现了真正“懂哲学、能追问、有记忆”的智能体。
 
 ---
 

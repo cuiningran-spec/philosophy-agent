@@ -326,6 +326,8 @@ erDiagram
 
 # 第二部分：展示作品功能 
 
+https://cuiningran-spec.github.io/philosophy-agent/1
+
 **在本机运行作品，展示核心功能逻辑：**
 
 1. **多视角生成**：输入现实问题（如“我最近很焦虑”），展示生成的三种哲学视角（斯多葛、存在主义、道家）。
